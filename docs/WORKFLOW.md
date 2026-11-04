@@ -42,23 +42,31 @@ This runs the original skill's Appendix A without changing it. It produces
 Never apply the graphic-carousel style to realistic image briefs by default.
 
 Human review checks copy, visuals, facts and rights, brand, and accessibility.
-Only the actual reviewer fills review/approval.json with all checks true, their
-name and an approval timestamp. This is a record, not an authentication system.
-Re-review whenever anything changes; the tool cannot judge typography, truth,
-licenses, realism or subtitle quality. A previous review does not approve revisions.
-The export manifest hashes the exact packaged files for comparison during review.
+First run `studio.py prepare-review NAME` to snapshot the current exportable
+content and reset all review checks. Only the actual reviewer then fills
+review/approval.json with all checks true, their name and an ISO approval timestamp
+including timezone. Preserve the generated content_sha256 field. Any change to
+copy, media or included review files invalidates the review; run prepare-review
+and review again. Existing approvals without a snapshot also require re-review.
+This is a record, not authentication or a cryptographic signature. A user with
+write access can edit it. The tool cannot judge typography, truth, licenses,
+realism or subtitle quality. The export manifest hashes the exact packaged bytes
+and rejects changes detected while packaging.
 
 ```bash
 .venv/bin/python scripts/studio.py check event-checklist --stage draft
 .venv/bin/python scripts/studio.py export event-checklist --stage draft
 # After actual human review and completed media:
+.venv/bin/python scripts/studio.py prepare-review event-checklist
+# Human reviews and fills review/approval.json, retaining its content_sha256.
 .venv/bin/python scripts/studio.py check event-checklist --stage final
 .venv/bin/python scripts/studio.py export event-checklist --stage final
 ```
 
 Draft exports remain labeled unapproved even when they include media. Final
 checks enforce file counts, dimensions, decode images, validate Reel format with
-ffprobe and require recorded review. This is technical validation, not platform
+ffprobe and decode its media with FFmpeg, and require current recorded review.
+Both FFmpeg and ffprobe are required for final Reel checks. This is technical validation, not platform
 acceptance testing. There is no publish, schedule, purchase or deploy command.
 
 ## Downloads and retention
@@ -69,6 +77,9 @@ images, references, local profiles, runtime files and arbitrary campaign files.
 Review included text for private information; an allowlist cannot detect a
 credential pasted into approved copy. Exporting again replaces that same stage's
 ZIP; preserve a separately named local copy if an immutable revision is needed.
+Media folders accept only format-specific delivery types, including in draft
+exports. Symlinks and hard links are rejected. This does not detect secrets or
+personal information pasted into an otherwise permitted text or media file.
 
 Use the platform's workspace file-download feature when offered. This session has
 no artifact-upload or external port-forwarding tool, so no public download link
@@ -84,6 +95,10 @@ returns the service identity. All archive requests require a Bearer token; query
 tokens, directory traversal, hidden files and symlinks are not served. Do not
 expose the process directly to the Internet. A platform-authenticated tunnel is
 required for access from a user's machine, if the platform supports one.
+One service per project's runtime directory is enforced by a local lock. A failed
+start leaves any existing token intact. ZIPs stream to the client instead of
+loading an entire video archive in memory. The server remains a private, single
+trusted-user development tool, not a hardened multiuser hosting service.
 
 From an authorized environment or tunnel, use an HTTP client with Authorization
 header `Bearer <local download-token>` and request `/downloads/NAME-draft.zip`.

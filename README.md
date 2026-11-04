@@ -71,3 +71,8 @@ tool. See the workflow for authentication and retention details.
 Validation: `.venv/bin/python -m unittest discover -s tests -v`. FFmpeg checks are
 optional when binaries are unavailable; image, archive and download checks are
 required. Tests generate temporary fixtures, not approved marketing content.
+
+Before human approval, run `studio.py prepare-review NAME`. It snapshots content
+and resets all review checks. Fill the review record only after inspecting that
+version; later content changes block final exports until reviewed again.
+See [the PR review report](docs/PR-1-REVIEW.md) for findings, fixes and limitations.

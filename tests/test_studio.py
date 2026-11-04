@@ -32,10 +32,13 @@ class StudioTests(unittest.TestCase):
         return studio.init_campaign(self.root, name, kind, "Globos de prueba")
 
     def approve(self, path):
-        studio.write_json(path / "review" / "approval.json", {
+        studio.prepare_review(self.root, path.name)
+        review = studio.read_json(path / "review" / "approval.json")
+        review.update({
             "checks": {key: True for key in studio.REVIEW_KEYS},
             "reviewer": "Test fixture only", "approved_at": "2026-11-04T12:00:00-06:00"
         })
+        studio.write_json(path / "review" / "approval.json", review)
 
     def test_all_four_campaign_types_and_no_overwrite(self):
         for kind in studio.KINDS:
@@ -102,8 +105,8 @@ class StudioTests(unittest.TestCase):
 
     def test_marketing_final(self):
         path = self.campaign("marketing")
-        self.approve(path)
         (path / "finals" / "email.md").write_text("Copy fixture for technical tests only.")
+        self.approve(path)
         self.assertTrue(studio.inspect_campaign(path, "final")["approved"])
 
     def test_draft_export_excludes_private_and_raw_files(self):
@@ -170,10 +173,10 @@ class StudioTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "Optional FFmpeg tools absent")
     def test_real_reel_encode_and_validation(self):
         path = self.campaign("reel")
-        self.approve(path)
         subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i",
                         "color=c=0x54C1FA:s=1080x1920:d=1:r=1", "-c:v", "libx264",
                         "-threads", "1", "-pix_fmt", "yuv420p", str(path / "finals" / "reel.mp4")], check=True)
+        self.approve(path)
         self.assertTrue(studio.inspect_campaign(path, "final")["approved"])
 
 

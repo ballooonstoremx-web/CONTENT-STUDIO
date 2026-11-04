@@ -1,5 +1,9 @@
 # Current-instance validation
 
+For the subsequent functional/security review and its 25 passing tests, see
+[PR #1 review](PR-1-REVIEW.md). The results below describe the original onboarding
+baseline; the review fixes extend its approval and delivery checks.
+
 2026-11-04, implementation branch setup/balloon-content-workflow.
 
 `bash scripts/setup.sh` completed twice. Python 3.12.14 and Pillow 13.0.0 are

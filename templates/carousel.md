@@ -18,7 +18,8 @@
    follow the skill's two-fix limit. Add per-slide alt text to carousel/ALT-TEXT.md.
 7. Write Instagram captions in CAPTIONS.md, with a confirmed CTA, no invented
    handle, up to five hashtags, and no unconfirmed 'link in comments'.
-8. Fill review/approval.json only after human review. Export a draft for revisions
+8. Run `studio.py prepare-review NAME`, then fill review/approval.json only after
+   human review. Preserve content_sha256; repeat review after any edits. Export a draft for revisions
    or a final package after checks. Neither export authorizes publishing.
 
 Provider calls, paid credits, uploads and publishing are not part of offline init.

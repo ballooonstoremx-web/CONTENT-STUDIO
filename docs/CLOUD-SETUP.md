@@ -9,6 +9,8 @@ Required: Linux, Python 3.12+, venv/pip, pinned Pillow. Optional: FFmpeg and ffp
 for Reel delivery checks; gh for GitHub PR operations. No Node app, database or
 paid provider is required for offline development. Core planning/export and
 download service use the Python standard library. Pillow is for image workflows.
+Both FFmpeg and ffprobe are required when validating final Reel media; otherwise
+those tests explicitly skip. Review results in PR-1-REVIEW.md ran with both present.
 
 ```bash
 cd /workspace/CONTENT-STUDIO

@@ -9,6 +9,9 @@ generated/*
 !generated/README.md
 exports/*
 !exports/README.md
+inputs/*
+!inputs/briefs/
+!inputs/references/
 inputs/briefs/*
 !inputs/briefs/README.md
 inputs/references/*

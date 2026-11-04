@@ -18,9 +18,11 @@ This is a project workflow; the carousel skill explicitly excludes video.
 6. Edit clips, licensed audio and approved overlays in an available editor. Keep
    important copy away from platform UI; preview safe areas on target devices.
    Write subtitles in review/captions.srt; verify sync and readability.
-7. Export exactly one MP4 into finals/. Run final check (requires ffprobe).
+7. Export exactly one MP4 into finals/. Run `studio.py prepare-review NAME`.
+   Final checks require FFmpeg and ffprobe, and fully decode the media locally.
    Watch the complete video with sound and muted, review accessibility and facts,
-   record provenance and human approval, then package. No posting or deployment.
+   record provenance before the snapshot, then human approval, preserving
+   content_sha256, and package. Edits require re-review. No posting or deployment.
 
 FFmpeg/ffprobe are local media utilities, not generative video or editing-service
 connections. Canva and CapCut remain manual tools until a real integration exists.

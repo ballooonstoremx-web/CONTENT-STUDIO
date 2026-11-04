@@ -5,8 +5,8 @@ observations, not configuration that connects a service.
 
 | Capability | Evidence / status | What remains |
 |---|---|---|
-| GitHub Git | Fetch of main succeeded using native platform authentication | Verify push separately; API access is distinct |
-| GitHub CLI/API | gh installed; API request blocked by proxy HTTP 403 | api.github.com added to draft allowlist; apply network setting, then retry API access and PR creation |
+| GitHub Git | Fetch/push succeeded; PR #1 head resolves to the feature branch via refs/pull/1/head | Branch pushes update existing PR code; API access is distinct |
+| GitHub CLI/API | gh installed; PR #1 metadata API request still blocked by proxy HTTP 403 | No direct GitHub connector is available to this agent; API comments/metadata cannot be verified or edited here |
 | Higgsfield MCP | No Higgsfield tool names in actual tool inventory | User connects authenticated MCP at https://mcp.higgsfield.ai/mcp in supported client settings; rediscover tools |
 | Higgsfield image generation | Not run, no cost authorization | Verify models_explore, generate_image, generate_image_batch, jobs_wait, show_generation_by_ids, media_upload, media_confirm; preflight gpt_image_2 and cost |
 | Higgsfield video | No callable tools found; carousel skill does not cover video | Discover actual video tools and model schemas before defining provider calls |
@@ -15,7 +15,7 @@ observations, not configuration that connects a service.
 | OpenAI image tool | image_gen tool callable in session | Separate possible image workflow; not a substitute for skill-mandated Higgsfield; no generation invoked |
 | Canva / CapCut | No callable integrations found | Manual import/edit/export if user has access; no account, app installation or subscription assumed |
 | Local Python / Pillow | Python 3.12 and pinned Pillow 13.0.0 installed and exercised | Reproduce with scripts/setup.sh |
-| FFmpeg / ffprobe | Local binaries available | Required only for rendered Reel validation, not campaign planning |
+| FFmpeg / ffprobe | Local binaries available; actual encode, probe and decode exercised | Both required for final Reel validation, not campaign planning |
 | Cloud downloads | Local authenticated ZIP download route implemented and tested | External reachability is not provided by onboarding; use workspace file download or an authenticated platform tunnel when available |
 
 The setup inspected configured binding metadata and variable presence only.

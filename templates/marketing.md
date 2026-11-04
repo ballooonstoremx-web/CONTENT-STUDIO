@@ -10,7 +10,8 @@
 4. Verify every factual claim and reference; remove invented discounts,
    testimonials and scarcity. Use approved brand voice and accessible language.
 5. Put reviewed deliverables in finals/ as Markdown or text. Record sources and
-   usage rights. Complete review/approval.json, then export for owner review.
+   usage rights. Run `studio.py prepare-review NAME`, complete review/approval.json
+   after human review, retain content_sha256, then export. Edits require re-review.
 
 Useful tentative angles: balloon care checklist, choosing an event palette, or
 planning a decoration corner. These are ideas, not verified product claims.

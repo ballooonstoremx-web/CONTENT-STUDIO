@@ -20,7 +20,8 @@ This is a project workflow; the attached carousel skill does not cover it.
 6. Place one reviewed PNG/JPEG at 1080×1350 in finals/. Fit-and-pad or compose to
    that size; do not crop away the product. Overlay exact logo/text only from
    approved assets in an available design editor. Write alt text and caption.
-7. Fill human review checks and export. No automatic publishing.
+7. Run `studio.py prepare-review NAME`, then fill human review checks, preserving
+   content_sha256, and export. Later edits require re-review. No automatic publishing.
 
 Prompt starter: "Photorealistic [confirmed arrangement] using [material and sizes]
 in [scene], [lighting], [camera/viewpoint], natural latex reflections, physically

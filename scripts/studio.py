@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Offline campaign planning, QA and private export. No publishing or AI API calls."""
 import argparse
+from contextlib import contextmanager
+import fcntl
 import hashlib
 import html
 import importlib.util
@@ -10,6 +12,7 @@ from pathlib import Path
 import re
 import secrets
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -25,8 +28,15 @@ STAGES = ("draft", "final")
 REVIEW_KEYS = ("copy", "visuals", "facts_and_rights", "brand", "accessibility")
 
 
+class StudioError(ValueError):
+    """Safe, actionable validation message without raw input excerpts."""
+
+
 def read_json(path):
-    return json.loads(path.read_text(encoding="utf-8"))
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise StudioError(f"{path.name} must contain a JSON object.")
+    return data
 
 
 def write_json(path, data):
@@ -34,18 +44,20 @@ def write_json(path, data):
 
 
 def campaign_path(root, name):
-    if not SAFE_NAME.fullmatch(name):
-        raise ValueError("Campaign name must be lowercase words separated by hyphens.")
+    if not isinstance(name, str) or len(name) > 80 or not SAFE_NAME.fullmatch(name):
+        raise StudioError("Campaign name must be lowercase words separated by hyphens.")
     base = root / "generated"
     path = base / name
     if base.is_symlink() or path.is_symlink():
-        raise ValueError("Campaign directories cannot be symlinks.")
+        raise StudioError("Campaign directories cannot be symlinks.")
     if not path.resolve().is_relative_to(root.resolve()):
-        raise ValueError("Campaign must stay inside the project.")
+        raise StudioError("Campaign must stay inside the project.")
     return path
 
 
 def init_campaign(root, name, kind, topic):
+    if kind not in KINDS:
+        raise StudioError("Unknown campaign kind.")
     path = campaign_path(root, name)
     path.mkdir(parents=True, exist_ok=False)
     for folder in ("raw", "finals", "review", "carousel"):
@@ -75,71 +87,149 @@ def init_campaign(root, name, kind, topic):
 def regular_files(path):
     """Reject links and special files rather than follow them into private files."""
     if path.is_symlink():
-        raise ValueError(f"Symlink not allowed: {path.name}")
+        raise StudioError(f"Symlink not allowed: {path.name}")
     for file in sorted(path.rglob("*")):
         if file.is_symlink():
-            raise ValueError(f"Symlink not allowed: {file.name}")
+            raise StudioError(f"Symlink not allowed: {file.name}")
         if not file.is_file() and not file.is_dir():
-            raise ValueError(f"Special file not allowed: {file.name}")
+            raise StudioError(f"Special file not allowed: {file.name}")
         if file.is_file():
+            if file.stat().st_nlink != 1:
+                raise StudioError(f"Hard links not allowed: {file.name}")
             yield file
 
 
-def inspect_campaign(path, stage):
-    if not path.is_dir():
-        raise ValueError("Campaign not found. Run init first.")
+def payload_files(path):
+    """The exact reviewable/exportable payload, excluding the approval record."""
     list(regular_files(path))
+    for folder in ("finals", "review"):
+        if not (path / folder).is_dir():
+            raise StudioError(f"Missing required directory: {folder}/")
+    names = ("campaign.json", "BRIEF.md", "PLAN.md", "COPY.md", "CAPTIONS.md", "PROVENANCE.md")
+    selected = [path / name for name in names]
+    if not all(file.is_file() for file in selected):
+        raise StudioError("Campaign is missing a required planning file.")
+    selected += list(regular_files(path / "finals"))
+    selected += [path / relative for relative in (
+        "review/contact-sheet.png", "review/zoom-url.png", "review/captions.srt",
+        "carousel/ALT-TEXT.md") if (path / relative).is_file()]
+    kind = read_json(path / "campaign.json").get("kind")
+    media_types = {"carousel": {".png"}, "image": {".png", ".jpg", ".jpeg"},
+                   "reel": {".mp4"}, "marketing": {".md", ".txt"}}
+    if not isinstance(kind, str) or kind not in media_types:
+        raise StudioError("Unknown campaign kind.")
+    for file in selected:
+        relative = file.relative_to(path)
+        if any(p.startswith(".") for p in relative.parts):
+            raise StudioError(f"File not allowed in exports: {relative}")
+        if relative.parts[0] == "finals" and file.suffix.lower() not in media_types[kind]:
+            raise StudioError(f"File not allowed in exports for {kind}: {relative}")
+    return sorted(selected)
+
+
+def file_record(file, path):
+    digest = hashlib.sha256()
+    size = 0
+    with file.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+            size += len(chunk)
+    return {"path": str(file.relative_to(path)), "sha256": digest.hexdigest(), "bytes": size}
+
+
+def records_digest(records):
+    return hashlib.sha256(json.dumps(sorted(records, key=lambda r: r["path"]),
+                                     sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def content_digest(path):
+    return records_digest([file_record(file, path) for file in payload_files(path)])
+
+
+def prepare_review(root, name):
+    path = campaign_path(root, name)
+    digest = content_digest(path)
+    write_json(path / "review" / "approval.json", {
+        "checks": {key: False for key in REVIEW_KEYS}, "reviewer": None, "approved_at": None,
+        "content_sha256": digest, "scope": "export review only; never publication permission",
+    })
+    return path / "review" / "approval.json"
+
+
+def inspect_campaign(path, stage):
+    if stage not in STAGES:
+        raise StudioError("Unknown export stage.")
+    if not path.is_dir():
+        raise StudioError("Campaign not found. Run init first.")
+    payload_files(path)
     data = read_json(path / "campaign.json")
     if data.get("kind") not in KINDS:
-        raise ValueError("Unknown campaign kind.")
+        raise StudioError("Unknown campaign kind.")
     if data.get("publishing_enabled") is not False:
-        raise ValueError("This workflow requires publishing_enabled=false.")
+        raise StudioError("This workflow requires publishing_enabled=false.")
     files = list(regular_files(path / "finals"))
     if stage == "draft":
         return {"stage": "draft", "approved": False, "files": len(files),
                 "note": "Planning package only; does not certify media or publication readiness."}
     review = read_json(path / "review" / "approval.json")
-    if not all(review.get("checks", {}).get(key) is True for key in REVIEW_KEYS):
-        raise ValueError("Final export requires all five human review checks.")
-    if not review.get("reviewer") or not review.get("approved_at"):
-        raise ValueError("Final export requires reviewer and approved_at.")
+    if not isinstance(review.get("checks"), dict) or not all(
+            review["checks"].get(key) is True for key in REVIEW_KEYS):
+        raise StudioError("Final export requires all five human review checks.")
+    if not isinstance(review.get("reviewer"), str) or not review["reviewer"].strip():
+        raise StudioError("Final export requires reviewer and approved_at.")
+    try:
+        approved_at = datetime.fromisoformat(review.get("approved_at", ""))
+        if approved_at.tzinfo is None:
+            raise StudioError("Timezone required")
+    except (ValueError, TypeError):
+        raise StudioError("approved_at must be an ISO timestamp with timezone.") from None
     kind = data["kind"]
     if not files:
-        raise ValueError("Final export needs files in finals/.")
+        raise StudioError("Final export needs files in finals/.")
     from PIL import Image
     if kind in ("carousel", "image"):
         expected_count = range(6, 9) if kind == "carousel" else range(1, 2)
         if len(files) not in expected_count:
-            raise ValueError("Carousel needs 6–8 slides; an image campaign needs one image.")
+            raise StudioError("Carousel needs 6–8 slides; an image campaign needs one image.")
         expected = [f"slide-{i:02d}.png" for i in range(1, len(files) + 1)]
         if kind == "carousel" and [f.name for f in files] != expected:
-            raise ValueError("Carousel finals must be slide-01.png through slide-NN.png.")
+            raise StudioError("Carousel finals must be slide-01.png through slide-NN.png.")
         for file in files:
             if file.suffix.lower() not in (".png", ".jpg", ".jpeg"):
-                raise ValueError("Image finals must be PNG or JPEG.")
+                raise StudioError("Image finals must be PNG or JPEG.")
             with Image.open(file) as image:
-                image.load()
                 if image.size != (1080, 1350):
-                    raise ValueError(f"{file.name}: expected 1080x1350, got {image.size}.")
+                    raise StudioError(f"{file.name}: expected 1080x1350, got {image.size}.")
+                if image.format not in ("PNG", "JPEG") or getattr(image, "n_frames", 1) != 1:
+                    raise StudioError("Image finals must be single-frame PNG or JPEG.")
+                image.load()
     elif kind == "reel":
         if len(files) != 1 or files[0].suffix.lower() != ".mp4":
-            raise ValueError("Reel finals must contain exactly one MP4.")
+            raise StudioError("Reel finals must contain exactly one MP4.")
         result = subprocess.run([
-            "ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(files[0])
-        ], check=True, capture_output=True, text=True)
+            "ffprobe", "-v", "error", "-protocol_whitelist", "file,pipe", "-show_streams",
+            "-show_format", "-of", "json", str(files[0])
+        ], check=True, capture_output=True, text=True, timeout=30)
         probe = json.loads(result.stdout)
         videos = [s for s in probe["streams"] if s["codec_type"] == "video"]
         if len(videos) != 1 or (videos[0]["width"], videos[0]["height"]) != (1080, 1920):
-            raise ValueError("Reel must have one 1080x1920 video stream.")
+            raise StudioError("Reel must have one 1080x1920 video stream.")
         if videos[0]["codec_name"] != "h264" or videos[0].get("pix_fmt") != "yuv420p":
-            raise ValueError("Reel needs H.264 yuv420p for delivery compatibility.")
+            raise StudioError("Reel needs H.264 yuv420p for delivery compatibility.")
         if not 0 < float(probe["format"]["duration"]) <= 180:
-            raise ValueError("Project Reel delivery range is greater than 0 through 180 seconds.")
+            raise StudioError("Project Reel delivery range is greater than 0 through 180 seconds.")
+        if "mp4" not in probe["format"].get("format_name", "").split(","):
+            raise StudioError("Reel must be an MP4 container.")
+        subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-protocol_whitelist", "file,pipe",
+                        "-i", str(files[0]), "-f", "null", "-"],
+                       check=True, capture_output=True, timeout=120)
     else:
         if any(f.suffix.lower() not in (".md", ".txt") for f in files):
-            raise ValueError("Marketing finals must be reviewed Markdown or text copy.")
+            raise StudioError("Marketing finals must be reviewed Markdown or text copy.")
         if any(not f.read_text(encoding="utf-8").strip() for f in files):
-            raise ValueError("Marketing finals cannot be empty.")
+            raise StudioError("Marketing finals cannot be empty.")
+    if review.get("content_sha256") != content_digest(path):
+        raise StudioError("Content changed or review snapshot missing. Run prepare-review and review again.")
     return {"stage": "final", "approved": True, "files": len(files),
             "note": "Technical validation and recorded human checks; not publication permission."}
 
@@ -147,36 +237,36 @@ def inspect_campaign(path, stage):
 def export_campaign(root, name, stage):
     path = campaign_path(root, name)
     report = inspect_campaign(path, stage)
-    # Explicit allowlist: never export raw/reference images, profiles or arbitrary campaign files.
-    names = ("campaign.json", "BRIEF.md", "PLAN.md", "COPY.md", "CAPTIONS.md", "PROVENANCE.md")
-    selected = [path / name for name in names if (path / name).is_file()]
-    selected += list(regular_files(path / "finals"))
-    selected += [path / "review" / "approval.json"]
-    selected += [path / relative for relative in (
-        "review/contact-sheet.png", "review/zoom-url.png", "review/captions.srt",
-        "carousel/ALT-TEXT.md") if (path / relative).is_file()]
-    allowed_suffixes = {".json", ".md", ".txt", ".png", ".jpg", ".jpeg", ".mp4", ".srt"}
-    for file in selected:
-        relative = file.relative_to(path)
-        if any(p.startswith(".") for p in relative.parts) or file.suffix.lower() not in allowed_suffixes:
-            raise ValueError(f"File not allowed in exports: {relative}")
+    selected = payload_files(path) + [path / "review" / "approval.json"]
+    snapshot = content_digest(path)
     output = root / "exports"
     if output.is_symlink():
-        raise ValueError("exports/ cannot be a symlink.")
+        raise StudioError("exports/ cannot be a symlink.")
     output.mkdir(exist_ok=True)
     destination = output / f"{name}-{stage}.zip"
     if destination.is_symlink():
-        raise ValueError("Archive cannot be a symlink.")
-    manifest = {"campaign": name, **report, "files": [
-        {"path": str(f.relative_to(path)), "sha256": hashlib.sha256(f.read_bytes()).hexdigest(),
-         "bytes": f.stat().st_size} for f in selected
-    ]}
+        raise StudioError("Archive cannot be a symlink.")
+    manifest = {"campaign": name, **report, "content_sha256": snapshot, "files": []}
     with tempfile.NamedTemporaryFile(dir=output, suffix=".tmp", delete=False) as temporary:
         temp_path = Path(temporary.name)
     try:
         with zipfile.ZipFile(temp_path, "w", zipfile.ZIP_DEFLATED) as archive:
             for file in selected:
-                archive.write(file, str(file.relative_to(path)))
+                digest = hashlib.sha256()
+                size = 0
+                with file.open("rb") as source, archive.open(str(file.relative_to(path)), "w") as target:
+                    for chunk in iter(lambda: source.read(1024 * 1024), b""):
+                        target.write(chunk)
+                        digest.update(chunk)
+                        size += len(chunk)
+                manifest["files"].append({"path": str(file.relative_to(path)), "sha256": digest.hexdigest(), "bytes": size})
+            records = [r for r in manifest["files"] if r["path"] != "review/approval.json"]
+            if records_digest(records) != snapshot or content_digest(path) != snapshot:
+                raise StudioError("Content changed during export; retry after edits finish.")
+            if stage == "final":
+                inspect_campaign(path, stage)
+                if file_record(path / "review" / "approval.json", path) != manifest["files"][-1]:
+                    raise StudioError("Review changed during export; retry after review finishes.")
             archive.writestr("MANIFEST.json", json.dumps(manifest, indent=2) + "\n")
         temp_path.replace(destination)
     finally:
@@ -187,21 +277,29 @@ def export_campaign(root, name, stage):
 def finalize(root, name):
     path = campaign_path(root, name)
     if read_json(path / "campaign.json")["kind"] != "carousel":
-        raise ValueError("The attached skill's finalizer is only for carousels.")
+        raise StudioError("The attached skill's finalizer is only for carousels.")
     list(regular_files(path))
     raws = [path / "raw" / "cover-raw.png"] + sorted(
         (path / "raw").glob("slide*-raw.png"),
         key=lambda p: [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", p.name)])
     if not 6 <= len(raws) <= 8 or not all(f.is_file() for f in raws):
-        raise ValueError("Need cover-raw.png and 5–7 slideN-raw.png files in raw/.")
+        raise StudioError("Need cover-raw.png and 5–7 slideN-raw.png files in raw/.")
+    if [f.name for f in raws[1:]] != [f"slide{i}-raw.png" for i in range(2, len(raws) + 1)]:
+        raise StudioError("Raw slides must use consecutive numbering starting at slide2-raw.png.")
     if list((path / "finals").iterdir()):
-        raise ValueError("finals/ is not empty; preserve or remove old finals explicitly first.")
-    subprocess.run([sys.executable, str(root / "scripts" / "finalize_slides.py"),
-                    "--dir", str(path / "raw"), "--files", *[f.name for f in raws]], check=True)
-    for i in range(1, len(raws) + 1):
-        shutil.move(path / "raw" / f"slide-{i:02d}.png", path / "finals" / f"slide-{i:02d}.png")
-    for name in ("contact-sheet.png", "zoom-url.png"):
-        shutil.move(path / "raw" / name, path / "review" / name)
+        raise StudioError("finals/ is not empty; preserve or remove old finals explicitly first.")
+    # Preserve raw originals, previous previews and partial outputs if rendering fails.
+    with tempfile.TemporaryDirectory(dir=path) as directory:
+        staging = Path(directory)
+        for raw in raws:
+            shutil.copyfile(raw, staging / raw.name)
+        subprocess.run([sys.executable, str(root / "scripts" / "finalize_slides.py"),
+                        "--dir", str(staging), "--files", *[f.name for f in raws]],
+                       check=True, capture_output=True)
+        for i in range(1, len(raws) + 1):
+            shutil.move(staging / f"slide-{i:02d}.png", path / "finals" / f"slide-{i:02d}.png")
+        for name in ("contact-sheet.png", "zoom-url.png"):
+            shutil.move(staging / name, path / "review" / name)
     return path / "finals"
 
 
@@ -246,11 +344,16 @@ def download_handler(root, token):
             if url.path == "/healthz" and not url.query:
                 self.respond(200, b'{"status":"ok","service":"content-studio-exports"}', "application/json")
                 return
-            supplied = self.headers.get("Authorization", "").removeprefix("Bearer ")
-            if not secrets.compare_digest(supplied, token):
+            headers = self.headers.get_all("Authorization", [])
+            supplied = headers[0] if len(headers) == 1 else ""
+            if not supplied.startswith("Bearer ") or not secrets.compare_digest(
+                    supplied[7:].encode("utf-8"), token.encode("utf-8")):
                 self.respond(401, b"Bearer token required.\n")
                 return
             route = unquote(url.path)
+            if url.query or exports.is_symlink() or exports.resolve() != exports:
+                self.respond(404, b"Not found\n")
+                return
             if route == "/":
                 files = sorted(f.name for f in exports.glob("*.zip") if f.is_file() and not f.is_symlink())
                 content = ("<!doctype html><title>Balloon Store exports</title><h1>Review downloads</h1>"
@@ -259,41 +362,73 @@ def download_handler(root, token):
                 self.respond(200, content.encode(), "text/html; charset=utf-8")
                 return
             name = route.removeprefix("/downloads/")
-            if (url.query or not route.startswith("/downloads/") or "/" in name or "\\" in name
+            if (not route.startswith("/downloads/") or "/" in name or "\\" in name
                     or not re.fullmatch(r"[a-z0-9-]+\.zip", name)):
                 self.respond(404, b"Not found\n")
                 return
             file = exports / name
-            if file.is_symlink() or not file.is_file() or not file.resolve().is_relative_to(exports):
+            try:
+                descriptor = os.open(file, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+            except OSError:
                 self.respond(404, b"Not found\n")
                 return
-            self.respond(200, file.read_bytes(), "application/zip",
-                         {"Content-Disposition": f'attachment; filename="{name}"'})
+            with os.fdopen(descriptor, "rb") as stream:
+                info = os.fstat(stream.fileno())
+                if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+                    self.respond(404, b"Not found\n")
+                    return
+                self.send_response(200)
+                for key, value in {"Content-Type": "application/zip", "Content-Length": str(info.st_size),
+                                   "Content-Disposition": f'attachment; filename="{name}"',
+                                   "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"}.items():
+                    self.send_header(key, value)
+                self.end_headers()
+                try:
+                    shutil.copyfileobj(stream, self.wfile, length=1024 * 1024)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
 
     return Handler
 
 
-def serve(root, port):
+@contextmanager
+def export_server(root, port):
     exports = root / "exports"
     runtime = root / ".runtime"
     if exports.is_symlink() or runtime.is_symlink():
-        raise ValueError("Runtime and export directories cannot be symlinks.")
+        raise StudioError("Runtime and export directories cannot be symlinks.")
     exports.mkdir(exist_ok=True)
     runtime.mkdir(exist_ok=True, mode=0o700)
-    token = secrets.token_urlsafe(32)
+    os.chmod(runtime, 0o700)
     token_file = runtime / "download-token"
     if token_file.is_symlink():
-        raise ValueError("Token path cannot be a symlink.")
-    token_file.unlink(missing_ok=True)
-    with token_file.open("x", encoding="utf-8") as stream:
-        os.chmod(token_file, 0o600)
-        stream.write(token)
-    with ThreadingHTTPServer(("127.0.0.1", port), download_handler(root, token)) as server:
-        print(f"Export service listening on loopback port {server.server_port}; token in .runtime/download-token", flush=True)
+        raise StudioError("Token path cannot be a symlink.")
+    descriptor = os.open(runtime / "download.lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(descriptor, "r+") as lock:
+        if not stat.S_ISREG(os.fstat(lock.fileno()).st_mode) or os.fstat(lock.fileno()).st_nlink != 1:
+            raise StudioError("Invalid server lock file.")
         try:
-            server.serve_forever()
-        finally:
-            token_file.unlink(missing_ok=True)
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise StudioError("A download service already owns this project's runtime directory.") from None
+        token = secrets.token_urlsafe(32)
+        # Bind before rotating a token: a busy port must not disrupt an existing service.
+        with ThreadingHTTPServer(("127.0.0.1", port), download_handler(root, token)) as server:
+            with tempfile.NamedTemporaryFile(dir=runtime, mode="w", delete=False) as stream:
+                temporary = Path(stream.name)
+                stream.write(token)
+            try:
+                temporary.replace(token_file)
+                yield server
+            finally:
+                temporary.unlink(missing_ok=True)
+                token_file.unlink(missing_ok=True)
+
+
+def serve(root, port):
+    with export_server(root, port) as server:
+        print(f"Export service listening on loopback port {server.server_port}; token in .runtime/download-token", flush=True)
+        server.serve_forever()
 
 
 def main():
@@ -305,6 +440,7 @@ def main():
     init.add_argument("--kind", choices=KINDS, required=True)
     init.add_argument("--topic", required=True)
     commands.add_parser("finalize", help="Fit-and-pad carousel raws using original skill appendix").add_argument("name")
+    commands.add_parser("prepare-review", help="Snapshot current content and reset human review checks").add_argument("name")
     for command in ("check", "export"):
         sub = commands.add_parser(command)
         sub.add_argument("name")
@@ -318,14 +454,20 @@ def main():
             print(init_campaign(ROOT, args.name, args.kind, args.topic))
         elif args.command == "finalize":
             print(finalize(ROOT, args.name))
+        elif args.command == "prepare-review":
+            print(prepare_review(ROOT, args.name))
         elif args.command == "check":
             print(json.dumps(inspect_campaign(campaign_path(ROOT, args.name), args.stage), indent=2))
         elif args.command == "export":
             print(export_campaign(ROOT, args.name, args.stage))
         elif args.command == "serve":
             serve(ROOT, args.port)
-    except (ValueError, OSError, KeyError, subprocess.CalledProcessError) as error:
+    except StudioError as error:
         print(f"Error: {error}", file=sys.stderr)
+        return 1
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
+        # Parser/tool errors can include input excerpts; never echo them into logs.
+        print(f"Error: operation failed ({type(error).__name__}). Check campaign files and review state.", file=sys.stderr)
         return 1
     return 0
 

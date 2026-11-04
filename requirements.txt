@@ -1,0 +1,3 @@
+# Python 3.12+. Core planning/export/server use only the standard library.
+# Required for the original skill's image finalizer and image validation.
+Pillow==13.0.0

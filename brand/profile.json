@@ -1,0 +1,15 @@
+{
+  "name": "Balloon Store",
+  "website": "https://balloonstoreco.com",
+  "colors": {"blue": "#54C1FA", "pink": "#EA4566"},
+  "source": "Repository README.md",
+  "handle": null,
+  "audience": null,
+  "locale": "es-MX",
+  "locale_status": "proposed; confirm with brand owner",
+  "voice": {"adjectives": ["friendly", "clear", "festive"], "status": "proposed"},
+  "cta": null,
+  "approval": "review",
+  "publishing_enabled": false,
+  "generation_spend_approved": false
+}

@@ -13,9 +13,23 @@ AI Content Creation Studio for Balloon Store.
 Balloon Store
 Website: https://balloonstoreco.com
 
-## Brand Colors
-Blue: #54C1FA
-Pink: #EA4566
+## Content HQ web app
+
+`web/content-hq.html` is the browser app for daily production: dashboard by
+status, photo/video library with tags, idea generator, hooks/scripts/copy,
+brand templates, carousel builder (PNG + ZIP), Reel builder from real footage
+(CapCut package: numbered clips, instructions, SRT, cover, copy), editorial
+calendar, downloads and backups. See [docs/WEB-APP.md](docs/WEB-APP.md).
+
+```bash
+.venv/bin/python scripts/studio.py web   # http://127.0.0.1:8780/
+```
+
+## Brand
+Facts: [brand/profile.json](brand/profile.json) (palette: blue #54C1FA, pink
+#EA4566, orange #FF8A00, yellow #FFD400, green #7ED957, navy #122D50).
+Rules: [brand/BRAND-BRAIN.md](brand/BRAND-BRAIN.md). Agents and skills:
+[docs/AGENTS-AND-SKILLS.md](docs/AGENTS-AND-SKILLS.md).
 
 ## Tools
 - Codex Cloud
@@ -28,8 +42,8 @@ Pink: #EA4566
 
 This repository prepares reviewable Balloon Store content. It does not publish,
 deploy, purchase services, or schedule posts. The owner reviews the implementation
-PR and approves content separately. Only name, website and palette above are
-confirmed brand facts; handle, audience, CTA and product claims require input.
+PR and approves content separately. Name, website, palette, audience and product lines
+(brand/profile.json) are confirmed brand facts; handle, CTA and product claims require input.
 
 ```bash
 bash scripts/setup.sh

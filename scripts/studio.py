@@ -431,6 +431,45 @@ def serve(root, port):
         server.serve_forever()
 
 
+WEB_APP = ROOT / "web" / "content-hq.html"
+WEB_SKELETON = ('<!doctype html><html lang="es-MX"><head><meta charset="utf-8">'
+                '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
+                '<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}'
+                'img{max-width:100%}[hidden]{display:none!important}</style></head><body>')
+
+
+def web_document(app=WEB_APP):
+    """Wrap the publishable page body in the same skeleton the artifact host adds."""
+    return WEB_SKELETON + app.read_text(encoding="utf-8") + "</body></html>"
+
+
+def web_handler(app=WEB_APP):
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *_):
+            pass
+
+        def do_GET(self):
+            if urlsplit(self.path).path not in ("/", "/index.html"):
+                self.send_error(404)
+                return
+            body = web_document(app).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            self.wfile.write(body)
+
+    return Handler
+
+
+def serve_web(port):
+    with ThreadingHTTPServer(("127.0.0.1", port), web_handler()) as server:
+        print(f"Content HQ at http://127.0.0.1:{server.server_port}/ (loopback only; data stays in the browser)", flush=True)
+        server.serve_forever()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -446,6 +485,7 @@ def main():
         sub.add_argument("name")
         sub.add_argument("--stage", choices=STAGES, default="draft")
     commands.add_parser("serve", help="Run loopback-only authenticated download service").add_argument("--port", type=int, default=8765)
+    commands.add_parser("web", help="Serve the Content HQ web app on loopback").add_argument("--port", type=int, default=8780)
     args = parser.parse_args()
     try:
         if args.command == "doctor":
@@ -462,6 +502,8 @@ def main():
             print(export_campaign(ROOT, args.name, args.stage))
         elif args.command == "serve":
             serve(ROOT, args.port)
+        elif args.command == "web":
+            serve_web(args.port)
     except StudioError as error:
         print(f"Error: {error}", file=sys.stderr)
         return 1

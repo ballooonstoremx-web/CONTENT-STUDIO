@@ -1,0 +1,224 @@
+// End-to-end test of web/content-hq.html in a real Chromium.
+// Usage: node tests/e2e/web_e2e.mjs <base_url> <fixtures_dir> <out_dir>
+// Fixtures: photo.png (real image), clip.mp4 (real H.264 video).
+// Runs two passes: local IndexedDB storage and a contract-shaped mock of the
+// claude.ai runtime (db + assets + downloads) to exercise the hosted code path.
+import { createRequire } from "module";
+import fs from "fs";
+import path from "path";
+const require = createRequire(import.meta.url);
+let playwright;
+try { playwright = require("playwright"); } catch { playwright = require("/opt/node22/lib/node_modules/playwright"); }
+const [, , BASE, FIX, OUT] = process.argv;
+fs.mkdirSync(OUT, { recursive: true });
+const results = [];
+const ok = (name, cond, detail = "") => { results.push({ name, pass: !!cond, detail }); if (!cond) console.error("FAIL", name, detail); else console.log("PASS", name); };
+
+async function downloadVia(page, mode, captured, trigger) {
+  if (mode === "local") {
+    const [dl] = await Promise.all([page.waitForEvent("download"), trigger()]);
+    const file = path.join(OUT, mode + "-" + dl.suggestedFilename());
+    await dl.saveAs(file);
+    return file;
+  }
+  const before = captured.length;
+  await trigger();
+  for (let i = 0; i < 100 && captured.length === before; i++) await page.waitForTimeout(100);
+  const last = captured[captured.length - 1];
+  const file = path.join(OUT, mode + "-" + last.filename);
+  fs.writeFileSync(file, Buffer.from(last.data, "base64"));
+  return file;
+}
+
+const MOCK = `(() => {
+  const KEY = "__mockdb";
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { return {}; } };
+  const persist = d => localStorage.setItem(KEY, JSON.stringify(d));
+  const col = name => {
+    const api = {
+      limit() { return api; },
+      async get() { const d = load()[name] || {}; const docs = Object.entries(d).map(([id, v]) => ({ id, exists: true, data: () => JSON.parse(JSON.stringify(v)), metadata: {} })); return { docs, size: docs.length, empty: !docs.length, docChanges: () => [], metadata: {} }; },
+      doc(id) { return {
+        id, path: name + "/" + id,
+        async set(v) { if (v === null || typeof v !== "object") throw { code: "invalid_argument" }; const d = load(); d[name] = d[name] || {}; d[name][id] = JSON.parse(JSON.stringify(v)); persist(d); },
+        async delete() { const d = load(); if (d[name]) delete d[name][id]; persist(d); },
+        async get() { const v = (load()[name] || {})[id]; return { id, exists: !!v, data: () => v, metadata: {} }; } }; } };
+    return api; };
+  const db = { collection: col, doc: p => col(p.split("/")[0]).doc(p.split("/")[1]) };
+  const toB64 = async blob => { const u8 = new Uint8Array(await blob.arrayBuffer()); let s = ""; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+  const assets = {
+    async upload(blob) { const id = await window.__assetUpload(await toB64(blob), blob.type); return { id, url: "/_blob/" + id, sizeBytes: blob.size, contentType: blob.type }; },
+    async list() { return { assets: [], usage: {} }; },
+    async delete(id) { await window.__assetDelete(id); return { deleted: true }; } };
+  const downloads = { async save({ filename, data }) { const b = data instanceof Blob ? data : new Blob([data]); await window.__saveDownload(filename, await toB64(b)); return { status: "saved" }; } };
+  const caps = { db, assets, downloads };
+  window.claude = { use: async n => (n in caps ? caps[n] : null) };
+})();`;
+
+async function run(mode) {
+  const browser = await playwright.chromium.launch();
+  const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
+  const captured = [];
+  const assetsStore = new Map();
+  const errors = [];
+  if (mode === "cloud") {
+    await context.exposeFunction("__assetUpload", (b64, type) => { const id = "a" + (assetsStore.size + 1).toString().padStart(31, "0"); assetsStore.set(id, { buf: Buffer.from(b64, "base64"), type }); return id; });
+    await context.exposeFunction("__assetDelete", id => { assetsStore.delete(id); });
+    await context.exposeFunction("__saveDownload", (filename, data) => { captured.push({ filename, data }); });
+    await context.addInitScript(MOCK);
+    await context.route("**/_blob/*", route => { const id = route.request().url().split("/_blob/")[1]; const a = assetsStore.get(id); return a ? route.fulfill({ status: 200, body: a.buf, contentType: a.type }) : route.fulfill({ status: 404, body: "" }); });
+  }
+  const page = await context.newPage();
+  page.on("pageerror", e => errors.push(String(e)));
+  page.on("console", m => { if (m.type() === "error" && !/fonts\.(googleapis|gstatic)|Failed to load resource/.test(m.text())) errors.push(m.text()); });
+  const P = `[${mode}] `;
+  await page.goto(BASE + "#panel");
+  await page.waitForSelector("text=Panel de contenido");
+  const info = await page.textContent("#storageInfo");
+  ok(P + "storage backend", mode === "cloud" ? /Claude/.test(info) : /navegador/.test(info), info);
+
+  // Seed examples -> dashboard
+  await page.click("#seedBtn");
+  await page.waitForSelector(".kanban .card");
+  ok(P + "dashboard shows 4 status columns with items", (await page.$$(".kanban .col")).length === 4 && (await page.$$(".kanban .card")).length === 4);
+
+  // Library upload with tags
+  await page.goto(BASE + "#biblioteca");
+  await page.setInputFiles("#filePick", [path.join(FIX, "photo.png"), path.join(FIX, "clip.mp4"), path.join(FIX, "logo.png")]);
+  await page.waitForFunction(() => document.querySelectorAll(".mcard").length === 3, null, { timeout: 20000 });
+  const cards = await page.$$(".mcard");
+  for (const c of cards) {
+    const name = await c.$eval("b", e => e.textContent);
+    const tags = name.includes("logo") ? "logo" : name.includes("photo") ? "anagram, cumpleaños" : "montaje, látex sensacional";
+    await c.$eval("[data-tags]", (e, v) => { e.value = v; e.dispatchEvent(new Event("change")); }, tags);
+  }
+  await page.waitForTimeout(400);
+  await page.goto(BASE + "#panel");
+  await page.waitForSelector("text=Panel de contenido");
+  await page.goto(BASE + "#biblioteca");
+  await page.waitForFunction(() => document.querySelectorAll(".mcard").length === 3);
+  const optionTexts = await page.$$eval("#flt option", os => os.map(o => o.value));
+  ok(P + "library upload + tags", optionTexts.includes("anagram") && optionTexts.includes("logo"), optionTexts.join(","));
+  const videoMeta = await page.textContent(".media-grid");
+  ok(P + "video duration probed", /Video · \d+\.\d s/.test(videoMeta));
+
+  // Ideas
+  await page.goto(BASE + "#ideas");
+  await page.selectOption("#i_type", "todos");
+  await page.click("#i_gen");
+  const ideaCount = await page.$$eval("#i_list .idea", e => e.length);
+  ok(P + "idea generator produces 6 ideas", ideaCount === 6);
+  const types = await page.$$eval("#i_list .idea .chip:first-child", e => e.map(x => x.textContent));
+  ok(P + "ideas cover reel/carrusel/stories", ["Reel", "Carrusel", "Stories"].every(t => types.includes(t)), types.join(","));
+  await page.click("[data-save='0']");
+  await page.waitForTimeout(200);
+
+  // Hooks & copy on the example Reel
+  await page.goto(BASE + "#copy");
+  const reelId = await page.$$eval("#c_sel option", os => os.find(o => o.textContent.includes("Montaje en tiempo real")).value);
+  await page.selectOption("#c_sel", reelId);
+  await page.waitForSelector("#c_hooks .idea");
+  ok(P + "10 hooks generated", (await page.$$("#c_hooks .idea")).length === 10);
+  await page.click("[data-h='4']");
+  await page.click("#c_s");
+  await page.click("#c_c");
+  const cap = await page.inputValue("#c_caption");
+  ok(P + "copy generated with site + no price", cap.includes("balloonstoreco.com") && !/\$\s?\d/.test(cap));
+  const dlCopy = await downloadVia(page, mode, captured, () => page.click("#c_dl"));
+  ok(P + "copy .txt download", fs.readFileSync(dlCopy, "utf8").includes("HOOK"));
+
+  // Carousel flow
+  await page.goto(BASE + "#carrusel");
+  await page.waitForSelector("#k_zip");
+  ok(P + "carousel export blocked while product photo missing", await page.$eval("#k_zip", b => b.disabled) && (await page.textContent("#k_warn")).includes("Falta foto real"));
+  const photoOpt = await page.$$eval(".slide:nth-child(3) [data-k='mediaId'] option", os => os.find(o => o.textContent.includes("photo")).value);
+  await page.selectOption(".slide:nth-child(3) [data-k='mediaId']", photoOpt);
+  await page.fill(".slide:nth-child(1) [data-k='headline']", "Checklist de cumpleaños QA");
+  await page.waitForFunction(() => !document.querySelector("#k_zip").disabled);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: path.join(OUT, mode + "-carrusel.png") });
+  const zipC = await downloadVia(page, mode, captured, () => page.click("#k_zip"));
+  ok(P + "carousel ZIP downloaded", fs.statSync(zipC).size > 10000, zipC);
+
+  // Reel flow with real media
+  await page.goto(BASE + "#reel");
+  await page.selectOption("#r_sel", reelId);
+  await page.waitForSelector("#pickm .mcard");
+  ok(P + "reel export blocked without real footage", await page.$eval("#r_zip", b => b.disabled));
+  const picks = await page.$$("#pickm .mcard");
+  for (const p of picks) await p.click();
+  await page.waitForFunction(() => document.querySelectorAll("#shots .shot").length === 2);
+  await page.fill("#shots .shot:nth-child(1) [data-k='text']", "Así se arma");
+  await page.dispatchEvent("#shots .shot:nth-child(1) [data-k='text']", "change");
+  await page.fill("#shots .shot:nth-child(1) [data-k='voice']", "Hoy armamos un arco con látex Sensacional");
+  await page.dispatchEvent("#shots .shot:nth-child(1) [data-k='voice']", "change");
+  await page.fill("#shots .shot:nth-child(2) [data-k='voice']", "Resultado final");
+  await page.dispatchEvent("#shots .shot:nth-child(2) [data-k='voice']", "change");
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path.join(OUT, mode + "-reel.png") });
+  const zipR = await downloadVia(page, mode, captured, () => page.click("#r_zip"));
+  ok(P + "reel ZIP downloaded", fs.statSync(zipR).size > 10000, zipR);
+
+  // Calendar: give the generated idea a date
+  await page.goto(BASE + "#calendario");
+  const dateInput = await page.$("[data-date]");
+  ok(P + "calendar lists unscheduled item", !!dateInput);
+  const d = new Date(); const iso = d.toISOString().slice(0, 10);
+  await dateInput.fill(iso);
+  await dateInput.dispatchEvent("change");
+  await page.waitForTimeout(400);
+  ok(P + "calendar shows item on today", (await page.$$(".day.today .ev")).length >= 1);
+
+  // Status change through editor
+  await page.goto(BASE + "#panel");
+  await page.click(".col:nth-child(1) .card");
+  await page.selectOption("#e_status", "revision");
+  await page.click("#editorForm button[value='ok']");
+  await page.waitForTimeout(400);
+
+  // Persistence after reload
+  await page.reload();
+  await page.waitForSelector("text=Panel de contenido");
+  const counts = await page.$$eval(".stat b", b => b.map(x => +x.textContent));
+  ok(P + "persistence: counts after reload", counts[4] === 3 && counts.slice(0, 4).reduce((a, b) => a + b, 0) === 5 && counts[2] === 2, counts.join(","));
+  await page.goto(BASE + "#carrusel");
+  await page.waitForSelector(".slide");
+  const persistedHead = await page.inputValue(".slide:nth-child(1) [data-k='headline']");
+  const persistedPhoto = await page.$eval(".slide:nth-child(3) [data-k='mediaId']", s => s.value);
+  ok(P + "persistence: carousel edits + photo survive reload", persistedHead === "Checklist de cumpleaños QA" && !!persistedPhoto);
+  await page.goto(BASE + "#reel");
+  await page.selectOption("#r_sel", reelId);
+  await page.waitForSelector("#shots .shot");
+  ok(P + "persistence: reel shots survive reload", (await page.$$("#shots .shot")).length === 2 && (await page.inputValue("#shots .shot:nth-child(1) [data-k='voice']")).includes("arco"));
+  await page.goto(BASE + "#biblioteca");
+  await page.waitForFunction(() => document.querySelectorAll(".mcard img, .mcard video").length === 3, null, { timeout: 15000 });
+  ok(P + "persistence: media files readable after reload", true);
+
+  // Backup + restore
+  await page.goto(BASE + "#respaldo");
+  const bk = await downloadVia(page, mode, captured, () => page.click("#bk_json"));
+  const bkj = JSON.parse(fs.readFileSync(bk, "utf8"));
+  ok(P + "backup JSON has all items", bkj.items.length === 5 && bkj.media.length === 3);
+  const bkz = await downloadVia(page, mode, captured, () => page.click("#bk_zip"));
+  ok(P + "backup ZIP downloaded", fs.statSync(bkz).size > 10000);
+  await page.setInputFiles("#bk_in", bk);
+  await page.waitForTimeout(800);
+  await page.goto(BASE + "#panel");
+  ok(P + "restore is idempotent (no duplicates)", (await page.$$(".kanban .card")).length === 5);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE + "#panel");
+  await page.waitForSelector(".kanban");
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+  ok(P + "no horizontal scroll at phone width", !overflow);
+  await page.screenshot({ path: path.join(OUT, mode + "-phone.png") });
+  ok(P + "no page errors", errors.length === 0, errors.join(" | "));
+  await browser.close();
+  return { zipC, zipR, bkz };
+}
+
+const out = {};
+for (const mode of ["local", "cloud"]) out[mode] = await run(mode);
+fs.writeFileSync(path.join(OUT, "results.json"), JSON.stringify({ results, files: out }, null, 2));
+const failed = results.filter(r => !r.pass);
+console.log(`${results.length - failed.length}/${results.length} checks passed`);
+process.exit(failed.length ? 1 : 0);

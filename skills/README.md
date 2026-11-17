@@ -39,3 +39,11 @@ preflight before any approved paid call. No service was purchased or called here
 
 `scripts/finalize_slides.py` is a verbatim extraction of Appendix A, not an edited
 skill. Its tests exercise actual image padding and output sizes.
+
+## Team role skills (added 2026-11-17)
+
+`brand-brain`, `content-researcher`, `reel-scriptwriter`, `carousel-designer`,
+`ads-specialist`, `results-analyst`. They are project-authored, share
+`brand/BRAND-BRAIN.md` and are listed in [docs/AGENTS-AND-SKILLS.md](../docs/AGENTS-AND-SKILLS.md).
+They are not checksummed in `catalog.json`, which stays reserved for the
+original attachment.

@@ -1,0 +1,768 @@
+<title>Balloon Store Content HQ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: left rail of production stations + work surface; brand palette drives status color coding */
+:root{
+  --navy:#122D50;--blue:#54C1FA;--pink:#EA4566;--orange:#FF8A00;--yellow:#FFD400;--green:#7ED957;
+  --bg:#F5F8FC;--surface:#FFFFFF;--surface2:#EAF2FA;--fg:#122D50;--muted:#556B86;--line:#D4E0EC;
+  --accent:#EA4566;--accentfg:#FFFFFF;--danger:#C2213F;--ok:#2F8F1F;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;--body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1A2E;--surface:#122D50;--surface2:#183A63;--fg:#EAF4FF;--muted:#A8BCD3;--line:#2A4C77;--accent:#FF6F8A;--accentfg:#0B1A2E;--danger:#FF7D93;--ok:#9BE77F;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1A2E;--surface:#122D50;--surface2:#183A63;--fg:#EAF4FF;--muted:#A8BCD3;--line:#2A4C77;--accent:#FF6F8A;--accentfg:#0B1A2E;--danger:#FF7D93;--ok:#9BE77F;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:1.7rem}h2{font-size:1.35rem}h3{font-size:1.05rem}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100%}
+nav.rail{background:var(--navy);color:#fff;padding-block:18px;padding-inline:14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{font-family:var(--display);font-weight:800;font-size:1.25rem;line-height:1.1;margin-bottom:12px}
+.brand small{display:block;font-family:var(--body);font-weight:600;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#9fd9fb}
+.dots{display:flex;gap:4px;margin:6px 0 2px}.dots i{width:10px;height:10px;border-radius:50%}
+nav.rail a{color:#dbe9f7;text-decoration:none;padding:8px 10px;border-radius:8px;font-weight:600}
+nav.rail a:hover{background:#1d4270}nav.rail a.on{background:#fff;color:var(--navy)}
+nav.rail a:focus-visible{outline:2px solid var(--yellow)}
+.storage{margin-top:auto;font-size:.75rem;color:#9fb6cf;padding:8px 4px}
+main{padding-block:22px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-width:0;max-width:1240px;width:100%}
+.head{display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between;margin-bottom:16px}
+.head p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.82rem;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+textarea{min-height:80px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+button,.btn{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:7px 14px;cursor:pointer}
+button:hover{border-color:var(--blue)}
+button.primary{background:var(--accent);color:var(--accentfg);border-color:var(--accent)}
+button.ghost{background:transparent}
+button.danger{color:var(--danger)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--surface2);color:var(--fg)}
+.s-idea{background:#FFF2B3;color:#5a4a00}.s-borrador{background:#D7F0FE;color:#0d4a6b}.s-revision{background:#FFE0C2;color:#7a3b00}.s-terminado{background:#D9F6CC;color:#1f5a12}
+.t-reel{border-left:4px solid var(--pink)}.t-carrusel{border-left:4px solid var(--blue)}.t-story{border-left:4px solid var(--orange)}
+.kanban{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.col{background:var(--surface2);border-radius:12px;padding:10px;min-width:0}
+.col h3{display:flex;justify-content:space-between;margin-bottom:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px;cursor:pointer;min-width:0}
+.card .t{font-weight:700;overflow-wrap:anywhere}
+.card .m{font-size:.78rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font-family:var(--display);font-size:1.8rem;font-variant-numeric:tabular-nums}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.mcard .thumb{aspect-ratio:4/5;background:var(--surface2);display:grid;place-items:center;overflow:hidden;max-width:100%}
+.mcard .thumb img,.mcard .thumb video{width:100%;height:100%;object-fit:cover}
+.mcard .body{padding:8px;display:flex;flex-direction:column;gap:6px;font-size:.8rem}
+.mcard.sel{outline:3px solid var(--pink)}
+.drop{border:2px dashed var(--blue);border-radius:12px;padding:22px;text-align:center;background:var(--surface)}
+.drop.over{background:var(--surface2)}
+.warn{background:#FFF4D6;color:#5d4300;border:1px solid #F0D27A;border-radius:10px;padding:10px 12px;font-size:.88rem}
+.err{background:#FFE3E8;color:#7d0f24;border:1px solid #F3A6B5;border-radius:10px;padding:10px 12px;font-size:.88rem}
+.list{display:flex;flex-direction:column;gap:8px}
+.idea{display:flex;gap:10px;align-items:start;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px}
+.idea div{min-width:0}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:16px;align-items:start}
+canvas.preview{width:100%;max-width:420px;height:auto;border-radius:10px;border:1px solid var(--line);background:#fff}
+.slides{display:flex;flex-direction:column;gap:10px}
+.slide{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:8px}
+.slide.cur{border-color:var(--pink);box-shadow:0 0 0 2px var(--pink) inset}
+.f2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.tpl-grid figure{margin:0}.tpl-grid figcaption{font-weight:700;margin-top:6px}.tpl-grid canvas{width:100%;height:auto;border-radius:8px;border:1px solid var(--line)}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .dow{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:4px}
+.cal .day{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-height:92px;padding:4px;min-width:0;font-size:.75rem}
+.cal .day.other{opacity:.45}.cal .day.today{border-color:var(--pink)}
+.cal .day .n{font-weight:800;font-variant-numeric:tabular-nums}
+.cal .ev{display:block;width:100%;text-align:left;border-radius:6px;padding:2px 5px;margin-top:3px;font-size:.72rem;font-weight:700;border:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shot{display:grid;grid-template-columns:90px minmax(0,1fr);gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px}
+.shot .thumb{width:90px;aspect-ratio:9/16;background:var(--surface2);border-radius:6px;overflow:hidden}
+.shot .thumb img,.shot .thumb video{width:100%;height:100%;object-fit:cover}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;white-space:pre-wrap;background:var(--surface2);border-radius:8px;padding:10px;overflow:auto;max-height:340px}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--fg);padding:0;width:min(680px,94vw);max-height:90vh}
+dialog::backdrop{background:rgba(10,25,45,.55)}
+dialog form{padding:18px;display:grid;gap:10px;overflow:auto;max-height:88vh}
+.toast{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;z-index:50;max-width:80vw}
+.empty{text-align:center;padding:30px;color:var(--muted)}
+.hide-sm{}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  nav.rail{position:sticky;top:env(safe-area-inset-top,0px);height:auto;flex-direction:row;overflow-x:auto;padding-block:8px;z-index:5}
+  nav.rail .brand,nav.rail .storage{display:none}
+  nav.rail a{white-space:nowrap}
+  .kanban{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .split{grid-template-columns:1fr}
+  .cal .day{min-height:64px}
+}
+@media (max-width:480px){.kanban{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">Balloon Store<small>Content HQ</small>
+      <div class="dots"><i style="background:#54C1FA"></i><i style="background:#EA4566"></i><i style="background:#FF8A00"></i><i style="background:#FFD400"></i><i style="background:#7ED957"></i></div>
+    </div>
+    <a href="#panel" data-r="panel">Panel</a>
+    <a href="#biblioteca" data-r="biblioteca">Biblioteca</a>
+    <a href="#ideas" data-r="ideas">Ideas</a>
+    <a href="#copy" data-r="copy">Hooks y copies</a>
+    <a href="#plantillas" data-r="plantillas">Plantillas</a>
+    <a href="#carrusel" data-r="carrusel">Carrusel</a>
+    <a href="#reel" data-r="reel">Reel</a>
+    <a href="#calendario" data-r="calendario">Calendario</a>
+    <a href="#respaldo" data-r="respaldo">Respaldo</a>
+    <div class="storage" id="storageInfo">Conectando almacenamiento…</div>
+  </nav>
+  <main id="view"><div class="empty">Cargando Content HQ…</div></main>
+</div>
+
+<dialog id="editor"><form method="dialog" id="editorForm"></form></dialog>
+<input type="file" id="filePick" multiple accept="image/*,video/*" hidden>
+
+<script>
+"use strict";
+/* ================= Brand (single source in app; mirrors brand/profile.json) ================= */
+const BRAND={name:"Balloon Store",site:"balloonstoreco.com",
+  colors:{blue:"#54C1FA",pink:"#EA4566",orange:"#FF8A00",yellow:"#FFD400",green:"#7ED957",navy:"#122D50"},
+  lines:["Globos metálicos Anagram","Globos metálicos Kaleidoscope","Látex Sensacional","Varias líneas"],
+  audiences:["decoradoras","tiendas de fiestas","revendedores"]};
+const STATUSES=[["idea","Ideas"],["borrador","Borradores"],["revision","Pendiente de aprobación"],["terminado","Terminado"]];
+const TYPES=[["reel","Reel"],["carrusel","Carrusel"],["story","Stories"]];
+const PILLARS=["Educativo","Inspiración","Producto real","Detrás de cámaras","Temporada","Comunidad"];
+const OCCASIONS=["cumpleaños","baby shower","graduaciones","bodas y XV años","Día de las Madres","San Valentín","Navidad","fiestas patrias","Halloween y Día de Muertos","eventos corporativos","revelación de género"];
+const label=(arr,k)=>(arr.find(a=>a[0]===k)||[k,k])[1];
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function toast(msg){document.querySelectorAll(".toast").forEach(x=>x.remove());const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200)}
+const slug=s=>String(s||"contenido").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,48)||"contenido";
+const hasClaude=()=>!!(window.claude&&typeof window.claude.use==="function");
+function withTimeout(p,ms){return Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))])}
+
+/* ================= Storage: claude.ai db+assets when hosted, IndexedDB otherwise ================= */
+const IDB={db:null,
+  open(){return new Promise((res,rej)=>{const r=indexedDB.open("bs-content-hq",1);r.onupgradeneeded=()=>{const d=r.result;["items","media","blobs"].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n)})};r.onsuccess=()=>{this.db=r.result;res(this)};r.onerror=()=>rej(r.error)})},
+  tx(store,mode,fn){return new Promise((res,rej)=>{const t=this.db.transaction(store,mode);const s=t.objectStore(store);const out=fn(s);t.oncomplete=()=>res(out&&out.result!==undefined?out.result:undefined);t.onerror=()=>rej(t.error)})},
+  all(store){return new Promise((res,rej)=>{const t=this.db.transaction(store,"readonly");const r=t.objectStore(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})},
+  get(store,key){return new Promise((res,rej)=>{const r=this.db.transaction(store,"readonly").objectStore(store).get(key);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
+  put(store,key,val){return this.tx(store,"readwrite",s=>s.put(val,key))},
+  del(store,key){return this.tx(store,"readwrite",s=>s.delete(key))}};
+const Store={mode:"idb",cdb:null,assets:null,urls:new Map(),queues:new Map(),
+  async init(){
+    let cloud=false;
+    if(hasClaude()){
+      try{this.cdb=await withTimeout(window.claude.use("db"),12000)}catch(e){this.cdb=null}
+      if(this.cdb){try{const probe=await withTimeout(this.cdb.collection("items").limit(1).get(),12000);cloud=!!probe}catch(e){cloud=false}}
+      try{this.assets=await withTimeout(window.claude.use("assets"),8000)}catch(e){this.assets=null}
+    }
+    try{await IDB.open()}catch(e){if(!cloud)throw new Error("Este navegador no permite guardar datos (IndexedDB bloqueado). Desactiva el modo privado.")}
+    this.mode=cloud?"cloud":"idb";
+    if(!cloud&&navigator.storage&&navigator.storage.persist){try{await navigator.storage.persist()}catch(e){}}
+  },
+  async load(){
+    if(this.mode==="cloud"){
+      const [a,b]=await Promise.all(["items","media"].map(c=>withTimeout(this.cdb.collection(c).get(),15000)));
+      if(!a||!b)throw new Error("La nube no respondió en 15 s. Recarga la página.");
+      return{items:a.docs.map(d=>d.data()),media:b.docs.map(d=>d.data())};
+    }
+    return{items:await IDB.all("items"),media:await IDB.all("media")};
+  },
+  clean(o){return JSON.parse(JSON.stringify(o))},
+  serial(key,fn){const prev=this.queues.get(key)||Promise.resolve();const next=prev.catch(()=>{}).then(fn);this.queues.set(key,next);return next},
+  save(col,obj){const data=this.clean(obj);return this.serial(col+"/"+obj.id,()=>this.mode==="cloud"?this.cdb.collection(col).doc(obj.id).set(data):IDB.put(col,obj.id,data))},
+  remove(col,id){return this.serial(col+"/"+id,()=>this.mode==="cloud"?this.cdb.collection(col).doc(id).delete():IDB.del(col,id))},
+  async putBlob(file){
+    const MAX=20*1024*1024;
+    if(this.mode==="cloud"&&this.assets&&file.size<=MAX){
+      try{const r=await this.assets.upload(file,{type:file.type});return{kind:"asset",id:r.id}}catch(e){console.warn("assets.upload",e)}
+    }
+    if(!IDB.db)throw new Error("No hay almacenamiento disponible para archivos.");
+    const key=uid();await IDB.put("blobs",key,file);return{kind:"idb",key,localOnly:this.mode==="cloud"};
+  },
+  async getBlob(ref){
+    if(!ref)return null;
+    if(ref.kind==="asset"){const r=await fetch("/_blob/"+ref.id);if(!r.ok)throw new Error("No se pudo leer el archivo "+ref.id);return await r.blob()}
+    if(!IDB.db)return null;return(await IDB.get("blobs",ref.key))||null;
+  },
+  async url(ref){
+    if(!ref)return"";const k=ref.kind==="asset"?ref.id:ref.key;
+    if(this.urls.has(k))return this.urls.get(k);
+    const b=await this.getBlob(ref);if(!b)return"";const u=URL.createObjectURL(b);this.urls.set(k,u);return u;
+  },
+  async dropBlob(ref){
+    if(!ref)return;
+    try{if(ref.kind==="asset"&&this.assets)await this.assets.delete(ref.id);else if(ref.kind==="idb"&&IDB.db)await IDB.del("blobs",ref.key)}catch(e){console.warn(e)}
+  }
+};
+
+/* ================= Downloads ================= */
+let dlCap;
+async function saveFile(name,blob){
+  if(hasClaude()){
+    if(dlCap===undefined){try{dlCap=await withTimeout(window.claude.use("downloads"),8000)}catch(e){dlCap=null}}
+    if(dlCap){
+      try{await dlCap.save({filename:name,data:blob});toast("Descargado: "+name);return true}
+      catch(e){const c=e&&e.code;toast(c==="declined"?"Descarga cancelada":"No se pudo descargar ("+(c||"error")+")");return false}
+    }
+  }
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);toast("Descargado: "+name);return true;
+}
+
+/* ================= ZIP writer (STORE, CRC32) — no external dependency ================= */
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC_T[(c^u8[i])&0xFF]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+async function makeZip(files){ // files: [{name, data: Blob|string}]
+  const enc=new TextEncoder();const parts=[];const central=[];let offset=0;
+  const now=new Date();const dosT=(now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1);const dosD=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+  for(const f of files){
+    const data=typeof f.data==="string"?enc.encode(f.data):new Uint8Array(await f.data.arrayBuffer());
+    const name=enc.encode(f.name);const crc=crc32(data);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint16(10,dosT,true);lh.setUint16(12,dosD,true);
+    lh.setUint32(14,crc,true);lh.setUint32(18,data.length,true);lh.setUint32(22,data.length,true);lh.setUint16(26,name.length,true);lh.setUint16(28,0,true);
+    parts.push(lh.buffer,name,data);
+    const ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint16(12,dosT,true);ch.setUint16(14,dosD,true);
+    ch.setUint32(16,crc,true);ch.setUint32(20,data.length,true);ch.setUint32(24,data.length,true);ch.setUint16(28,name.length,true);ch.setUint32(42,offset,true);
+    central.push(ch.buffer,name);offset+=30+name.length+data.length;
+  }
+  const cSize=central.reduce((s,p)=>s+(p.byteLength??p.length),0);
+  const end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cSize,true);end.setUint32(16,offset,true);
+  return new Blob([...parts,...central,end.buffer],{type:"application/zip"});
+}
+
+/* ================= State ================= */
+const S={items:[],media:[],cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
+const item=id=>S.items.find(i=>i.id===id);
+const mediaById=id=>S.media.find(m=>m.id===id);
+function newItem(p={}){return Object.assign({id:uid(),type:"reel",title:"Contenido sin título",status:"idea",date:"",pillar:"",occasion:"",line:"",audience:"decoradoras",hook:"",script:"",caption:"",cta:"",notes:"",slides:[],shots:[],example:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()},p)}
+const saveTimers=new Map();
+function touch(it,immediate){it.updatedAt=new Date().toISOString();clearTimeout(saveTimers.get(it.id));
+  const go=()=>Store.save("items",it).catch(e=>toast("No se guardó: "+(e.message||e.code||e)));
+  if(immediate)return go();saveTimers.set(it.id,setTimeout(go,350));}
+async function addItem(it){S.items.push(it);await touch(it,true);return it}
+async function removeItem(id){S.items=S.items.filter(i=>i.id!==id);await Store.remove("items",id)}
+
+/* ================= Generators (offline templates — no paid AI, no invented products) ================= */
+const PH="[confirmar con catálogo real]";
+const pick=(a,i)=>a[i%a.length];
+const IDEA_BANK={
+  reel:[
+    ["Montaje en tiempo real: decoración de {o} con {l}","Producto real","Graba el montaje completo en una toma cenital y acelera a 4x; termina con la decoración terminada."],
+    ["Antes y después: mesa de {o} decorada con {l}","Inspiración","Toma fija del espacio vacío y luego terminado, mismo encuadre."],
+    ["3 errores al inflar {l} y cómo evitarlos","Educativo","Muestra cada error con material real. Valida datos técnicos con la ficha del fabricante."],
+    ["Así preparamos un pedido para {a}","Detrás de cámaras","Material real de bodega y empaque real; no recrees empaques."],
+    ["Paleta de colores para {o}: combinaciones con {l}","Temporada","Muestra físicamente cada combinación con globos reales del inventario."],
+    ["Lo que una decoradora revisa antes de un evento de {o}","Comunidad","Voz en off con tips prácticos sobre material real."]],
+  carrusel:[
+    ["Checklist para tu decoración de {o}","Educativo","Lista de verificación descargable; usa fotos reales del producto en la diapositiva de producto."],
+    ["5 combinaciones de color para {o} con {l}","Inspiración","Una foto real por combinación. Si falta alguna, pide la foto."],
+    ["Qué preguntar a tu cliente antes de cotizar {o}","Educativo","Preguntas clave: fecha, espacio, colores, presupuesto, montaje."],
+    ["Cómo cuidar tus globos de {l} el día del evento","Educativo","Valida tiempos y recomendaciones con la ficha técnica del fabricante."],
+    ["Ideas de temporada: {o} para {a}","Temporada","Portada + 3 ideas + cierre con llamada a la acción al sitio."],
+    ["Detrás de cámaras: de la bodega a tu taller","Detrás de cámaras","Fotos reales del proceso; no inventes empaques."]],
+  story:[
+    ["Encuesta: ¿qué temática de {o} te piden más?","Comunidad","Sticker de encuesta con 2 opciones y resultado al día siguiente."],
+    ["Quiz: ¿látex o metálico para {o}?","Educativo","Sticker de quiz y respuesta con foto real."],
+    ["Llegó mercancía: muestra {l} con foto real","Producto real","Solo producto existente en inventario; confirma modelo y disponibilidad."],
+    ["Caja de preguntas para {a}","Comunidad","Sticker de preguntas y respuestas en la siguiente story."],
+    ["Cuenta regresiva para {o}","Temporada","Sticker de cuenta regresiva y recordatorio para surtir a tiempo."]]};
+function genIdeas({type,occasion,line,audience,count}){
+  const out=[];const types=type==="todos"?["reel","carrusel","story"]:[type];
+  let n=0;const seed=Math.floor(Math.random()*100);
+  while(out.length<count&&n<60){const t=types[n%types.length];const bank=IDEA_BANK[t];const tpl=pick(bank,seed+n);
+    const o=occasion==="variado"?pick(OCCASIONS,seed+n*3):occasion;const l=line;
+    const title=tpl[0].replace("{o}",o).replace("{l}",l).replace("{a}",audience);
+    if(!out.some(x=>x.title===title))out.push({type:t,title,pillar:tpl[1],notes:tpl[2],occasion:o,line:l,audience});n++}
+  return out;
+}
+const HOOKS=[
+  "Si decoras {o}, esto te va a ahorrar tiempo",
+  "Nadie te dice esto cuando empiezas a decorar con globos",
+  "{a}: guarden esto para su próximo evento de {o}",
+  "El error más común con {l} (y cómo evitarlo)",
+  "Así se ve una decoración de {o} de principio a fin",
+  "¿Tu cliente pidió {o}? Empieza por aquí",
+  "3 cosas que revisamos antes de mandar un pedido",
+  "Antes y después en menos de 15 segundos",
+  "Esto es lo que más nos preguntan las {a}",
+  "Si vendes globos, no publiques sin ver esto"];
+const CTAS=["Consulta el catálogo disponible en balloonstoreco.com","Guarda este post para tu próxima decoración","Compártelo con tu socia decoradora","Escríbenos por mensaje directo para resolver tus dudas","Comenta qué temática quieres ver en el próximo video"];
+function fill(t,it){return t.replace(/\{o\}/g,it.occasion||"tu evento").replace(/\{l\}/g,it.line||"globos").replace(/\{a\}/g,it.audience||"decoradoras")}
+function genHooks(it){return HOOKS.map(h=>fill(h,it))}
+function genScript(it){
+  if(it.type==="carrusel"){
+    return["Diapositiva 1 (portada): "+(it.hook||it.title),"Diapositiva 2: contexto — por qué importa para "+(it.audience||"decoradoras"),"Diapositivas 3-5: un punto por diapositiva, con foto real cuando se muestre producto "+PH,"Diapositiva 6 (cierre): "+(it.cta||CTAS[0])].join("\n");
+  }
+  if(it.type==="story"){
+    return["Story 1: "+(it.hook||it.title)+" (texto grande sobre foto real)","Story 2: sticker interactivo (encuesta / quiz / preguntas)","Story 3: respuesta o detalle con material real","Story 4: "+(it.cta||CTAS[0])+" + sticker de enlace a balloonstoreco.com"].join("\n");
+  }
+  return["[0-3 s] HOOK en pantalla y voz: "+(it.hook||it.title),"[3-6 s] Contexto: muestra el material real que vas a usar ("+(it.line||"globos")+") — modelo exacto "+PH,"[6-20 s] Desarrollo: 3 tomas cortas del proceso (1-3 s cada una), una idea por toma","[20-25 s] Resultado final: toma amplia de la decoración terminada","[25-30 s] CTA: "+(it.cta||CTAS[0])].join("\n");
+}
+function genCaption(it){
+  const tags=["#globos","#decoracionconglobos","#decoradoras","#fiestas"+(it.occasion?"":""),"#balloonstore"];
+  if(/metálic|Anagram|Kaleidoscope/i.test(it.line||""))tags.splice(2,0,"#globosmetalicos");
+  if(/Sensacional|látex/i.test(it.line||""))tags.splice(2,0,"#globosdelatex");
+  return[(it.hook||it.title),"",
+    "Para "+(it.audience||"decoradoras")+" que preparan "+(it.occasion||"eventos")+": "+(it.notes?it.notes.split(".")[0]+".":"te compartimos esta idea para tu próximo montaje."),
+    "Producto mostrado: "+(it.line||"globos")+" — modelo y disponibilidad "+PH+".","",
+    (it.cta||CTAS[0])+" 👉 "+BRAND.site,"",tags.join(" ")].join("\n");
+}
+
+/* ================= Canvas templates ================= */
+const TEMPLATES=[
+  ["portada","Portada","Título grande sobre azul marino"],
+  ["tip","Tip numerado","Número + título + texto"],
+  ["producto","Producto (foto real)","Requiere foto real de la biblioteca"],
+  ["foto","Foto con texto","Cualquier foto real con título"],
+  ["lista","Lista / checklist","Una línea por punto"],
+  ["cta","Cierre con CTA","Llamada a la acción y sitio web"]];
+let fontsReady=null;
+function ensureFonts(){if(!fontsReady)fontsReady=Promise.all([document.fonts.load("800 80px 'Baloo 2'"),document.fonts.load("600 40px 'Nunito Sans'"),document.fonts.load("700 40px 'Nunito Sans'")]).catch(()=>{});return fontsReady}
+const imgCache=new Map();
+async function loadMediaImage(m){
+  if(!m)return null;if(imgCache.has(m.id))return imgCache.get(m.id);
+  const url=await Store.url(m.ref);if(!url)return null;
+  const p=new Promise(res=>{
+    if((m.mime||"").startsWith("video")){const v=document.createElement("video");v.muted=true;v.playsInline=true;v.preload="auto";v.src=url;
+      v.onloadeddata=()=>{v.currentTime=Math.min(0.5,(v.duration||1)/2)};v.onseeked=()=>{const c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);res(c)};v.onerror=()=>res(null);setTimeout(()=>res(null),8000)}
+    else{const i=new Image();i.onload=()=>res(i);i.onerror=()=>res(null);i.src=url}});
+  imgCache.set(m.id,p);return p;
+}
+function wrap(ctx,text,maxW){const words=String(text||"").split(/\s+/).filter(Boolean);const lines=[];let line="";
+  for(const w of words){const t=line?line+" "+w:w;if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w}else line=t}if(line)lines.push(line);return lines}
+function drawText(ctx,text,x,y,maxW,size,lh,font,color,maxLines=8,align="left"){
+  ctx.font=font.replace("{s}",size);ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline="top";
+  let lines=[];String(text||"").split("\n").forEach(p=>lines.push(...wrap(ctx,p,maxW)));lines=lines.slice(0,maxLines);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*size*lh));return y+lines.length*size*lh}
+function cover(ctx,img,x,y,w,h){const iw=img.width,ih=img.height;const s=Math.max(w/iw,h/ih);const sw=w/s,sh=h/s;ctx.drawImage(img,(iw-sw)/2,(ih-sh)/2,sw,sh,x,y,w,h)}
+function confetti(ctx,W,H,seed){const cols=Object.values(BRAND.colors).slice(0,5);for(let i=0;i<14;i++){const r=((seed*31+i*97)%100)/100;const r2=((seed*17+i*53)%100)/100;ctx.fillStyle=cols[i%5];ctx.globalAlpha=.9;ctx.beginPath();ctx.arc(r*W,r2<.5?r2*H*.25:H-(1-r2)*H*.2,8+((i*13)%22),0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1}
+function logoMedia(){return S.media.find(m=>(m.tags||[]).includes("logo")&&(m.mime||"").startsWith("image"))}
+async function drawFooter(ctx,W,H,dark){
+  const lg=logoMedia();const col=dark?"#FFFFFF":BRAND.colors.navy;
+  if(lg){const img=await loadMediaImage(lg);if(img){const h=70,w=img.width*h/img.height;ctx.drawImage(img,60,H-70-50,Math.min(w,360),h)}}
+  else drawText(ctx,"Balloon Store",60,H-108,600,44,1,"800 {s}px 'Baloo 2', sans-serif",col,1);
+  drawText(ctx,BRAND.site,W-60,H-100,600,30,1,"700 {s}px 'Nunito Sans', sans-serif",col,1,"right");
+}
+const DISPLAY="800 {s}px 'Baloo 2', sans-serif",BODY="600 {s}px 'Nunito Sans', sans-serif";
+async function renderSlide(canvas,s,{W=1080,H=1350,index=1,total=1}={}){
+  await ensureFonts();canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");const C=BRAND.colors;
+  const m=s.mediaId?mediaById(s.mediaId):null;const img=m?await loadMediaImage(m):null;
+  const tpl=s.template||"portada";let missing=false;
+  ctx.fillStyle="#FFFFFF";ctx.fillRect(0,0,W,H);
+  if(tpl==="portada"){ctx.fillStyle=C.navy;ctx.fillRect(0,0,W,H);confetti(ctx,W,H,index+3);
+    if(img){ctx.save();ctx.globalAlpha=.35;cover(ctx,img,0,0,W,H);ctx.restore()}
+    drawText(ctx,s.kicker||"",80,H*.28,W-160,40,1.2,"700 {s}px 'Nunito Sans', sans-serif",C.yellow,2);
+    const y=drawText(ctx,s.headline,80,H*.28+60,W-160,104,1.02,DISPLAY,"#FFFFFF",5);
+    drawText(ctx,s.body,80,y+30,W-160,40,1.3,BODY,"#D6ECFB",4);await drawFooter(ctx,W,H,true)}
+  else if(tpl==="tip"){ctx.fillStyle="#F2F9FF";ctx.fillRect(0,0,W,H);ctx.fillStyle=C.pink;ctx.beginPath();ctx.arc(170,230,90,0,Math.PI*2);ctx.fill();
+    drawText(ctx,String(s.number||index),170,170,200,110,1,DISPLAY,"#FFFFFF",1,"center");
+    const y=drawText(ctx,s.headline,80,380,W-160,80,1.05,DISPLAY,C.navy,4);drawText(ctx,s.body,80,y+30,W-160,42,1.35,BODY,"#33506F",9);
+    ctx.fillStyle=C.blue;ctx.fillRect(0,H-12,W,12);await drawFooter(ctx,W,H,false)}
+  else if(tpl==="producto"||tpl==="foto"){
+    const ph=tpl==="producto"?H*.68:H;
+    if(img){cover(ctx,img,0,0,W,ph)}else{missing=true;ctx.fillStyle="#FFF4D6";ctx.fillRect(0,0,W,ph);ctx.strokeStyle=C.orange;ctx.lineWidth=10;ctx.setLineDash([30,20]);ctx.strokeRect(40,40,W-80,ph-80);ctx.setLineDash([]);
+      drawText(ctx,"FALTA FOTO REAL",W/2,ph/2-80,W-200,80,1,DISPLAY,"#7a3b00",1,"center");drawText(ctx,"Sube la fotografía del producto en Biblioteca y selecciónala aquí.",W/2,ph/2+20,W-240,38,1.3,BODY,"#7a3b00",3,"center")}
+    if(tpl==="producto"){ctx.fillStyle=C.navy;ctx.fillRect(0,ph,W,H-ph);const y=drawText(ctx,s.headline,70,ph+40,W-140,64,1.05,DISPLAY,"#FFFFFF",2);drawText(ctx,s.body,70,y+10,W-140,34,1.3,BODY,"#D6ECFB",2);
+      ctx.fillStyle=C.yellow;ctx.fillRect(0,ph-10,W,10)}
+    else{const g=ctx.createLinearGradient(0,H*.45,0,H);g.addColorStop(0,"rgba(18,45,80,0)");g.addColorStop(1,"rgba(18,45,80,.92)");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+      const y=drawText(ctx,s.headline,80,H*.62,W-160,84,1.05,DISPLAY,"#FFFFFF",3);drawText(ctx,s.body,80,y+16,W-160,38,1.3,BODY,"#EAF6FF",3);await drawFooter(ctx,W,H,true)}}
+  else if(tpl==="lista"){ctx.fillStyle="#FFFFFF";ctx.fillRect(0,0,W,H);ctx.fillStyle=C.yellow;ctx.fillRect(0,0,W,24);
+    let y=drawText(ctx,s.headline,80,110,W-160,78,1.05,DISPLAY,C.navy,3)+30;
+    const items=String(s.body||"").split("\n").filter(Boolean).slice(0,7);const cols=[C.blue,C.pink,C.orange,C.green];
+    items.forEach((t,i)=>{ctx.fillStyle=cols[i%4];ctx.beginPath();ctx.roundRect?ctx.roundRect(80,y+4,46,46,10):ctx.rect(80,y+4,46,46);ctx.fill();
+      ctx.strokeStyle="#fff";ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(92,y+27);ctx.lineTo(101,y+38);ctx.lineTo(116,y+16);ctx.stroke();
+      y=drawText(ctx,t,150,y,W-230,40,1.25,BODY,C.navy,3)+26});await drawFooter(ctx,W,H,false)}
+  else if(tpl==="cta"){ctx.fillStyle=C.pink;ctx.fillRect(0,0,W,H);confetti(ctx,W,H,index+11);
+    const y=drawText(ctx,s.headline||"¿Lista para tu próximo evento?",80,H*.3,W-160,96,1.04,DISPLAY,"#FFFFFF",4);
+    drawText(ctx,s.body||"",80,y+24,W-160,42,1.3,BODY,"#FFFFFF",4);
+    ctx.fillStyle="#FFFFFF";const bw=760,bh=110,bx=(W-bw)/2,by=H*.72;ctx.beginPath();ctx.roundRect?ctx.roundRect(bx,by,bw,bh,55):ctx.rect(bx,by,bw,bh);ctx.fill();
+    drawText(ctx,BRAND.site,W/2,by+28,bw-40,52,1,DISPLAY,C.pink,1,"center");await drawFooter(ctx,W,H,true)}
+  if(total>1){ctx.font="700 28px 'Nunito Sans', sans-serif";ctx.textAlign="right";ctx.textBaseline="top";ctx.fillStyle=(tpl==="tip"||tpl==="lista")?C.navy:"#FFFFFF";ctx.fillText(index+"/"+total,W-50,50)}
+  return{missing};
+}
+const canvasBlob=c=>new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error("No se pudo generar PNG")),"image/png"));
+
+/* ================= Router & views ================= */
+const VIEWS={};
+function route(){const r=(location.hash||"#panel").slice(1);const v=VIEWS[r]?r:"panel";$$("nav.rail a").forEach(a=>a.classList.toggle("on",a.dataset.r===v));
+  const main=$("#view");main.innerHTML="";VIEWS[v](main);main.focus?.()}
+window.addEventListener("hashchange",route);
+function head(t,p,actions=""){return`<div class="head"><div><h1>${t}</h1>${p?`<p>${p}</p>`:""}</div><div class="row">${actions}</div></div>`}
+function statusChip(s){return`<span class="chip s-${s}">${esc(label(STATUSES,s))}</span>`}
+function itemCard(it){return`<div class="card t-${it.type}" data-open="${it.id}" tabindex="0" role="button"><div class="t">${esc(it.title)}</div><div class="m">${esc(label(TYPES,it.type))}${it.date?" · "+esc(it.date):""}${it.example?" · Ejemplo":""}</div></div>`}
+function bindOpen(root){$$("[data-open]",root).forEach(el=>{const f=()=>openEditor(el.dataset.open);el.onclick=f;el.onkeydown=e=>{if(e.key==="Enter")f()}})}
+function itemOptions(type,sel){return S.items.filter(i=>!type||i.type===type).map(i=>`<option value="${i.id}" ${i.id===sel?"selected":""}>${esc(i.title)}</option>`).join("")}
+
+/* ---- Panel ---- */
+VIEWS.panel=main=>{
+  const by=s=>S.items.filter(i=>i.status===s).sort((a,b)=>(a.date||"9")>(b.date||"9")?1:-1);
+  const upcoming=S.items.filter(i=>i.date&&i.date>=today()).sort((a,b)=>a.date>b.date?1:-1).slice(0,5);
+  const missing=S.items.filter(i=>i.type==="carrusel"&&i.slides.some(s=>s.template==="producto"&&!s.mediaId));
+  main.innerHTML=head("Panel de contenido","Todo el contenido de Balloon Store en un vistazo. Abre una tarjeta para editarla o cambiar su estado.",`<button class="primary" id="newBtn">Nuevo contenido</button>`)+
+  `<div class="stats">${STATUSES.map(([k,l])=>`<div class="stat"><span class="chip s-${k}">${l}</span><b>${by(k).length}</b></div>`).join("")}<div class="stat"><span class="chip">Archivos en biblioteca</span><b>${S.media.length}</b></div></div>`+
+  (missing.length?`<div class="warn" style="margin-bottom:12px"><b>Faltan fotos reales</b> en ${missing.length} carrusel(es): ${missing.map(m=>esc(m.title)).join(", ")}. Sube los archivos en Biblioteca.</div>`:"")+
+  (S.items.length?"":`<div class="panel empty"><h2>Aún no hay contenido</h2><p>Genera ideas en <a href="#ideas">Ideas</a>, crea uno desde cero, o carga ejemplos marcados como “Ejemplo” para conocer el flujo.</p><button id="seedBtn">Cargar ejemplos</button></div>`)+
+  `<div class="kanban" style="margin-top:12px">${STATUSES.map(([k,l])=>`<section class="col"><h3>${l}<span>${by(k).length}</span></h3>${by(k).map(itemCard).join("")||'<div class="m" style="color:var(--muted);font-size:.8rem">Vacío</div>'}</section>`).join("")}</div>`+
+  `<div class="panel" style="margin-top:14px"><h2>Próximas publicaciones</h2><div class="list" style="margin-top:8px">${upcoming.map(i=>`<div class="idea"><div><b>${esc(i.date)}</b> · ${esc(i.title)}</div>${statusChip(i.status)}</div>`).join("")||'<p class="m" style="color:var(--muted)">Sin fechas programadas. Asigna fechas desde el editor o el calendario.</p>'}</div></div>`;
+  bindOpen(main);$("#newBtn",main).onclick=async()=>{const it=await addItem(newItem({status:"borrador"}));openEditor(it.id)};
+  const sb=$("#seedBtn",main);if(sb)sb.onclick=seedExamples;
+};
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+async function seedExamples(){
+  const d=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+  const ex=[
+    newItem({type:"reel",title:"[Ejemplo] Montaje en tiempo real: arco para baby shower",status:"idea",occasion:"baby shower",line:"Látex Sensacional",pillar:"Producto real",date:d(3),example:true}),
+    newItem({type:"carrusel",title:"[Ejemplo] Checklist para tu decoración de cumpleaños",status:"borrador",occasion:"cumpleaños",line:"Varias líneas",pillar:"Educativo",date:d(5),example:true,
+      slides:[{template:"portada",headline:"Checklist para tu decoración de cumpleaños",body:"Guárdalo para tu próximo montaje",kicker:"Para decoradoras"},{template:"lista",headline:"Antes del evento",body:"Confirma fecha y horario de montaje\nMide el espacio\nDefine paleta de colores\nRevisa inventario de globos"},{template:"producto",headline:"Producto mostrado",body:"Modelo exacto "+PH},{template:"cta",headline:"¿Lista para tu próximo evento?",body:"Consulta el catálogo disponible"}]}),
+    newItem({type:"story",title:"[Ejemplo] Encuesta: ¿qué temática de graduación te piden más?",status:"revision",occasion:"graduaciones",pillar:"Comunidad",date:d(1),example:true}),
+    newItem({type:"reel",title:"[Ejemplo] Antes y después: mesa de cumpleaños",status:"terminado",occasion:"cumpleaños",line:"Globos metálicos Anagram",pillar:"Inspiración",date:d(-2),example:true})];
+  for(const e of ex){e.hook=genHooks(e)[0];e.script=genScript(e);e.cta=CTAS[0];e.caption=genCaption(e);await addItem(e)}
+  toast("Ejemplos cargados");route();
+}
+
+/* ---- Editor dialog ---- */
+function openEditor(id){
+  const it=item(id);if(!it)return;const dlg=$("#editor"),f=$("#editorForm");
+  const opt=(arr,v)=>arr.map(a=>{const[k,l]=Array.isArray(a)?a:[a,a];return`<option value="${esc(k)}" ${k===v?"selected":""}>${esc(l)}</option>`}).join("");
+  f.innerHTML=`<h2>Editar contenido</h2>
+  <label>Título<input id="e_title" value="${esc(it.title)}"></label>
+  <div class="f2"><label>Formato<select id="e_type">${opt(TYPES,it.type)}</select></label><label>Estado<select id="e_status">${opt(STATUSES.map(([k,l])=>[k,l]),it.status)}</select></label><label>Fecha de publicación<input type="date" id="e_date" value="${esc(it.date)}"></label></div>
+  <div class="f2"><label>Pilar<select id="e_pillar"><option value=""></option>${opt(PILLARS,it.pillar)}</select></label><label>Ocasión<input id="e_occasion" list="occ" value="${esc(it.occasion)}"></label><label>Línea de producto<select id="e_line"><option value=""></option>${opt(BRAND.lines,it.line)}</select></label></div>
+  <datalist id="occ">${OCCASIONS.map(o=>`<option value="${esc(o)}">`).join("")}</datalist>
+  <label>Hook<input id="e_hook" value="${esc(it.hook)}"></label>
+  <label>Guion / estructura<textarea id="e_script">${esc(it.script)}</textarea></label>
+  <label>Copy (pie de publicación)<textarea id="e_caption">${esc(it.caption)}</textarea></label>
+  <label>Llamada a la acción<input id="e_cta" value="${esc(it.cta)}"></label>
+  <label>Notas / recursos que faltan<textarea id="e_notes">${esc(it.notes)}</textarea></label>
+  <div class="row" style="justify-content:space-between"><div class="row"><button type="button" class="danger" id="e_del">Eliminar</button><span id="e_confirm"></span></div>
+  <div class="row"><a class="btn" href="#copy" id="e_copy">Hooks y copies</a>${it.type==="carrusel"?`<a class="btn" href="#carrusel" id="e_go">Abrir en Carrusel</a>`:it.type==="reel"?`<a class="btn" href="#reel" id="e_go">Abrir en Reel</a>`:""}<button class="primary" value="ok">Guardar</button></div></div>`;
+  const ids=["title","type","status","date","pillar","occasion","line","hook","script","caption","cta","notes"];
+  f.onsubmit=async e=>{ids.forEach(k=>it[k]=$("#e_"+k,f).value);await touch(it,true);toast("Guardado");route()};
+  const go=$("#e_go",f);if(go)go.onclick=()=>{S.cur[it.type]=it.id;dlg.close()};
+  $("#e_copy",f).onclick=()=>{S.cur.copy=it.id;dlg.close()};
+  $("#e_del",f).onclick=()=>{$("#e_confirm",f).innerHTML=`<span>¿Eliminar definitivamente?</span> <button type="button" class="danger" id="e_yes">Sí, eliminar</button>`;
+    $("#e_yes",f).onclick=async()=>{await removeItem(it.id);dlg.close();toast("Eliminado");route()}};
+  dlg.showModal();
+}
+
+/* ---- Biblioteca ---- */
+VIEWS.biblioteca=main=>{
+  const tags=[...new Set(S.media.flatMap(m=>m.tags||[]))].sort();
+  const flt=S.libFilter;const list=S.media.filter(m=>!flt||(m.tags||[]).includes(flt)||(flt==="video"&&m.mime.startsWith("video"))||(flt==="foto"&&m.mime.startsWith("image"))).sort((a,b)=>a.createdAt<b.createdAt?1:-1);
+  main.innerHTML=head("Biblioteca de fotos y videos","Sube material real: fotos de producto, clips de montajes, bodega y empaques. Etiqueta con el producto exacto para encontrarlo después. Etiqueta tu logotipo con “logo” para usarlo en las plantillas.")+
+  `<div class="drop" id="drop"><p><b>Arrastra fotos o videos aquí</b> o</p><button class="primary" id="pick">Elegir archivos</button><p class="m" style="color:var(--muted);font-size:.8rem;margin-bottom:0">${Store.mode==="cloud"?"Se guardan en tu espacio de Claude (máx. 20 MB por archivo; los más grandes quedan solo en este navegador).":"Se guardan en este navegador."}</p><div id="upl"></div></div>
+  <div class="row" style="margin:14px 0"><label style="flex-direction:row;align-items:center;gap:8px">Filtrar<select id="flt"><option value="">Todo (${S.media.length})</option><option value="foto">Fotos</option><option value="video">Videos</option>${tags.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join("")}</select></label></div>
+  <div class="media-grid" id="mg">${list.length?"":'<div class="empty">Sin archivos todavía.</div>'}</div>`;
+  $("#flt",main).value=flt;$("#flt",main).onchange=e=>{S.libFilter=e.target.value;route()};
+  $("#pick",main).onclick=()=>$("#filePick").click();
+  const drop=$("#drop",main);drop.ondragover=e=>{e.preventDefault();drop.classList.add("over")};drop.ondragleave=()=>drop.classList.remove("over");
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove("over");uploadFiles([...e.dataTransfer.files])};
+  const mg=$("#mg",main);
+  list.forEach(m=>{const el=document.createElement("div");el.className="mcard";
+    el.innerHTML=`<div class="thumb"></div><div class="body"><b style="overflow-wrap:anywhere">${esc(m.name)}</b><span style="color:var(--muted)">${m.mime.startsWith("video")?"Video"+(m.duration?" · "+m.duration.toFixed(1)+" s":""):"Foto"+(m.width?" · "+m.width+"×"+m.height:"")} · ${(m.size/1048576).toFixed(1)} MB${m.ref&&m.ref.localOnly?" · solo este navegador":""}</span>
+      <label>Etiquetas (separa con comas)<input data-tags value="${esc((m.tags||[]).join(", "))}" placeholder="producto exacto, ocasión, color"></label>
+      <div class="row"><button data-dl>Descargar</button><button class="danger" data-rm>Eliminar</button></div><div data-cf></div></div>`;
+    mg.appendChild(el);
+    Store.url(m.ref).then(u=>{if(!u)return;const t=$(".thumb",el);t.innerHTML=m.mime.startsWith("video")?`<video src="${u}" muted playsinline preload="metadata" controls></video>`:`<img src="${u}" alt="${esc(m.name)}">`});
+    $("[data-tags]",el).onchange=e=>{m.tags=e.target.value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);Store.save("media",m).then(()=>toast("Etiquetas guardadas"))};
+    $("[data-dl]",el).onclick=async()=>{const b=await Store.getBlob(m.ref);if(b)saveFile(m.name,b);else toast("Archivo no disponible en este navegador")};
+    $("[data-rm]",el).onclick=()=>{const used=S.items.filter(i=>i.slides.some(s=>s.mediaId===m.id)||i.shots.some(s=>s.mediaId===m.id));
+      $("[data-cf]",el).innerHTML=`<p style="margin:0">${used.length?"Se usa en "+used.length+" contenido(s). ":""}¿Eliminar?</p><button class="danger" data-yes>Sí, eliminar</button>`;
+      $("[data-yes]",el).onclick=async()=>{used.forEach(i=>{i.slides.forEach(s=>{if(s.mediaId===m.id)s.mediaId=""});i.shots=i.shots.filter(s=>s.mediaId!==m.id);touch(i,true)});
+        await Store.dropBlob(m.ref);await Store.remove("media",m.id);S.media=S.media.filter(x=>x.id!==m.id);imgCache.delete(m.id);toast("Archivo eliminado");route()}};
+  });
+};
+$("#filePick").onchange=e=>{uploadFiles([...e.target.files]);e.target.value=""};
+function probe(file,url){return new Promise(res=>{
+  if(file.type.startsWith("video")){const v=document.createElement("video");v.preload="metadata";v.muted=true;v.onloadedmetadata=()=>res({duration:v.duration||0,width:v.videoWidth,height:v.videoHeight});v.onerror=()=>res({});v.src=url;setTimeout(()=>res({}),6000)}
+  else{const i=new Image();i.onload=()=>res({width:i.naturalWidth,height:i.naturalHeight});i.onerror=()=>res({});i.src=url}})}
+async function uploadFiles(files){
+  const ok=files.filter(f=>/^(image|video)\//.test(f.type));if(ok.length<files.length)toast("Solo se aceptan fotos y videos");
+  const box=$("#upl");let done=0;
+  for(const f of ok){if(box)box.textContent=`Subiendo ${done+1} de ${ok.length}: ${f.name}`;
+    try{const tmp=URL.createObjectURL(f);const meta=await probe(f,tmp);URL.revokeObjectURL(tmp);
+      const ref=await Store.putBlob(f);
+      const m={id:uid(),name:f.name,mime:f.type,size:f.size,tags:[],ref,createdAt:new Date().toISOString(),...meta};
+      await Store.save("media",m);S.media.push(m);done++}
+    catch(e){toast("No se subió "+f.name+": "+(e.message||e.code||e))}}
+  toast(`${done} archivo(s) guardado(s)`);if((location.hash||"#panel")==="#biblioteca")route();
+}
+
+/* ---- Ideas ---- */
+VIEWS.ideas=main=>{
+  main.innerHTML=head("Generador de ideas","Ideas para Reels, carruseles y Stories dirigidas a decoradoras, tiendas de fiestas y revendedores. Se generan con plantillas de Balloon Store (sin IA de pago). Nunca se inventan productos: lo específico queda marcado para confirmar con el catálogo.")+
+  `<div class="panel"><div class="f2">
+   <label>Formato<select id="i_type"><option value="todos">Todos</option>${TYPES.map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</select></label>
+   <label>Ocasión<select id="i_occ"><option value="variado">Variado</option>${OCCASIONS.map(o=>`<option>${esc(o)}</option>`).join("")}</select></label>
+   <label>Línea de producto<select id="i_line">${BRAND.lines.map(o=>`<option>${esc(o)}</option>`).join("")}</select></label>
+   <label>Público<select id="i_aud">${BRAND.audiences.map(o=>`<option>${esc(o)}</option>`).join("")}</select></label>
+   <label>Cantidad<input type="number" id="i_n" min="1" max="12" value="6"></label></div>
+   <div class="row" style="margin-top:12px"><button class="primary" id="i_gen">Generar ideas</button><button id="i_all" ${S.ideas.length?"":"disabled"}>Guardar todas</button></div></div>
+   <div class="list" id="i_list" style="margin-top:14px"></div>`;
+  const render=()=>{$("#i_list",main).innerHTML=S.ideas.map((x,i)=>`<div class="idea t-${x.type}"><div><span class="chip">${esc(label(TYPES,x.type))}</span> <span class="chip">${esc(x.pillar)}</span><div style="font-weight:700;margin-top:4px">${esc(x.title)}</div><div style="color:var(--muted);font-size:.85rem">${esc(x.notes)}</div></div><button data-save="${i}" ${x.saved?"disabled":""}>${x.saved?"Guardada":"Guardar"}</button></div>`).join("");
+    $$("[data-save]",main).forEach(b=>b.onclick=()=>saveIdea(+b.dataset.save).then(render));$("#i_all",main).disabled=!S.ideas.some(x=>!x.saved)};
+  const saveIdea=async i=>{const x=S.ideas[i];if(x.saved)return;const it=newItem({type:x.type,title:x.title,pillar:x.pillar,occasion:x.occasion,line:x.line,audience:x.audience,notes:x.notes,status:"idea"});
+    it.hook=genHooks(it)[0];await addItem(it);x.saved=true;toast("Idea guardada en el panel")};
+  $("#i_gen",main).onclick=()=>{S.ideas=genIdeas({type:$("#i_type",main).value,occasion:$("#i_occ",main).value,line:$("#i_line",main).value,audience:$("#i_aud",main).value,count:Math.max(1,Math.min(12,+$("#i_n",main).value||6))});render()};
+  $("#i_all",main).onclick=async()=>{for(let i=0;i<S.ideas.length;i++)await saveIdea(i);render()};
+  render();
+};
+
+/* ---- Hooks y copies ---- */
+VIEWS.copy=main=>{
+  if(!S.items.length){main.innerHTML=head("Hooks, guiones y copies","")+`<div class="panel empty">Primero crea o guarda una idea en <a href="#ideas">Ideas</a>.</div>`;return}
+  if(!item(S.cur.copy))S.cur.copy=S.items[0].id;const it=item(S.cur.copy);
+  main.innerHTML=head("Hooks, guiones y copies","Elige un contenido, genera opciones y aplica las que te sirvan. Todo queda editable y se guarda en el contenido.")+
+  `<div class="panel"><label>Contenido<select id="c_sel">${itemOptions(null,it.id)}</select></label></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:14px">
+   <div class="panel"><div class="row" style="justify-content:space-between"><h2>Hooks</h2><button id="c_h">Generar</button></div><div class="list" id="c_hooks" style="margin-top:8px"></div></div>
+   <div class="panel"><div class="row" style="justify-content:space-between"><h2>Llamadas a la acción</h2></div><div class="list" style="margin-top:8px">${CTAS.map((c,i)=>`<div class="idea"><div>${esc(c)}</div><button data-cta="${i}">Usar</button></div>`).join("")}</div></div>
+  </div>
+  <div class="panel" style="margin-top:14px"><div class="row" style="justify-content:space-between"><h2>Guion / estructura</h2><button id="c_s">Generar guion</button></div><label style="margin-top:8px">Hook elegido<input id="c_hook" value="${esc(it.hook)}"></label><label style="margin-top:8px">Guion<textarea id="c_script" style="min-height:150px">${esc(it.script)}</textarea></label></div>
+  <div class="panel" style="margin-top:14px"><div class="row" style="justify-content:space-between"><h2>Copy</h2><div class="row"><button id="c_c">Generar copy</button><button id="c_copy">Copiar</button><button id="c_dl">Descargar .txt</button></div></div><label style="margin-top:8px">Llamada a la acción<input id="c_cta" value="${esc(it.cta)}"></label><label style="margin-top:8px">Pie de publicación<textarea id="c_caption" style="min-height:170px">${esc(it.caption)}</textarea></label>
+  <p class="warn" style="margin-top:8px">Revisa antes de usar: reemplaza todo lo marcado ${esc(PH)} con datos reales. No agregues precios ni existencias que no hayas confirmado.</p></div>`;
+  $("#c_sel",main).onchange=e=>{S.cur.copy=e.target.value;route()};
+  const sync=()=>{["hook","script","cta","caption"].forEach(k=>it[k]=$("#c_"+k,main).value);touch(it)};
+  ["hook","script","cta","caption"].forEach(k=>$("#c_"+k,main).oninput=sync);
+  const showHooks=()=>{$("#c_hooks",main).innerHTML=genHooks(it).map((h,i)=>`<div class="idea"><div>${esc(h)}</div><button data-h="${i}">Usar</button></div>`).join("");
+    $$("[data-h]",main).forEach(b=>b.onclick=()=>{$("#c_hook",main).value=genHooks(it)[+b.dataset.h];sync();toast("Hook aplicado")})};
+  $("#c_h",main).onclick=showHooks;showHooks();
+  $$("[data-cta]",main).forEach(b=>b.onclick=()=>{$("#c_cta",main).value=CTAS[+b.dataset.cta];sync();toast("CTA aplicada")});
+  $("#c_s",main).onclick=()=>{sync();$("#c_script",main).value=genScript(it);sync();toast("Guion generado")};
+  $("#c_c",main).onclick=()=>{sync();$("#c_caption",main).value=genCaption(it);sync();toast("Copy generado")};
+  $("#c_copy",main).onclick=()=>{const t=$("#c_caption",main);navigator.clipboard.writeText(t.value).then(()=>toast("Copiado"),()=>{t.select();toast("Selecciónalo y copia con Ctrl+C")})};
+  $("#c_dl",main).onclick=()=>{sync();saveFile(slug(it.title)+"-copy.txt",new Blob([textPack(it)],{type:"text/plain"}))};
+};
+function textPack(it){return`${it.title}\nFormato: ${label(TYPES,it.type)} · Estado: ${label(STATUSES,it.status)} · Fecha: ${it.date||"sin fecha"}\n\nHOOK\n${it.hook}\n\nGUION\n${it.script}\n\nCOPY\n${it.caption}\n\nCTA\n${it.cta}\n\nNOTAS\n${it.notes}\n`}
+
+/* ---- Plantillas ---- */
+VIEWS.plantillas=main=>{
+  main.innerHTML=head("Plantillas visuales","Plantillas de Balloon Store en 1080×1350 (carrusel). Usan la paleta oficial. Las de producto solo funcionan con una foto real de la biblioteca."+(logoMedia()?"":" Sube tu logotipo con la etiqueta “logo” para reemplazar el texto de marca."))+`<div class="tpl-grid" id="tg"></div>`;
+  const tg=$("#tg",main);const photo=S.media.find(m=>m.mime.startsWith("image")&&!(m.tags||[]).includes("logo"));
+  TEMPLATES.forEach(([k,l,d],i)=>{const fig=document.createElement("figure");const c=document.createElement("canvas");fig.appendChild(c);fig.insertAdjacentHTML("beforeend",`<figcaption>${esc(l)}</figcaption><div style="color:var(--muted);font-size:.8rem">${esc(d)} · texto de ejemplo</div>`);tg.appendChild(fig);
+    renderSlide(c,{template:k,headline:k==="lista"?"Antes del montaje":"Ideas para tu próxima decoración",body:k==="lista"?"Mide el espacio\nDefine la paleta\nConfirma horario":"Texto de ejemplo para la plantilla",kicker:"Para decoradoras",number:2,mediaId:(k==="foto"||k==="producto")&&photo?photo.id:""},{index:i+1,total:6})});
+};
+
+/* ---- Carrusel ---- */
+VIEWS.carrusel=main=>{
+  const list=S.items.filter(i=>i.type==="carrusel");
+  if(!list.length){main.innerHTML=head("Preparar carrusel","")+`<div class="panel empty"><p>No hay carruseles todavía.</p><button class="primary" id="mk">Crear carrusel</button></div>`;
+    $("#mk",main).onclick=async()=>{const it=await addItem(newItem({type:"carrusel",status:"borrador",title:"Nuevo carrusel"}));S.cur.carrusel=it.id;route()};return}
+  if(!item(S.cur.carrusel)||item(S.cur.carrusel).type!=="carrusel")S.cur.carrusel=list[0].id;const it=item(S.cur.carrusel);
+  if(!it.slides.length)it.slides=[{template:"portada",headline:it.hook||it.title,body:"",kicker:"Para "+(it.audience||"decoradoras")},{template:"tip",headline:"",body:""},{template:"cta",headline:"¿Lista para tu próximo evento?",body:it.cta||CTAS[0]}];
+  if(S.slideIdx>=it.slides.length)S.slideIdx=0;
+  const photos=S.media.filter(m=>m.mime.startsWith("image")&&!(m.tags||[]).includes("logo"));
+  main.innerHTML=head("Preparar carrusel","Edita cada diapositiva, revisa la vista previa y exporta PNG 1080×1350 más el copy en un ZIP.",`<button id="newC">Nuevo carrusel</button>`)+
+  `<div class="panel" style="margin-bottom:14px"><div class="f2"><label>Carrusel<select id="k_sel">${itemOptions("carrusel",it.id)}</select></label><label>Título<input id="k_title" value="${esc(it.title)}"></label><label>Estado<select id="k_status">${STATUSES.map(([k,l])=>`<option value="${k}" ${k===it.status?"selected":""}>${l}</option>`).join("")}</select></label></div></div>
+  <div class="split"><div class="slides" id="sl"></div>
+  <div class="panel" style="position:sticky;top:12px"><h3>Vista previa · diapositiva ${S.slideIdx+1}/${it.slides.length}</h3><canvas class="preview" id="pv" style="margin-top:8px"></canvas>
+   <div id="k_warn" style="margin-top:8px"></div>
+   <div class="row" style="margin-top:10px"><button class="primary" id="k_zip">Exportar ZIP</button><button id="k_png">PNG de esta diapositiva</button></div></div></div>`;
+  $("#newC",main).onclick=async()=>{const n=await addItem(newItem({type:"carrusel",status:"borrador",title:"Nuevo carrusel"}));S.cur.carrusel=n.id;S.slideIdx=0;route()};
+  $("#k_sel",main).onchange=e=>{S.cur.carrusel=e.target.value;S.slideIdx=0;route()};
+  $("#k_title",main).oninput=e=>{it.title=e.target.value;touch(it)};$("#k_status",main).onchange=e=>{it.status=e.target.value;touch(it);toast("Estado: "+label(STATUSES,it.status))};
+  const pv=$("#pv",main);let rt;const preview=()=>{clearTimeout(rt);rt=setTimeout(()=>renderSlide(pv,it.slides[S.slideIdx],{index:S.slideIdx+1,total:it.slides.length}),120);checkMissing()};
+  const checkMissing=()=>{const miss=it.slides.map((s,i)=>s.template==="producto"&&!s.mediaId?i+1:0).filter(Boolean);
+    $("#k_warn",main).innerHTML=miss.length?`<div class="err">Falta foto real en diapositiva(s) ${miss.join(", ")}. Sube el archivo del producto en <a href="#biblioteca">Biblioteca</a>. La exportación está bloqueada hasta resolverlo.</div>`:"";$("#k_zip",main).disabled=!!miss.length};
+  const sl=$("#sl",main);
+  const draw=()=>{sl.innerHTML="";it.slides.forEach((s,i)=>{const el=document.createElement("div");el.className="slide"+(i===S.slideIdx?" cur":"");
+    el.innerHTML=`<div class="row" style="justify-content:space-between"><b>Diapositiva ${i+1}</b><div class="row"><button data-up ${i?"":"disabled"} aria-label="Subir">↑</button><button data-down ${i<it.slides.length-1?"":"disabled"} aria-label="Bajar">↓</button><button class="danger" data-del ${it.slides.length>1?"":"disabled"}>Quitar</button></div></div>
+    <div class="f2"><label>Plantilla<select data-k="template">${TEMPLATES.map(([k,l])=>`<option value="${k}" ${k===s.template?"selected":""}>${l}</option>`).join("")}</select></label>
+    <label>Foto real<select data-k="mediaId"><option value="">Sin foto</option>${photos.map(m=>`<option value="${m.id}" ${m.id===s.mediaId?"selected":""}>${esc(m.name)}${m.tags&&m.tags.length?" · "+esc(m.tags.join(", ")):""}</option>`).join("")}</select></label></div>
+    ${s.template==="portada"?`<label>Antetítulo<input data-k="kicker" value="${esc(s.kicker||"")}"></label>`:""}
+    <label>Título<input data-k="headline" value="${esc(s.headline||"")}"></label><label>${s.template==="lista"?"Puntos (uno por línea)":"Texto"}<textarea data-k="body">${esc(s.body||"")}</textarea></label>`;
+    el.addEventListener("focusin",()=>{if(S.slideIdx!==i){S.slideIdx=i;$$(".slide",sl).forEach((x,j)=>x.classList.toggle("cur",j===i));$("h3",pv.parentElement).textContent=`Vista previa · diapositiva ${i+1}/${it.slides.length}`;preview()}});
+    $$("[data-k]",el).forEach(inp=>{const ev=inp.tagName==="SELECT"?"change":"input";inp.addEventListener(ev,()=>{s[inp.dataset.k]=inp.value;touch(it);S.slideIdx=i;if(inp.dataset.k==="template")draw();preview()})});
+    $("[data-up]",el).onclick=()=>{[it.slides[i-1],it.slides[i]]=[it.slides[i],it.slides[i-1]];S.slideIdx=i-1;touch(it);draw();preview()};
+    $("[data-down]",el).onclick=()=>{[it.slides[i+1],it.slides[i]]=[it.slides[i],it.slides[i+1]];S.slideIdx=i+1;touch(it);draw();preview()};
+    $("[data-del]",el).onclick=()=>{it.slides.splice(i,1);S.slideIdx=Math.max(0,i-1);touch(it);draw();preview()};
+    sl.appendChild(el)});
+    const add=document.createElement("div");add.className="row";add.innerHTML=TEMPLATES.map(([k,l])=>`<button data-add="${k}">+ ${l}</button>`).join("");sl.appendChild(add);
+    $$("[data-add]",add).forEach(b=>b.onclick=()=>{it.slides.push({template:b.dataset.add,headline:"",body:"",mediaId:""});S.slideIdx=it.slides.length-1;touch(it);draw();preview()});
+    sl.insertAdjacentHTML("beforeend",`<div class="panel"><h3>Copy del carrusel</h3><textarea id="k_cap" style="min-height:120px;margin-top:6px">${esc(it.caption)}</textarea><div class="row" style="margin-top:6px"><button id="k_gen">Generar copy</button></div></div>`);
+    $("#k_cap",sl).oninput=e=>{it.caption=e.target.value;touch(it)};$("#k_gen",sl).onclick=()=>{it.caption=genCaption(it);$("#k_cap",sl).value=it.caption;touch(it)};
+  };
+  draw();preview();touch(it);
+  $("#k_png",main).onclick=async()=>{const c=document.createElement("canvas");await renderSlide(c,it.slides[S.slideIdx],{index:S.slideIdx+1,total:it.slides.length});saveFile(`${slug(it.title)}-${String(S.slideIdx+1).padStart(2,"0")}.png`,await canvasBlob(c))};
+  $("#k_zip",main).onclick=async e=>{e.target.disabled=true;e.target.textContent="Generando…";try{const z=await buildCarouselZip(it);await saveFile(slug(it.title)+"-carrusel.zip",z)}catch(err){toast(err.message)}finally{e.target.disabled=false;e.target.textContent="Exportar ZIP"}};
+};
+async function buildCarouselZip(it){
+  const miss=it.slides.filter(s=>s.template==="producto"&&!s.mediaId);if(miss.length)throw new Error("Falta foto real en diapositivas de producto");
+  const files=[];const n=it.slides.length;
+  for(let i=0;i<n;i++){const c=document.createElement("canvas");await renderSlide(c,it.slides[i],{index:i+1,total:n});files.push({name:`slides/${String(i+1).padStart(2,"0")}.png`,data:await canvasBlob(c)})}
+  files.push({name:"copy.txt",data:textPack(it)});
+  files.push({name:"ficha.json",data:JSON.stringify({title:it.title,status:it.status,date:it.date,format:"1080x1350 PNG",slides:it.slides.map((s,i)=>({n:i+1,template:s.template,headline:s.headline,photo:s.mediaId?(mediaById(s.mediaId)||{}).name:null})),exportedAt:new Date().toISOString(),site:BRAND.site},null,2)});
+  files.push({name:"LEEME.txt",data:`Carrusel: ${it.title}\nSube las imágenes de /slides en orden (01, 02, …) a Instagram o Facebook.\nPega el texto de copy.txt como pie de publicación.\nAntes de publicar: confirma que no queda texto marcado ${PH} y que las fotos son del producto real.\nEsta herramienta no publica en redes sociales.\n`});
+  return makeZip(files);
+}
+
+/* ---- Reel ---- */
+const fmtT=s=>{const m=Math.floor(s/60),r=(s-m*60);return String(m).padStart(2,"0")+":"+r.toFixed(1).padStart(4,"0")};
+const srtT=s=>{const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=Math.floor(s%60),ms=Math.round((s-Math.floor(s))*1000);return`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")},${String(ms).padStart(3,"0")}`};
+function reelTimeline(it){let t=0;return it.shots.map((s,i)=>{const m=mediaById(s.mediaId)||{};const isV=(m.mime||"").startsWith("video");const inn=+s.in||0;let dur=+s.dur||(isV?Math.min(3,(m.duration||3)-inn):2.5);
+  if(isV&&m.duration)dur=Math.max(.3,Math.min(dur,m.duration-inn));const row={n:i+1,file:`clips/${String(i+1).padStart(2,"0")}_${slug((m.name||"clip").replace(/\.[^.]+$/,""))}${(m.name||"").match(/\.[^.]+$/)?.[0]||""}`,media:m,isV,in:inn,out:inn+dur,start:t,end:t+dur,dur,text:s.text||"",voice:s.voice||"",note:s.note||""};t+=dur;return row})}
+function capcutGuide(it,tl){const total=tl.length?tl[tl.length-1].end:0;
+  return`# Instrucciones de edición en CapCut — ${it.title}
+
+Duración estimada: ${total.toFixed(1)} s · ${tl.length} tomas · Formato 9:16
+
+## 1. Proyecto
+1. Abre CapCut (escritorio o móvil) → **Nuevo proyecto**.
+2. Relación de aspecto **9:16**. En escritorio: Proyecto 1080×1920, 30 fps.
+3. Importa la carpeta \`clips/\` de este paquete. Los archivos ya están numerados en el orden de la línea de tiempo.
+
+## 2. Línea de tiempo
+| # | Archivo | Recorte dentro del clip | Posición en el Reel | Texto en pantalla | Voz en off | Nota de edición |
+|---|---|---|---|---|---|---|
+${tl.map(r=>`| ${r.n} | ${r.file} | ${r.isV?fmtT(r.in)+" → "+fmtT(r.out):"foto · "+r.dur.toFixed(1)+" s"} | ${fmtT(r.start)} → ${fmtT(r.end)} | ${(r.text||"—").replace(/\|/g,"/")} | ${(r.voice||"—").replace(/\|/g,"/")} | ${(r.note||"—").replace(/\|/g,"/")} |`).join("\n")}
+
+Pasos:
+1. Arrastra los clips en orden 01, 02, 03… a la pista principal.
+2. Recorta cada clip a los tiempos de “Recorte dentro del clip” (selecciona el clip → Dividir en la entrada y en la salida → elimina el resto).
+3. Para fotos, ajusta la duración indicada. Usa “Ken Burns”/zoom suave si quieres movimiento.
+4. Encuadre: si el clip es horizontal, usa **Lienzo → Desenfoque** o recorta a 9:16 manteniendo el producto completo y visible.
+
+## 3. Textos y subtítulos
+- Importa \`subtitulos.srt\` (Texto → Subtítulos → Importar subtítulos). Si tu versión no lo permite, usa **Subtítulos automáticos** y corrígelos con \`textos-en-pantalla.txt\`.
+- Hook en pantalla los primeros 3 s: “${it.hook||it.title}”.
+- Zona segura: deja libres ~220 px arriba y ~420 px abajo (interfaz de Instagram).
+- Tipografía sugerida: gruesa y redondeada; colores de marca azul #54C1FA, rosa #EA4566, amarillo #FFD400 sobre azul marino #122D50.
+
+## 4. Audio
+- Graba la voz en off con el guion de \`guion.txt\` (o usa los textos por toma de la tabla).
+- Música: solo de la biblioteca de CapCut con licencia comercial o audio original. No uses canciones con derechos en una cuenta de empresa.
+- Baja la música a −18/−20 dB cuando haya voz.
+
+## 5. Portada y exportación
+- Usa \`portada-1080x1920.png\` como portada al subir el Reel.
+- Exporta: resolución 1080p, 30 fps, MP4, tasa de bits recomendada.
+- Revisión final: producto real visible, sin precios ni existencias no confirmadas, sin texto marcado ${PH}.
+
+Esta herramienta no publica en redes sociales; la publicación es manual y requiere aprobación.
+`}
+function srt(tl){let n=0;return tl.filter(r=>r.voice||r.text).map(r=>`${++n}\n${srtT(r.start)} --> ${srtT(r.end)}\n${r.voice||r.text}\n`).join("\n")}
+async function renderReelCover(c,it){
+  await ensureFonts();const W=1080,H=1920;c.width=W;c.height=H;const ctx=c.getContext("2d");const C=BRAND.colors;
+  const first=it.shots.map(s=>mediaById(s.mediaId)).find(Boolean);const img=first?await loadMediaImage(first):null;
+  ctx.fillStyle=C.navy;ctx.fillRect(0,0,W,H);if(img)cover(ctx,img,0,0,W,H);
+  const g=ctx.createLinearGradient(0,H*.4,0,H);g.addColorStop(0,"rgba(18,45,80,0)");g.addColorStop(1,"rgba(18,45,80,.9)");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=C.yellow;ctx.fillRect(80,H*.58-28,160,14);
+  const y=drawText(ctx,it.hook||it.title,80,H*.58,W-160,96,1.04,DISPLAY,"#FFFFFF",4);
+  drawText(ctx,BRAND.site,80,Math.min(y+36,H-460),W-160,36,1,"700 {s}px 'Nunito Sans', sans-serif",BRAND.colors.yellow,1);
+}
+VIEWS.reel=main=>{
+  const list=S.items.filter(i=>i.type==="reel");
+  if(!list.length){main.innerHTML=head("Preparar Reel","")+`<div class="panel empty"><p>No hay Reels todavía.</p><button class="primary" id="mk">Crear Reel</button></div>`;
+    $("#mk",main).onclick=async()=>{const it=await addItem(newItem({type:"reel",status:"borrador",title:"Nuevo Reel"}));S.cur.reel=it.id;route()};return}
+  if(!item(S.cur.reel)||item(S.cur.reel).type!=="reel")S.cur.reel=list[0].id;const it=item(S.cur.reel);
+  const av=S.media.filter(m=>!(m.tags||[]).includes("logo"));
+  main.innerHTML=head("Preparar Reel con material real","Elige tus clips y fotos reales en orden, define el recorte, el texto en pantalla y la voz de cada toma. Exporta un paquete para editar en CapCut.",`<button id="newR">Nuevo Reel</button>`)+
+  `<div class="panel" style="margin-bottom:14px"><div class="f2"><label>Reel<select id="r_sel">${itemOptions("reel",it.id)}</select></label><label>Título<input id="r_title" value="${esc(it.title)}"></label><label>Estado<select id="r_status">${STATUSES.map(([k,l])=>`<option value="${k}" ${k===it.status?"selected":""}>${l}</option>`).join("")}</select></label></div>
+  <label style="margin-top:10px">Hook (primeros 3 s)<input id="r_hook" value="${esc(it.hook)}"></label>
+  <label style="margin-top:10px">Guion<textarea id="r_script" style="min-height:120px">${esc(it.script)}</textarea></label><div class="row" style="margin-top:8px"><button id="r_gs">Generar guion base</button><a class="btn" href="#copy" id="r_copy">Más hooks y copy</a></div></div>
+  <div class="split"><div><h2 style="margin-bottom:8px">Tomas</h2><div class="list" id="shots"></div>
+   <div class="panel" style="margin-top:12px"><h3>Agregar material real</h3>${av.length?`<div class="media-grid" id="pickm" style="margin-top:8px;grid-template-columns:repeat(auto-fill,minmax(110px,1fr))"></div>`:`<div class="warn" style="margin-top:8px">No hay material en la biblioteca. <a href="#biblioteca">Sube tus clips y fotos reales</a>; no se generan videos ficticios.</div>`}</div></div>
+   <div class="panel" style="position:sticky;top:12px"><h3>Paquete para CapCut</h3><canvas class="preview" id="rc" style="margin-top:8px;max-width:240px"></canvas><p style="font-size:.85rem;color:var(--muted)">Incluye clips numerados, guion, instrucciones de edición, subtítulos .srt, textos en pantalla, copy y portada 1080×1920.</p>
+   <div id="r_warn"></div><div class="row"><button class="primary" id="r_zip">Exportar paquete ZIP</button><button id="r_md">Solo instrucciones</button><button id="r_cov">Portada PNG</button></div>
+   <details style="margin-top:10px"><summary>Ver instrucciones</summary><div class="mono" id="r_guide"></div></details></div></div>`;
+  $("#newR",main).onclick=async()=>{const n=await addItem(newItem({type:"reel",status:"borrador",title:"Nuevo Reel"}));S.cur.reel=n.id;route()};
+  $("#r_sel",main).onchange=e=>{S.cur.reel=e.target.value;route()};
+  [["title","r_title"],["hook","r_hook"],["script","r_script"]].forEach(([k,id])=>$("#"+id,main).oninput=e=>{it[k]=e.target.value;touch(it);refresh()});
+  $("#r_status",main).onchange=e=>{it.status=e.target.value;touch(it);toast("Estado: "+label(STATUSES,it.status))};
+  $("#r_gs",main).onclick=()=>{it.script=genScript(it);$("#r_script",main).value=it.script;touch(it)};
+  $("#r_copy",main).onclick=()=>{S.cur.copy=it.id};
+  const rc=$("#rc",main);let ct;
+  const refresh=()=>{clearTimeout(ct);ct=setTimeout(()=>renderReelCover(rc,it),150);const tl=reelTimeline(it);$("#r_guide",main).textContent=capcutGuide(it,tl);
+    const bad=!it.shots.length;$("#r_warn",main).innerHTML=bad?`<div class="err" style="margin-bottom:8px">Agrega al menos una toma con material real para exportar.</div>`:"";$("#r_zip",main).disabled=bad;$("#r_cov",main).disabled=false};
+  const shots=$("#shots",main);
+  const drawShots=()=>{shots.innerHTML=it.shots.length?"":'<div class="panel empty">Sin tomas. Agrega clips o fotos desde abajo.</div>';const tl=reelTimeline(it);
+    it.shots.forEach((s,i)=>{const m=mediaById(s.mediaId);const r=tl[i];const el=document.createElement("div");el.className="shot";
+      el.innerHTML=`<div class="thumb"></div><div style="display:grid;gap:6px;min-width:0"><div class="row" style="justify-content:space-between"><b style="overflow-wrap:anywhere">${i+1}. ${esc(m?m.name:"(archivo eliminado)")}</b><span class="chip">${fmtT(r.start)}–${fmtT(r.end)}</span></div>
+      <div class="f2" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr))">${m&&m.mime.startsWith("video")?`<label>Inicio en clip (s)<input type="number" step="0.1" min="0" data-k="in" value="${s.in||0}"></label>`:""}<label>Duración (s)<input type="number" step="0.1" min="0.3" data-k="dur" value="${(r.dur).toFixed(1)}"></label></div>
+      <label>Texto en pantalla<input data-k="text" value="${esc(s.text||"")}"></label><label>Voz en off<input data-k="voice" value="${esc(s.voice||"")}"></label><label>Nota de edición<input data-k="note" value="${esc(s.note||"")}" placeholder="ej. zoom suave, velocidad 2x, corte en el beat"></label>
+      <div class="row"><button data-up ${i?"":"disabled"}>↑</button><button data-down ${i<it.shots.length-1?"":"disabled"}>↓</button><button class="danger" data-del>Quitar</button></div></div>`;
+      shots.appendChild(el);
+      if(m)Store.url(m.ref).then(u=>{if(u)$(".thumb",el).innerHTML=m.mime.startsWith("video")?`<video src="${u}#t=${s.in||0}" muted playsinline preload="metadata"></video>`:`<img src="${u}" alt="">`});
+      $$("[data-k]",el).forEach(inp=>inp.addEventListener("change",()=>{s[inp.dataset.k]=inp.type==="number"?+inp.value:inp.value;touch(it);drawShots();refresh()}));
+      $("[data-up]",el).onclick=()=>{[it.shots[i-1],it.shots[i]]=[it.shots[i],it.shots[i-1]];touch(it);drawShots();refresh()};
+      $("[data-down]",el).onclick=()=>{[it.shots[i+1],it.shots[i]]=[it.shots[i],it.shots[i+1]];touch(it);drawShots();refresh()};
+      $("[data-del]",el).onclick=()=>{it.shots.splice(i,1);touch(it);drawShots();refresh()}})};
+  const pm=$("#pickm",main);if(pm)av.forEach(m=>{const b=document.createElement("button");b.className="mcard";b.style.padding="0";b.style.borderRadius="10px";b.title="Agregar "+m.name;
+    b.innerHTML=`<div class="thumb"></div><div class="body" style="padding:4px 6px;font-size:.72rem;overflow-wrap:anywhere">+ ${esc(m.name)}</div>`;pm.appendChild(b);
+    Store.url(m.ref).then(u=>{if(u)$(".thumb",b).innerHTML=m.mime.startsWith("video")?`<video src="${u}" muted playsinline preload="metadata"></video>`:`<img src="${u}" alt="">`});
+    b.onclick=()=>{const isV=m.mime.startsWith("video");it.shots.push({mediaId:m.id,in:0,dur:isV?Math.min(3,m.duration||3):2.5,text:"",voice:"",note:""});touch(it);drawShots();refresh();toast("Toma agregada")}});
+  drawShots();refresh();
+  $("#r_md",main).onclick=()=>saveFile(slug(it.title)+"-instrucciones-capcut.md",new Blob([capcutGuide(it,reelTimeline(it))],{type:"text/markdown"}));
+  $("#r_cov",main).onclick=async()=>{const c=document.createElement("canvas");await renderReelCover(c,it);saveFile(slug(it.title)+"-portada.png",await canvasBlob(c))};
+  $("#r_zip",main).onclick=async e=>{e.target.disabled=true;e.target.textContent="Generando…";try{await saveFile(slug(it.title)+"-reel-capcut.zip",await buildReelZip(it))}catch(err){toast(err.message)}finally{e.target.disabled=false;e.target.textContent="Exportar paquete ZIP"}};
+};
+async function buildReelZip(it){
+  if(!it.shots.length)throw new Error("Agrega al menos una toma con material real");
+  const tl=reelTimeline(it);const files=[];const seen=new Set();
+  for(const r of tl){if(!r.media||!r.media.ref)throw new Error("La toma "+r.n+" no tiene archivo; vuelve a agregarla");
+    const b=await Store.getBlob(r.media.ref);if(!b)throw new Error("No se encontró el archivo de la toma "+r.n+" en este navegador");
+    if(!seen.has(r.file)){files.push({name:r.file,data:b});seen.add(r.file)}}
+  const c=document.createElement("canvas");await renderReelCover(c,it);files.push({name:"portada-1080x1920.png",data:await canvasBlob(c)});
+  files.push({name:"instrucciones-capcut.md",data:capcutGuide(it,tl)});
+  files.push({name:"subtitulos.srt",data:srt(tl)||"1\n00:00:00,000 --> 00:00:03,000\n"+(it.hook||it.title)+"\n"});
+  files.push({name:"textos-en-pantalla.txt",data:tl.map(r=>`${r.n}. [${fmtT(r.start)}–${fmtT(r.end)}] ${r.text||"(sin texto)"}`).join("\n")+"\n"});
+  files.push({name:"guion.txt",data:`HOOK\n${it.hook}\n\nGUION\n${it.script}\n\nVOZ POR TOMA\n${tl.map(r=>`${r.n}. ${r.voice||"—"}`).join("\n")}\n`});
+  files.push({name:"copy-instagram.txt",data:it.caption||genCaption(it)});
+  files.push({name:"LEEME.txt",data:`Paquete de Reel: ${it.title}\n1. Descomprime este ZIP.\n2. Sigue instrucciones-capcut.md.\n3. Material incluido: ${tl.length} archivo(s) real(es) en /clips.\nEsta herramienta no publica en redes sociales.\n`});
+  return makeZip(files);
+}
+
+/* ---- Calendario ---- */
+VIEWS.calendario=main=>{
+  const base=S.calMonth||new Date();const y=base.getFullYear(),mo=base.getMonth();
+  const first=new Date(y,mo,1);const startDow=(first.getDay()+6)%7;const start=new Date(y,mo,1-startDow);
+  const days=[];for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d)}
+  const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const months=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  const unsched=S.items.filter(i=>!i.date);
+  main.innerHTML=head("Calendario editorial","Fechas y estados de cada pieza. Haz clic en una pieza para cambiar fecha o estado.",`<button id="prev" aria-label="Mes anterior">←</button><b style="min-width:150px;text-align:center">${months[mo]} ${y}</b><button id="next" aria-label="Mes siguiente">→</button><button id="tod">Hoy</button>`)+
+  `<div class="row" style="margin-bottom:10px">${STATUSES.map(([k,l])=>`<span class="chip s-${k}">${l}</span>`).join("")}</div>
+  <div style="overflow-x:auto"><div class="cal" style="min-width:560px">${["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d=>`<div class="dow">${d}</div>`).join("")}
+  ${days.map(d=>{const k=iso(d);const its=S.items.filter(i=>i.date===k);return`<div class="day ${d.getMonth()!==mo?"other":""} ${k===today()?"today":""}"><span class="n">${d.getDate()}</span>${its.map(i=>`<button class="ev s-${i.status}" data-open="${i.id}" title="${esc(i.title)}">${esc(label(TYPES,i.type))}: ${esc(i.title)}</button>`).join("")}</div>`}).join("")}</div></div>
+  <div class="panel" style="margin-top:14px"><h2>Sin fecha (${unsched.length})</h2><div class="list" style="margin-top:8px">${unsched.map(i=>`<div class="idea"><div>${statusChip(i.status)} <b>${esc(i.title)}</b></div><input type="date" data-date="${i.id}" aria-label="Fecha para ${esc(i.title)}" style="max-width:170px"></div>`).join("")||'<p style="color:var(--muted)">Todo tiene fecha.</p>'}</div></div>`;
+  bindOpen(main);
+  $("#prev",main).onclick=()=>{S.calMonth=new Date(y,mo-1,1);route()};$("#next",main).onclick=()=>{S.calMonth=new Date(y,mo+1,1);route()};$("#tod",main).onclick=()=>{S.calMonth=null;route()};
+  $$("[data-date]",main).forEach(inp=>inp.onchange=async()=>{const it=item(inp.dataset.date);it.date=inp.value;await touch(it,true);toast("Fecha asignada");route()});
+};
+
+/* ---- Respaldo y descargas ---- */
+VIEWS.respaldo=main=>{
+  main.innerHTML=head("Descargas y respaldo","Descarga paquetes por contenido o un respaldo completo. Puedes restaurar un respaldo en otro navegador.")+
+  `<div class="panel"><h2>Paquetes por contenido</h2><div class="list" style="margin-top:8px">${S.items.map(i=>`<div class="idea"><div>${statusChip(i.status)} <b>${esc(i.title)}</b> <span style="color:var(--muted)">· ${esc(label(TYPES,i.type))}</span></div><button data-pk="${i.id}">Descargar ZIP</button></div>`).join("")||'<p style="color:var(--muted)">Sin contenido.</p>'}</div></div>
+  <div class="panel" style="margin-top:14px"><h2>Respaldo completo</h2><p>Incluye todo el contenido y, opcionalmente, los archivos de la biblioteca.</p><div class="row"><button class="primary" id="bk_json">Respaldo de datos (.json)</button><button id="bk_zip">Respaldo con archivos (.zip)</button></div>
+  <h3 style="margin-top:14px">Restaurar</h3><p style="color:var(--muted);font-size:.85rem">Agrega el contenido del respaldo a lo que ya tienes (no borra nada; si un elemento ya existe, se actualiza).</p><input type="file" id="bk_in" accept=".json,application/json"></div>
+  <div class="panel" style="margin-top:14px"><h2>Almacenamiento</h2><p>${Store.mode==="cloud"?"Tu trabajo se guarda en tu espacio de Claude: se conserva al recargar y en otros dispositivos con tu cuenta. Archivos de más de 20 MB quedan solo en el navegador donde los subiste.":"Tu trabajo se guarda en este navegador (IndexedDB). Se conserva al recargar, pero no se comparte con otros dispositivos: descarga respaldos con regularidad."}</p></div>`;
+  $$("[data-pk]",main).forEach(b=>b.onclick=async()=>{const it=item(b.dataset.pk);b.disabled=true;try{let z;
+    if(it.type==="carrusel"&&it.slides.length)z=await buildCarouselZip(it);else if(it.type==="reel"&&it.shots.length)z=await buildReelZip(it);else z=await makeZip([{name:"contenido.txt",data:textPack(it)}]);
+    await saveFile(slug(it.title)+".zip",z)}catch(e){toast(e.message)}finally{b.disabled=false}});
+  const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
+  $("#bk_json",main).onclick=()=>saveFile("content-hq-respaldo-"+today()+".json",new Blob([data()],{type:"application/json"}));
+  $("#bk_zip",main).onclick=async e=>{e.target.disabled=true;try{const files=[{name:"respaldo.json",data:data()}];for(const m of S.media){const b=await Store.getBlob(m.ref).catch(()=>null);if(b)files.push({name:"media/"+m.id+"_"+m.name,data:b})}
+    await saveFile("content-hq-respaldo-"+today()+".zip",await makeZip(files))}finally{e.target.disabled=false}};
+  $("#bk_in",main).onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(j.app!=="balloon-store-content-hq"||!Array.isArray(j.items))throw new Error("El archivo no es un respaldo de Content HQ");
+    let n=0;for(const raw of j.items){if(!raw||typeof raw.id!=="string")continue;const it=newItem(raw);const ex=S.items.findIndex(x=>x.id===it.id);if(ex>=0)S.items[ex]=it;else S.items.push(it);await touch(it,true);n++}
+    toast(n+" contenido(s) restaurado(s). Los archivos de la biblioteca se vuelven a subir manualmente.");route()}catch(err){toast(err.message)}};
+};
+
+/* ================= Boot ================= */
+(async()=>{
+  try{await Store.init();const d=await Store.load();S.items=d.items.map(x=>newItem(x));S.media=d.media;
+    $("#storageInfo").textContent=Store.mode==="cloud"?"Guardado en tu espacio de Claude":"Guardado en este navegador";}
+  catch(e){$("#view").innerHTML=`<div class="err">${esc(e.message||e)}</div>`;return}
+  route();
+})();
+</script>

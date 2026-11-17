@@ -13,6 +13,7 @@ Use **Respaldo** to download a JSON or ZIP backup and to restore a JSON backup
 (merge by id, no duplicates).
 
 ## Stations
+- **IA** (`#ia`): Claude propone Reels, carruseles y Stories desde un producto real, una foto o un tema. Directo en claude.ai o flujo asistido; ver [IA.md](IA.md).
 - **Hoy** (inicio): greeting, 6 KPI rings computed from your data, numbered
   "te necesitan hoy" list (overdue, approvals, due ≤ 2 days, missing real
   photos/footage, campaign tasks), upcoming countdowns incl. Mexican key dates.

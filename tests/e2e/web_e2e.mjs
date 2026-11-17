@@ -51,7 +51,16 @@ const MOCK = `(() => {
     async list() { return { assets: [], usage: {} }; },
     async delete(id) { await window.__assetDelete(id); return { deleted: true }; } };
   const downloads = { async save({ filename, data }) { const b = data instanceof Blob ? data : new Blob([data]); await window.__saveDownload(filename, await toB64(b)); return { status: "saved" }; } };
-  const caps = { db, assets, downloads };
+  window.__sampleCalls = [];
+  const sample = async (input, opts = {}) => { throw { code: "upstream_error", message: "text mode not used" }; };
+  sample.limits = async () => ({ maxPromptBytes: 262144, images: { maxCount: 4, maxInputBytes: 20971520, mediaTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"] } });
+  sample.json = async (input, opts = {}) => {
+    const imgs = opts.images ? [].concat(opts.images) : [];
+    window.__sampleCalls.push({ input: String(input), images: imgs.length, imageTypes: imgs.map(b => b.type) });
+    if (window.__sampleMode === "not_granted") throw { code: "not_granted", message: "declined" };
+    return JSON.parse(window.__aiFixture);
+  };
+  const caps = { db, assets, downloads, sample };
   window.claude = { use: async n => (n in caps ? caps[n] : null) };
 })();`;
 
@@ -66,6 +75,7 @@ async function run(mode) {
     await context.exposeFunction("__assetDelete", id => { assetsStore.delete(id); });
     await context.exposeFunction("__saveDownload", (filename, data) => { captured.push({ filename, data }); });
     await context.addInitScript(MOCK);
+    await context.addInitScript(`window.__aiFixture = ${JSON.stringify(fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), "fixtures", "ai_reply.json"), "utf8"))};`);
     await context.route("**/_blob/*", route => { const id = route.request().url().split("/_blob/")[1]; const a = assetsStore.get(id); return a ? route.fulfill({ status: 200, body: a.buf, contentType: a.type }) : route.fulfill({ status: 404, body: "" }); });
   }
   const page = await context.newPage();
@@ -291,8 +301,65 @@ async function run(mode) {
   const bk2j = JSON.parse(fs.readFileSync(bk2, "utf8"));
   ok(P + "backup includes campaigns + series", bk2j.campaigns.length === 1 && bk2j.series.length === 5);
 
+  // ---- Generar con IA ----
+  const AI_FIXTURE = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), "fixtures", "ai_reply.json"), "utf8");
+  await page.goto(BASE + "#ia");
+  await page.waitForSelector("#ai_product");
+  await page.fill("#ai_product", "Estrella QA 45 cm (Anagram)");
+  await page.fill("#ai_facts", "Medida: 45 cm. Forma: estrella. Material: foil metálico.");
+  const aiPhoto = await page.$$eval("#ai_media option", os => os.find(o => o.textContent.includes("photo.png")).value);
+  await page.selectOption("#ai_media", aiPhoto);
+  await page.waitForSelector("#ai_thumb img");
+  const prompt = await page.textContent("#ai_prompt");
+  ok(P + "ai: prompt carries product, confirmed facts and brand rules", prompt.includes("Estrella QA 45 cm (Anagram)") && prompt.includes("Medida: 45 cm") && prompt.includes("No inventes") && prompt.includes("[confirmar con catálogo real]") && !/\$\s?\d/.test(prompt));
+  if (mode === "local") {
+    await page.waitForFunction(() => /claude\.ai/.test(document.querySelector("#ai_dhelp").textContent));
+    ok(P + "ai: direct generation hidden outside claude.ai (assisted only)", await page.$eval("#ai_go", b => b.hidden));
+    await page.fill("#ai_reply", "Aquí está tu JSON:\n```json\n" + AI_FIXTURE + "\n```");
+    await page.click("#ai_import");
+  } else {
+    await page.waitForSelector("#ai_go:not([hidden])");
+    await page.click("#ai_go");
+  }
+  await page.waitForFunction(() => document.querySelectorAll(".ai-prop").length === 3, null, { timeout: 15000 });
+  ok(P + "ai: 3 proposals (reel, carrusel, stories) rendered", (await page.$$eval(".ai-prop > .row:first-child .chip:first-child", c => c.map(x => x.textContent))).sort().join(",") === "Carrusel,Reel,Stories");
+  if (mode === "cloud") {
+    const calls = await page.evaluate(() => window.__sampleCalls);
+    ok(P + "ai: direct call sent prompt + 1 JPEG photo through sample.json", calls.length === 1 && calls[0].images === 1 && calls[0].imageTypes[0] === "image/jpeg" && calls[0].input.includes("Estrella QA"));
+  }
+  const flagged = await page.$$eval(".ai-prop .err", e => e.map(x => x.textContent));
+  ok(P + "ai: brand check flags the invented price", flagged.length === 1 && flagged[0].includes("precio"), flagged.join("|"));
+  await page.screenshot({ path: path.join(OUT, mode + "-ia.png"), fullPage: true });
+  await page.click("#ai_saveall");
+  await page.waitForFunction(() => document.querySelectorAll(".ai-prop [data-openp]").length === 3);
+  const storyZip = await downloadVia(page, mode, captured, () => page.click(".ai-prop.t-story [data-storyzip]"));
+  ok(P + "ai: Stories export ZIP with frames", fs.statSync(storyZip).size > 20000 && fs.readFileSync(storyZip).includes(Buffer.from("stories/01.png")));
+  await page.click(".ai-prop.t-carrusel [data-openp]");
+  await page.waitForSelector(".slide");
+  const aiSlidePhoto = await page.$eval(".slide:nth-child(2) [data-k='mediaId']", s => s.value);
+  ok(P + "ai: saved carousel uses the real photo on the product slide and can export", aiSlidePhoto === aiPhoto && !(await page.$eval("#k_zip", b => b.disabled)));
+  const aiZip = await downloadVia(page, mode, captured, () => page.click("#k_zip"));
+  ok(P + "ai: carousel from AI exports a ZIP", fs.statSync(aiZip).size > 10000);
+  if (mode === "cloud") {
+    await page.goto(BASE + "#ia");
+    await page.evaluate(() => { window.__sampleMode = "not_granted"; });
+    await page.waitForSelector("#ai_go:not([hidden])");
+    await page.click("#ai_go");
+    await page.waitForFunction(() => document.querySelector("#ai_go").hidden);
+    ok(P + "ai: declined permission hides direct path and explains the assisted one", (await page.textContent("#ai_status")).includes("No diste permiso") && !!(await page.$("#ai_import")));
+  }
+  await page.reload();
+  await page.goto(BASE + "#panel");
+  await page.waitForSelector(".kanban");
+  const aiCards = await page.$$eval(".kanban .col:nth-child(2) .card .t", c => c.map(x => x.textContent));
+  ok(P + "ai: 3 AI drafts persist in Borradores after reload", ["Estrella QA: 4 montajes que sí se venden", "La estrella que cambia de color", "Encuesta: ¿estrella o corazón?"].every(t => aiCards.includes(t)), aiCards.join(" | "));
+  await page.click(".kanban .card:has-text('Encuesta: ¿estrella o corazón?')");
+  const notes = await page.inputValue("#e_notes");
+  ok(P + "ai: draft notes keep source, flags and verification list", notes.includes("Propuesta generada con Claude") && notes.includes("menciona un precio"));
+  await page.keyboard.press("Escape");
+
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const v of ["panel", "hoy", "campanas", "estudio", "resultados"]) {
+  for (const v of ["panel", "hoy", "campanas", "estudio", "resultados", "ia"]) {
     await page.goto(BASE + "#" + v);
     await page.waitForTimeout(300);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);

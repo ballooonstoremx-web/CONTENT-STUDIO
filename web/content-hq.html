@@ -28,7 +28,7 @@ p{margin:.4em 0}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .app{min-height:100%}
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:saturate(1.2) blur(8px);-webkit-backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--line)}
-.top-in{max-width:1280px;margin:0 auto;padding-block:12px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:10px}
+.top-in{max-width:1400px;margin:0 auto;padding-block:12px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:10px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--fg)}
 .brand b{font-family:var(--serif);font-size:1.15rem;letter-spacing:-.01em;text-transform:none;font-weight:600}
@@ -196,6 +196,26 @@ canvas.preview{width:100%;max-width:420px;height:auto;border-radius:12px;border:
 .convs b{font-size:1.8rem;font-weight:700;display:block;margin:2px 0}
 .insight{background:var(--focus);border:1px solid var(--focusline);border-radius:var(--r);padding:20px}
 table.met{border-collapse:collapse;width:100%;min-width:820px;font-size:.85rem}table.met th{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}table.met th,table.met td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}table.met input{width:92px;padding:6px 8px;font-variant-numeric:tabular-nums}
+/* ---- Generar con IA ---- */
+.ai-split{grid-template-columns:minmax(0,1fr) minmax(0,420px)}
+.ai-photo{display:flex;gap:14px;align-items:end;flex-wrap:wrap}
+.ai-thumb{width:72px;height:72px;border-radius:12px;overflow:hidden;background:var(--surface2);border:1px solid var(--line);flex:none}
+.ai-thumb:empty{display:none}.ai-thumb img,.ai-thumb video{width:100%;height:100%;object-fit:cover}
+fieldset.fmts{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:18px;margin:0}
+fieldset.fmts legend{font-size:.74rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:0 4px}
+label.ck{flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.92rem;color:var(--fg);font-weight:500}
+label.ck input{width:18px;height:18px;accent-color:var(--ink)}
+.ai-card h3{font-size:1.35rem;margin:4px 0 6px}.ai-help{color:var(--muted);font-size:.88rem;margin:0 0 12px}
+#ai_direct{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset,var(--shadow)}
+#ai_status{margin-top:10px;font-size:.88rem}
+.steps{margin:8px 0 12px;padding-left:22px;display:grid;gap:14px;font-size:.9rem}.steps li{padding-left:2px}.steps li::marker{font-family:var(--serif);font-weight:600}.steps li>.row,.steps li>textarea{margin-top:8px}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line2);border-top-color:var(--pink);border-radius:50%;animation:spin 1s linear infinite;vertical-align:-1px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-props{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.ai-prop{display:flex;flex-direction:column;gap:10px}.ai-prop h3{font-size:1.3rem}
+.ai-hook{font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.3;margin:0}
+.ai-list{margin:0;padding-left:20px;display:grid;gap:4px;font-size:.86rem}.ai-list small{color:var(--muted)}
+.ai-prop details{font-size:.86rem}.ai-prop ul{margin:6px 0 0;padding-left:18px}
 /* ---- Responsive ---- */
 @media (max-width:900px){
   nav.rail{flex-wrap:nowrap}
@@ -248,6 +268,7 @@ table.met{border-collapse:collapse;width:100%;min-width:820px;font-size:.85rem}t
         <a href="#campanas" data-r="campanas">Campañas</a>
         <a href="#calendario" data-r="calendario">Calendario</a></span>
         <span class="grp"><span class="sec">Crear</span>
+        <a href="#ia" data-r="ia" title="Generar con IA">IA</a>
         <a href="#copy" data-r="copy" title="Hooks, guiones y copies">Copies</a>
         <a href="#carrusel" data-r="carrusel">Carrusel</a>
         <a href="#reel" data-r="reel">Reel</a>
@@ -384,7 +405,7 @@ async function makeZip(files){ // files: [{name, data: Blob|string}]
 const S={items:[],media:[],campaigns:[],series:[],curCamp:null,week:null,studioStep:1,seriesFilter:"",resPeriod:"todo",cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
 const item=id=>S.items.find(i=>i.id===id);
 const mediaById=id=>S.media.find(m=>m.id===id);
-function newItem(p={}){return Object.assign({id:uid(),type:"reel",title:"Contenido sin título",status:"idea",date:"",pillar:"",occasion:"",line:"",audience:"decoradoras",hook:"",script:"",caption:"",cta:"",notes:"",slides:[],shots:[],metrics:{},campaignId:"",seriesId:"",ep:0,filmChecks:{},example:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()},p)}
+function newItem(p={}){return Object.assign({id:uid(),type:"reel",title:"Contenido sin título",status:"idea",date:"",pillar:"",occasion:"",line:"",audience:"decoradoras",hook:"",script:"",caption:"",cta:"",notes:"",slides:[],shots:[],metrics:{},campaignId:"",seriesId:"",ep:0,filmChecks:{},frames:[],storyMedia:"",example:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()},p)}
 const saveTimers=new Map();
 function touch(it,immediate){it.updatedAt=new Date().toISOString();clearTimeout(saveTimers.get(it.id));
   const go=()=>Store.save("items",it).catch(e=>toast("No se guardó: "+(e.message||e.code||e)));
@@ -484,6 +505,7 @@ function drawText(ctx,text,x,y,maxW,size,lh,font,color,maxLines=8,align="left"){
   ctx.font=font.replace("{s}",size);ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline="top";
   let lines=[];String(text||"").split("\n").forEach(p=>lines.push(...wrap(ctx,p,maxW)));lines=lines.slice(0,maxLines);
   lines.forEach((l,i)=>ctx.fillText(l,x,y+i*size*lh));return y+lines.length*size*lh}
+function contain(ctx,img,x,y,w,h){const sc=Math.min(w/img.width,h/img.height);const dw=img.width*sc,dh=img.height*sc;ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
 function cover(ctx,img,x,y,w,h){const iw=img.width,ih=img.height;const s=Math.max(w/iw,h/ih);const sw=w/s,sh=h/s;ctx.drawImage(img,(iw-sw)/2,(ih-sh)/2,sw,sh,x,y,w,h)}
 function confetti(ctx,W,H,seed){const cols=Object.values(BRAND.colors).slice(0,5);for(let i=0;i<14;i++){const r=((seed*31+i*97)%100)/100;const r2=((seed*17+i*53)%100)/100;ctx.fillStyle=cols[i%5];ctx.globalAlpha=.9;ctx.beginPath();ctx.arc(r*W,r2<.5?r2*H*.25:H-(1-r2)*H*.2,8+((i*13)%22),0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1}
 function logoMedia(){return S.media.find(m=>(m.tags||[]).includes("logo")&&(m.mime||"").startsWith("image"))}
@@ -510,7 +532,7 @@ async function renderSlide(canvas,s,{W=1080,H=1350,index=1,total=1}={}){
     ctx.fillStyle=C.blue;ctx.fillRect(0,H-12,W,12);await drawFooter(ctx,W,H,false)}
   else if(tpl==="producto"||tpl==="foto"){
     const ph=tpl==="producto"?H*.68:H;
-    if(img){cover(ctx,img,0,0,W,ph)}else{missing=true;ctx.fillStyle="#FFF4D6";ctx.fillRect(0,0,W,ph);ctx.strokeStyle=C.orange;ctx.lineWidth=10;ctx.setLineDash([30,20]);ctx.strokeRect(40,40,W-80,ph-80);ctx.setLineDash([]);
+    if(img){if(tpl==="producto"){ctx.fillStyle="#FFFFFF";ctx.fillRect(0,0,W,ph);contain(ctx,img,60,60,W-120,ph-110)}else cover(ctx,img,0,0,W,ph)}else{missing=true;ctx.fillStyle="#FFF4D6";ctx.fillRect(0,0,W,ph);ctx.strokeStyle=C.orange;ctx.lineWidth=10;ctx.setLineDash([30,20]);ctx.strokeRect(40,40,W-80,ph-80);ctx.setLineDash([]);
       drawText(ctx,"FALTA FOTO REAL",W/2,ph/2-80,W-200,80,1,DISPLAY,"#7a3b00",1,"center");drawText(ctx,"Sube la fotografía del producto en Biblioteca y selecciónala aquí.",W/2,ph/2+20,W-240,38,1.3,BODY,"#7a3b00",3,"center")}
     if(tpl==="producto"){ctx.fillStyle=C.navy;ctx.fillRect(0,ph,W,H-ph);const y=drawText(ctx,s.headline,70,ph+40,W-140,64,1.05,DISPLAY,"#FFFFFF",2);drawText(ctx,s.body,70,y+10,W-140,34,1.3,BODY,"#D6ECFB",2);
       ctx.fillStyle=C.yellow;ctx.fillRect(0,ph-10,W,10)}
@@ -862,6 +884,29 @@ async function buildReelZip(it){
   return makeZip(files);
 }
 
+
+/* ---- Stories export (1080x1920 frames with the real photo; stickers are added in Instagram) ---- */
+async function renderStoryFrame(c,it,i){
+  await ensureFonts();const W=1080,H=1920;c.width=W;c.height=H;const ctx=c.getContext("2d");const C=BRAND.colors;const f=it.frames[i]||{};const n=it.frames.length;
+  ctx.fillStyle="#F7F2E9";ctx.fillRect(0,0,W,H);
+  for(let k=0;k<n;k++){ctx.fillStyle=k<=i?C.navy:"rgba(18,45,80,.18)";ctx.fillRect(60+k*((W-120)/n),130,(W-120)/n-10,8)}
+  const m=it.storyMedia?mediaById(it.storyMedia):null;const img=m?await loadMediaImage(m):null;
+  const py=240,ph=640;ctx.fillStyle="#FFFFFF";ctx.beginPath();ctx.roundRect?ctx.roundRect(60,py,W-120,ph,36):ctx.rect(60,py,W-120,ph);ctx.fill();
+  if(img){ctx.save();ctx.beginPath();ctx.roundRect?ctx.roundRect(60,py,W-120,ph,36):ctx.rect(60,py,W-120,ph);ctx.clip();contain(ctx,img,100,py+40,W-200,ph-80);ctx.restore()}
+  else{drawText(ctx,"FALTA FOTO REAL",W/2,py+ph/2-40,W-200,64,1,DISPLAY,"#7a3b00",1,"center")}
+  let y=drawText(ctx,f.text||"",80,py+ph+64,W-160,74,1.08,DISPLAY,C.navy,3)+30;
+  if(f.sticker){const bh=150;ctx.setLineDash([18,12]);ctx.lineWidth=5;ctx.strokeStyle=C.pink;ctx.beginPath();ctx.roundRect?ctx.roundRect(80,y,W-160,bh,30):ctx.rect(80,y,W-160,bh);ctx.stroke();ctx.setLineDash([]);
+    drawText(ctx,"STICKER EN INSTAGRAM",120,y+28,W-240,26,1,"700 {s}px 'Inter', sans-serif",C.pink,1);drawText(ctx,f.sticker,120,y+66,W-240,34,1.2,"600 {s}px 'Inter', sans-serif",C.navy,2)}
+  drawText(ctx,"Balloon Store",80,H-460,600,40,1,DISPLAY,C.navy,1);drawText(ctx,BRAND.site,W-80,H-452,600,30,1,"700 {s}px 'Inter', sans-serif",C.navy,1,"right");
+}
+async function buildStoryZip(it){
+  if(!it.frames||!it.frames.length)throw new Error("Estas Stories no tienen historias definidas.");
+  const files=[];for(let i=0;i<it.frames.length;i++){const c=document.createElement("canvas");await renderStoryFrame(c,it,i);files.push({name:`stories/${String(i+1).padStart(2,"0")}.png`,data:await canvasBlob(c)})}
+  files.push({name:"guion.txt",data:textPack(it)});
+  files.push({name:"LEEME.txt",data:`Stories: ${it.title}\nSube las imágenes de /stories en orden (01, 02, …).\nEl recuadro rosa marca dónde poner el sticker en Instagram (encuesta, quiz, preguntas o enlace); colócalo encima y quita el recuadro con el sticker.\nZona segura: el texto ya está fuera de los 220 px superiores y 420 px inferiores.\nAntes de publicar: confirma que no queda texto marcado ${PH}.\nEsta herramienta no publica en redes sociales.\n`});
+  return makeZip(files);
+}
+
 /* ---- Calendario ---- */
 VIEWS.calendario=main=>{
   const base=S.calMonth||new Date();const y=base.getFullYear(),mo=base.getMonth();
@@ -888,7 +933,7 @@ VIEWS.respaldo=main=>{
   <h3 style="margin-top:14px">Restaurar</h3><p style="color:var(--muted);font-size:.85rem">Agrega el contenido del respaldo a lo que ya tienes (no borra nada; si un elemento ya existe, se actualiza).</p><input type="file" id="bk_in" accept=".json,application/json"></div>
   <div class="panel" style="margin-top:14px"><h2>Almacenamiento</h2><p>${Store.mode==="cloud"?"Tu trabajo se guarda en tu espacio de Claude: se conserva al recargar y en otros dispositivos con tu cuenta. Archivos de más de 20 MB quedan solo en el navegador donde los subiste.":"Tu trabajo se guarda en este navegador (IndexedDB). Se conserva al recargar, pero no se comparte con otros dispositivos: descarga respaldos con regularidad."}</p></div>`;
   $$("[data-pk]",main).forEach(b=>b.onclick=async()=>{const it=item(b.dataset.pk);b.disabled=true;try{let z;
-    if(it.type==="carrusel"&&it.slides.length)z=await buildCarouselZip(it);else if(it.type==="reel"&&it.shots.length)z=await buildReelZip(it);else z=await makeZip([{name:"contenido.txt",data:textPack(it)}]);
+    if(it.type==="carrusel"&&it.slides.length)z=await buildCarouselZip(it);else if(it.type==="reel"&&it.shots.length)z=await buildReelZip(it);else if(it.type==="story"&&it.frames&&it.frames.length)z=await buildStoryZip(it);else z=await makeZip([{name:"contenido.txt",data:textPack(it)}]);
     await saveFile(slug(it.title)+".zip",z)}catch(e){toast(e.message)}finally{b.disabled=false}});
   const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,campaigns:S.campaigns,series:S.series,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
   $("#bk_json",main).onclick=()=>saveFile("content-hq-respaldo-"+today()+".json",new Blob([data()],{type:"application/json"}));
@@ -944,7 +989,7 @@ VIEWS.hoy=main=>{
     ...S.campaigns.filter(c=>c.start>=t).map(c=>({d:c.start,txt:"Arranca: "+c.name,k:"Campaña",camp:c.id})),
     ...seasons(t).slice(0,3).map(([d,n])=>({d,txt:n,k:"Fecha clave"}))].sort((a,b)=>a.d>b.d?1:-1).slice(0,8);
   const camps=S.campaigns.filter(c=>c.end>=t).sort((a,b)=>a.start>b.start?1:-1).slice(0,3);
-  main.innerHTML=`<div class="hello"><div><div class="eyebrow">Balloon Store · Content HQ · ${esc(fmtLong(t))}</div><h1 class="greet">${greet}, <em>equipo</em></h1></div><div class="row"><a class="btn" href="#estudio">Estudio semanal</a><button class="primary" id="newBtn">Nuevo contenido</button></div></div>
+  main.innerHTML=`<div class="hello"><div><div class="eyebrow">Balloon Store · Content HQ · ${esc(fmtLong(t))}</div><h1 class="greet">${greet}, <em>equipo</em></h1></div><div class="row"><a class="btn" href="#estudio">Estudio semanal</a><a class="btn" href="#ia">Generar con IA</a><button class="primary" id="newBtn">Nuevo contenido</button></div></div>
   <div class="kpis">${ring(att.length,Math.max(att.length,1),att.length?BRAND.colors.pink:BRAND.colors.green,att.length,"te necesitan hoy",att.length>0)}
    ${ring(rev,Math.max(open,1),BRAND.colors.pink,rev,"por aprobar")}
    ${ring(wDone,Math.max(week.length,1),BRAND.colors.blue,week.length?`${wDone}/${week.length}`:"0","listas esta semana")}
@@ -1119,6 +1164,189 @@ VIEWS.resultados=main=>{
     const rows=[["titulo","formato","fecha","pilar",...MET.map(m=>m[0])].join(","),...pub.map(i=>[q(i.title),q(label(TYPES,i.type)),q(i.date),q(i.pillar),...MET.map(([k])=>q((i.metrics||{})[k]))].join(","))];
     saveFile("content-hq-resultados-"+t+".csv",new Blob([rows.join("\n")],{type:"text/csv"}))};
 };
+
+/* ================= Generar con IA (Claude) =================
+   Direct path: claude.use("sample") inside a claude.ai viewer — the viewer's own Claude account,
+   consent asked by the platform, no API key in the page.
+   Assisted path: copy the same prompt into claude.ai and paste the JSON answer back.
+   Both paths go through the same parser and brand-rule checks; results are saved as drafts. */
+const AI_TEMPLATES=["portada","tip","producto","foto","lista","cta"];
+const AI_RISK=[[/\$\s?\d|\b\d+(?:[.,]\d+)?\s?(?:pesos|mxn)\b/i,"menciona un precio"],
+  [/\b(existencias?|en stock|agotad[oa]s?|[uú]ltimas piezas|pocas piezas|quedan \d+|(?:hay|tenemos|contamos con)\s+(?:inventario|piezas|stock)|disponible[s]? (?:hoy|ya|ahora))/i,"menciona existencias"],
+  [/\b(descuento|ofertas?|promoci[oó]n|rebaja)|\d+ ?% ?(?:off|de descuento)/i,"menciona descuento o promoción"],
+  [/\b(env[ií]o gratis|entrega (?:hoy|mañana|inmediata)|llega en \d+)/i,"promete envío o entrega"]];
+let sampleCap;
+async function getSample(){if(sampleCap!==undefined)return sampleCap;if(!hasClaude()){sampleCap=null;return null}
+  try{sampleCap=await withTimeout(window.claude.use("sample"),12000)}catch(e){sampleCap=null}return sampleCap}
+function aiState(){if(!S.ai)S.ai={mode:"producto",topic:"",product:"",facts:"",mediaId:"",formats:{reel:true,carrusel:true,story:true},audience:"decoradoras",occasion:"",line:"",notes:"",proposals:[],source:"",directOff:false};return S.ai}
+const aiFormats=a=>Object.entries(a.formats).filter(([,v])=>v).map(([k])=>k);
+function buildAIPrompt(a,withImage){
+  const m=a.mediaId?mediaById(a.mediaId):null;const fm=aiFormats(a);
+  const input=[a.mode==="tema"&&a.topic?`Tema: ${a.topic}`:"",a.mode!=="tema"&&a.product?`Producto real: ${a.product}`:"",a.occasion?`Ocasión: ${a.occasion}`:"",a.line?`Línea de producto: ${a.line}`:""].filter(Boolean).join("\n");
+  const photo=withImage?`FOTO: te adjunto una foto real${m?` ("${m.name}")`:""}. Usa solo lo que se ve en ella; si el modelo no es legible, no lo supongas.`
+    :m?`FOTO DISPONIBLE: el equipo tiene la foto real "${m.name}"${(m.tags||[]).length?` (etiquetas: ${m.tags.join(", ")})`:""}. Si la recibes adjunta, úsala; si no, no describas detalles visuales que no conoces.`:"FOTO: no hay foto. Pide en \"needs\" las fotos o tomas reales necesarias.";
+  return `Eres el equipo de contenido de Balloon Store (${BRAND.site}), venta de globos al mayoreo en México.
+PÚBLICO: ${a.audience} en México (también ${BRAND.audiences.filter(x=>x!==a.audience).join(" y ")}). Clientes B2B que compran para decorar o revender.
+LÍNEAS DE LA MARCA: ${BRAND.lines.slice(0,3).join(", ")}.
+VOZ: español de México, tuteo, cercana, clara, festiva y práctica. Frases cortas. Sin exageraciones sin respaldo.
+
+REGLAS OBLIGATORIAS
+1. No inventes productos, modelos, empaques, precios, descuentos, existencias, tiempos de entrega ni promociones. No menciones precios ni inventario.
+2. Usa solo los datos de "DATOS CONFIRMADOS". Cualquier dato específico que no esté ahí escríbelo como [confirmar con catálogo real].
+3. Los productos específicos se muestran solo con fotos o video reales. Si una pieza necesita una toma o foto que no existe, pídela en "needs" con descripción concreta (qué, encuadre, orientación). Nunca propongas generar o ilustrar el producto.
+4. Llamadas a la acción sin precios, por ejemplo: ${CTAS.slice(0,3).join(" / ")}.
+5. Hooks de máximo 9 palabras. Texto en pantalla de máximo 7 palabras.
+
+ENTRADA
+${input||"(sin tema ni producto)"}
+DATOS CONFIRMADOS:
+${a.facts.trim()||"(ninguno: no afirmes datos técnicos)"}
+${photo}${a.notes?`\nNOTAS DEL EQUIPO: ${a.notes}`:""}
+
+TAREA
+Propón una publicación por cada formato: ${fm.join(", ")||"reel"}.
+- reel: 15 a 30 s, 4 a 6 tomas con duración en segundos, texto en pantalla, voz en off, nota de edición y la toma real que se necesita ("footage").
+- carrusel: 5 a 7 diapositivas. Plantillas permitidas: portada, tip, lista, producto (requiere foto real), foto, cta. La primera es portada y la última cta. En "lista" pon un punto por línea en "body".
+- story: 3 a 5 historias con texto y sticker sugerido (encuesta, quiz, preguntas, enlace, cuenta regresiva).
+
+FORMATO DE RESPUESTA
+Responde solo con JSON válido, sin texto adicional, con esta forma:
+{"proposals":[{"type":"reel|carrusel|story","title":"","pillar":"${PILLARS.join("|")}","hook":"","alt_hooks":["",""],"caption":"","cta":"","hashtags":["#globos"],"slides":[{"template":"portada","headline":"","body":""}],"shots":[{"duration":3,"text":"","voice":"","note":"","footage":""}],"frames":[{"text":"","sticker":"","note":""}],"needs":["material real que falta"],"verify":["dato que el equipo debe confirmar"]}]}
+Incluye "slides" solo en carrusel, "shots" solo en reel y "frames" solo en story.`;
+}
+function parseAIReply(raw){
+  if(raw&&typeof raw==="object")return normalizeAI(raw);
+  let t=String(raw||"").trim();if(!t)throw new Error("Pega la respuesta de Claude.");
+  const fence=t.match(/```(?:json)?\s*([\s\S]*?)```/i);if(fence)t=fence[1].trim();
+  let data;try{data=JSON.parse(t)}catch(e){const i=t.search(/[\[{]/),j=Math.max(t.lastIndexOf("}"),t.lastIndexOf("]"));
+    if(i<0||j<=i)throw new Error("La respuesta no contiene JSON. Pide a Claude que responda solo con el JSON.");
+    try{data=JSON.parse(t.slice(i,j+1))}catch(e2){throw new Error("El JSON está incompleto o mal formado. Copia la respuesta completa de Claude.")}}
+  return normalizeAI(data);
+}
+const str=(v,n=2000)=>v==null?"":String(v).slice(0,n);
+function normalizeAI(data){
+  const list=Array.isArray(data)?data:Array.isArray(data&&data.proposals)?data.proposals:null;
+  if(!list||!list.length)throw new Error("La respuesta no trae propuestas (\"proposals\").");
+  const typeOf=x=>{x=String(x||"").toLowerCase();return/carr|carous/.test(x)?"carrusel":/stor|histor/.test(x)?"story":"reel"};
+  return list.slice(0,6).map(p=>({type:typeOf(p.type),title:str(p.title,140)||"Propuesta",pillar:str(p.pillar,40),hook:str(p.hook,160),
+    alt_hooks:(Array.isArray(p.alt_hooks)?p.alt_hooks:[]).map(x=>str(x,160)).filter(Boolean).slice(0,5),caption:str(p.caption,2200),cta:str(p.cta,200),
+    hashtags:(Array.isArray(p.hashtags)?p.hashtags:[]).map(x=>str(x,40).trim()).filter(Boolean).map(x=>x.startsWith("#")?x:"#"+x).slice(0,8),
+    slides:(Array.isArray(p.slides)?p.slides:[]).slice(0,10).map(s=>({template:AI_TEMPLATES.includes(s&&s.template)?s.template:"tip",headline:str(s&&s.headline,140),body:str(s&&s.body,600)})),
+    shots:(Array.isArray(p.shots)?p.shots:[]).slice(0,10).map(s=>({duration:Math.max(.5,Math.min(15,+(s&&s.duration)||3)),text:str(s&&s.text,120),voice:str(s&&s.voice,300),note:str(s&&s.note,200),footage:str(s&&s.footage,300)})),
+    frames:(Array.isArray(p.frames)?p.frames:[]).slice(0,8).map(f=>({text:str(f&&f.text,200),sticker:str(f&&f.sticker,80),note:str(f&&f.note,200)})),
+    needs:(Array.isArray(p.needs)?p.needs:[]).map(x=>str(x,300)).filter(Boolean).slice(0,10),verify:(Array.isArray(p.verify)?p.verify:[]).map(x=>str(x,300)).filter(Boolean).slice(0,10)}));
+}
+function aiFlags(p){const all=JSON.stringify(p);const out=AI_RISK.filter(([re])=>re.test(all)).map(([,l])=>l);
+  if(p.hook&&p.hook.split(/\s+/).length>9)out.push("hook de más de 9 palabras");
+  if(p.type==="carrusel"&&!p.slides.length)out.push("carrusel sin diapositivas");if(p.type==="reel"&&!p.shots.length)out.push("Reel sin tomas");
+  return out}
+const isImg=id=>{const m=mediaById(id);return!!m&&(m.mime||"").startsWith("image")};
+function proposalToItem(p,a,source){
+  const it=newItem({type:p.type,title:p.title,status:"borrador",pillar:PILLARS.includes(p.pillar)?p.pillar:"",occasion:a.occasion||"",line:a.line||"",audience:a.audience,hook:p.hook,cta:p.cta,
+    caption:[p.caption,p.hashtags.join(" ")].filter(Boolean).join("\n\n")});
+  if(p.type==="carrusel"){it.slides=p.slides.map(s=>({template:s.template,headline:s.headline,body:s.body,kicker:s.template==="portada"?"Para "+(a.audience||"decoradoras"):"",mediaId:(s.template==="producto"||s.template==="foto")&&a.mediaId&&isImg(a.mediaId)?a.mediaId:""}));let tipN=0;it.slides.forEach(s=>{if(s.template==="tip")s.number=++tipN});
+    it.script=it.slides.map((s,i)=>`Diapositiva ${i+1} (${s.template}): ${s.headline}`).join("\n")}
+  if(p.type==="reel"){let tm=0;it.script=p.shots.map(s=>{const d=s.duration;const l=`[${+tm.toFixed(1)}-${+(tm+d).toFixed(1)} s] ${s.text?`“${s.text}” · `:""}${s.voice}${s.footage?` — Toma real: ${s.footage}`:""}`;tm+=d;return l}).join("\n");
+    if(a.mediaId){const s0=p.shots[0]||{};it.shots=[{mediaId:a.mediaId,in:0,dur:s0.duration||2.5,text:s0.text||"",voice:s0.voice||"",note:s0.note||""}]}}
+  if(p.type==="story"){it.frames=p.frames.map(f=>({text:f.text,sticker:f.sticker,note:f.note}));it.storyMedia=a.mediaId&&isImg(a.mediaId)?a.mediaId:""}
+  if(p.type==="story")it.script=p.frames.map((f,i)=>`Story ${i+1}: ${f.text}${f.sticker?` · Sticker: ${f.sticker}`:""}${f.note?` · ${f.note}`:""}`).join("\n");
+  const flags=aiFlags(p);
+  it.notes=[p.needs.length?"Material real que falta:\n- "+p.needs.join("\n- "):"",p.verify.length?"Confirmar antes de publicar:\n- "+p.verify.join("\n- "):"",
+    p.alt_hooks.length?"Hooks alternativos:\n- "+p.alt_hooks.join("\n- "):"",flags.length?"Alertas de marca: "+flags.join(", "):"",
+    `Propuesta generada con Claude (${source==="directo"?"directo en la app":"flujo asistido"}) el ${today()}. Revisar antes de aprobar.`].filter(Boolean).join("\n\n");
+  it.ai={source,at:new Date().toISOString(),input:a.mode==="tema"?a.topic:a.product,flags};
+  return it;
+}
+async function mediaToJpeg(m){const img=await loadMediaImage(m);if(!img)throw new Error("No se pudo leer la foto");
+  const sc=Math.min(1,1600/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+  const ctx=c.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
+  return await new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error("No se pudo preparar la foto")),"image/jpeg",.9))}
+const AI_ERR={not_granted:"No diste permiso para usar Claude en esta app. Usa el flujo asistido o vuelve a abrir la app para permitirlo.",sampling_disabled:"Claude no está disponible para esta cuenta en esta app. Usa el flujo asistido.",
+  capability_disabled:"La generación directa no está disponible en esta vista. Usa el flujo asistido.",capability_removed:"Tu versión de Claude no permite la generación directa. Usa el flujo asistido.",not_declared:"Esta versión de la app no tiene permiso para usar Claude. Usa el flujo asistido.",
+  rate_limited:"Alcanzaste el límite de uso de Claude por ahora. Intenta más tarde o usa el flujo asistido.",session_expired:"Tu sesión de Claude expiró. Vuelve a iniciar sesión y reintenta.",
+  invalid_json:"Claude respondió en un formato que no se pudo leer. Intenta de nuevo.",refused:"Claude no quiso responder esta solicitud. Cambia el tema o las notas.",empty_completion:"Claude no devolvió texto. Simplifica la solicitud.",
+  image_rejected:"La foto no se pudo enviar. Prueba con otra foto.",images_unavailable:"Esta vista no puede enviar fotos a Claude; quita la foto o usa el flujo asistido.",prompt_too_large:"La solicitud es demasiado larga. Recorta los datos confirmados.",cancelled:"Generación detenida.",upstream_error:"Hubo un error de conexión con Claude. Intenta de nuevo."};
+const AI_HARD=["not_granted","sampling_disabled","capability_disabled","capability_removed","not_declared"];
+VIEWS.ia=main=>{
+  const a=aiState();const imgs=S.media.filter(m=>!(m.tags||[]).includes("logo"));
+  const opt=(arr,v)=>arr.map(x=>`<option value="${esc(x)}" ${x===v?"selected":""}>${esc(x)}</option>`).join("");
+  main.innerHTML=head("Generar con IA","Escribe un tema o elige un producto real y una foto de tu biblioteca. Claude propone Reels, carruseles y Stories con las reglas de marca de Balloon Store. Todo llega como borrador para que lo revises.")+
+  `<div class="split ai-split"><div class="panel grid">
+    <div class="chips" role="tablist" aria-label="Punto de partida">${[["producto","Producto real"],["foto","Foto"],["tema","Tema"]].map(([k,l])=>`<button role="tab" data-mode="${k}" class="${a.mode===k?"on":""}" aria-selected="${a.mode===k}">${l}</button>`).join("")}</div>
+    ${a.mode==="tema"?`<label>Tema<input id="ai_topic" value="${esc(a.topic)}" placeholder="ej. Cómo armar una mesa de postres para XV años"></label>`
+      :`<label>Nombre exacto del producto${a.mode==="foto"?" (opcional)":""}<input id="ai_product" value="${esc(a.product)}" placeholder='ej. 18" Iridescent Pastel Rainbow Star 45 cm (Anagram)'></label>`}
+    <label>Datos confirmados<textarea id="ai_facts" style="min-height:110px" placeholder="Pega de la ficha del producto solo lo que es cierto: medida, forma, material, marca, inflado, usos.">${esc(a.facts)}</textarea></label>
+    <div class="ai-photo"><label style="flex:1 1 220px">Foto o video real de la biblioteca<select id="ai_media"><option value="">Sin foto</option>${imgs.map(m=>`<option value="${m.id}" ${m.id===a.mediaId?"selected":""}>${esc(m.name)}${(m.tags||[]).length?" · "+esc(m.tags.join(", ")):""}</option>`).join("")}</select></label><div class="ai-thumb" id="ai_thumb" aria-hidden="true"></div></div>
+    ${imgs.length?"":`<p class="warn" style="margin:0">Tu biblioteca está vacía. <a href="#biblioteca">Sube fotos reales</a> para que Claude trabaje con tu material.</p>`}
+    <div class="f2"><label>Ocasión<input id="ai_occasion" list="occ_ai" value="${esc(a.occasion)}"></label><label>Línea<select id="ai_line"><option value=""></option>${opt(BRAND.lines,a.line)}</select></label><label>Público<select id="ai_audience">${opt(BRAND.audiences,a.audience)}</select></label></div>
+    <datalist id="occ_ai">${OCCASIONS.map(o=>`<option value="${esc(o)}">`).join("")}</datalist>
+    <fieldset class="fmts"><legend>Formatos</legend>${TYPES.map(([k,l])=>`<label class="ck"><input type="checkbox" data-fmt="${k}" ${a.formats[k]?"checked":""}> ${l}</label>`).join("")}</fieldset>
+    <label>Notas para Claude (opcional)<textarea id="ai_notes" placeholder="ej. Enfócate en decoradoras que empiezan; tono muy práctico.">${esc(a.notes)}</textarea></label>
+  </div>
+  <div class="grid" style="align-content:start">
+    <section class="panel ai-card" id="ai_direct"><div class="eyebrow">Automático · dentro de la app</div><h3>Generar con Claude</h3>
+      <p class="ai-help" id="ai_dhelp">Comprobando si esta vista puede usar Claude…</p>
+      <div class="row"><button class="primary" id="ai_go" hidden>Generar propuestas</button><button id="ai_stop" hidden>Detener</button></div><div id="ai_status" role="status" aria-live="polite"></div></section>
+    <section class="panel ai-card"><div class="eyebrow">Asistido · copiar y pegar</div><h3>Usar Claude en otra pestaña</h3>
+      <ol class="steps"><li><span>Copia las instrucciones.</span><div class="row"><button id="ai_copy">Copiar instrucciones</button><button class="ghost" id="ai_dlp">Descargar .txt</button></div></li>
+      <li><span>Abre <b>claude.ai</b>, pega las instrucciones${a.mediaId?` y adjunta la foto`:""}.</span>${a.mediaId?`<div class="row"><button class="ghost" id="ai_dlimg">Descargar la foto</button></div>`:""}</li>
+      <li><span>Copia la respuesta completa de Claude y pégala aquí.</span><textarea id="ai_reply" placeholder='{"proposals":[ … ]}' style="min-height:96px"></textarea><div class="row"><button class="primary" id="ai_import">Importar respuesta</button></div></li></ol>
+      <details><summary>Ver instrucciones que se enviarán</summary><pre class="mono" id="ai_prompt"></pre></details></section>
+  </div></div>
+  <div id="ai_out" style="margin-top:22px"></div>`;
+  const $m=id=>$("#"+id,main);
+  const sync=()=>{if($m("ai_topic"))a.topic=$m("ai_topic").value;if($m("ai_product"))a.product=$m("ai_product").value;a.facts=$m("ai_facts").value;a.mediaId=$m("ai_media").value;
+    a.occasion=$m("ai_occasion").value;a.line=$m("ai_line").value;a.audience=$m("ai_audience").value;a.notes=$m("ai_notes").value;$$("[data-fmt]",main).forEach(c=>a.formats[c.dataset.fmt]=c.checked);
+    $m("ai_prompt").textContent=buildAIPrompt(a,false)};
+  const form=$(".ai-split",main);form.addEventListener("input",()=>sync());form.addEventListener("change",e=>{sync();if(e.target.id==="ai_media")route()});
+  $$("[data-mode]",main).forEach(b=>b.onclick=()=>{sync();a.mode=b.dataset.mode;route()});
+  sync();
+  const m=a.mediaId&&mediaById(a.mediaId);if(m)Store.url(m.ref).then(u=>{if(u)$m("ai_thumb").innerHTML=m.mime.startsWith("video")?`<video src="${u}" muted playsinline preload="metadata"></video>`:`<img src="${u}" alt="">`});
+  const validate=()=>{if(!aiFormats(a).length)return"Elige al menos un formato.";if(a.mode==="tema"&&!a.topic.trim())return"Escribe un tema.";
+    if(a.mode==="producto"&&!a.product.trim())return"Escribe el nombre exacto del producto.";if(a.mode==="foto"&&!a.mediaId)return"Elige una foto de la biblioteca.";return""};
+  $m("ai_copy").onclick=()=>{sync();const v=validate();if(v){toast(v);return}const txt=buildAIPrompt(a,!!a.mediaId);$m("ai_prompt").textContent=txt;
+    navigator.clipboard.writeText(txt).then(()=>toast("Instrucciones copiadas. Pégalas en claude.ai"),()=>{$("details",$m("ai_prompt").parentElement.parentElement).open=true;toast("Copia el texto de “Ver instrucciones”")})};
+  $m("ai_dlp").onclick=()=>{sync();saveFile("instrucciones-claude-"+slug(a.product||a.topic||"contenido")+".txt",new Blob([buildAIPrompt(a,!!a.mediaId)],{type:"text/plain"}))};
+  const dli=$m("ai_dlimg");if(dli)dli.onclick=async()=>{const mm=mediaById(a.mediaId);const b=mm&&await Store.getBlob(mm.ref);if(b)saveFile(mm.name,b);else toast("La foto no está disponible en este navegador")};
+  $m("ai_import").onclick=()=>{try{a.proposals=parseAIReply($m("ai_reply").value);a.source="asistido";renderAIOut(main);toast(`${a.proposals.length} propuesta(s) importada(s)`)}catch(e){toast(e.message)}};
+  // Direct path
+  const st=$m("ai_status"),help=$m("ai_dhelp"),go=$m("ai_go"),stop=$m("ai_stop");let ctl=null;
+  getSample().then(smp=>{if(!document.body.contains(go))return;
+    if(!smp||a.directOff){help.innerHTML=a.directOff?"La generación directa no está disponible en esta sesión. Usa el flujo asistido.":"Disponible solo cuando abres la app publicada en <b>claude.ai</b>. Aquí usa el flujo asistido.";return}
+    help.textContent="Usa tu propia cuenta de Claude, sin claves ni servicios adicionales. La primera vez te pedirá permiso; cada generación cuenta en tu uso de Claude.";go.hidden=false;
+    go.onclick=async()=>{sync();const v=validate();if(v){st.textContent=v;return}
+      let images;const mm=a.mediaId&&mediaById(a.mediaId);
+      if(mm){const lim=await smp.limits().catch(()=>null);if(lim&&lim.images){try{images=[await mediaToJpeg(mm)]}catch(e){st.textContent=e.message;return}}else st.textContent="Esta vista no puede enviar fotos; Claude trabajará solo con el texto."}
+      ctl=new AbortController();go.disabled=true;stop.hidden=false;st.innerHTML=`<span class="spin" aria-hidden="true"></span> Claude está preparando las propuestas. Puede tardar hasta un minuto.`;
+      try{const opts={signal:ctl.signal,cache:false};if(images)opts.images=images;
+        const data=await smp.json(buildAIPrompt(a,!!images),opts);a.proposals=parseAIReply(data);a.source="directo";st.textContent=`Listo: ${a.proposals.length} propuesta(s). Revísalas abajo.`;renderAIOut(main)}
+      catch(e){const c=e&&e.code;st.textContent=AI_ERR[c]||(e&&e.message)||"No se pudo generar.";if(AI_HARD.includes(c)){a.directOff=true;go.hidden=true;help.textContent="La generación directa no está disponible en esta sesión. Usa el flujo asistido."}}
+      finally{go.disabled=false;stop.hidden=true;ctl=null}};
+    stop.onclick=()=>ctl&&ctl.abort()});
+  if(a.proposals.length)renderAIOut(main);
+};
+function renderAIOut(main){
+  const a=aiState(),out=$("#ai_out",main);if(!out)return;
+  out.innerHTML=`<div class="row" style="justify-content:space-between;align-items:end;margin-bottom:12px"><div><div class="eyebrow">Propuestas de Claude · ${a.source==="directo"?"generadas en la app":"importadas del flujo asistido"}</div><h2 style="font-size:1.9rem">Revisa y guarda</h2></div>
+    <button class="primary" id="ai_saveall" ${a.proposals.every(p=>p.savedId)?"disabled":""}>Guardar todas como borrador</button></div>
+  <div class="ai-props">${a.proposals.map((p,i)=>{const fl=aiFlags(p);return`<article class="panel ai-prop t-${p.type}">
+    <div class="row" style="justify-content:space-between"><div class="row"><span class="chip">${esc(label(TYPES,p.type))}</span>${p.pillar?`<span class="chip">${esc(p.pillar)}</span>`:""}</div>${p.savedId?`<span class="chip s-terminado">Guardada</span>`:""}</div>
+    <h3>${esc(p.title)}</h3><p class="ai-hook">${esc(p.hook)}</p>
+    ${fl.length?`<div class="err">Revisa: ${esc(fl.join(", "))}.</div>`:""}
+    ${p.slides.length?`<ol class="ai-list">${p.slides.map(s=>`<li><span class="chip">${esc(s.template)}</span> ${esc(s.headline)}</li>`).join("")}</ol>`:""}
+    ${p.shots.length?`<ol class="ai-list">${p.shots.map(s=>`<li><b>${s.duration}s</b> ${esc(s.text)}${s.footage?`<small> · Toma real: ${esc(s.footage)}</small>`:""}</li>`).join("")}</ol>`:""}
+    ${p.frames.length?`<ol class="ai-list">${p.frames.map(f=>`<li>${esc(f.text)}${f.sticker?` <span class="chip">${esc(f.sticker)}</span>`:""}</li>`).join("")}</ol>`:""}
+    <details><summary>Copy y CTA</summary><p style="white-space:pre-wrap">${esc(p.caption)}</p><p><b>CTA:</b> ${esc(p.cta)}</p><p>${esc(p.hashtags.join(" "))}</p></details>
+    ${p.needs.length?`<div class="warn"><b>Material real que falta:</b><ul>${p.needs.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`:""}
+    ${p.verify.length?`<details><summary>Confirmar antes de publicar (${p.verify.length})</summary><ul>${p.verify.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></details>`:""}
+    <div class="row">${p.savedId?`<button data-openp="${i}">Abrir</button>${p.type==="story"?`<button data-storyzip="${i}">Exportar Stories</button>`:""}`:`<button class="primary" data-savep="${i}">Guardar como borrador</button>`}<button class="ghost danger" data-dropp="${i}">Descartar</button></div></article>`}).join("")}</div>`;
+  const save=async i=>{const p=a.proposals[i];if(p.savedId)return;const it=proposalToItem(p,a,a.source);await addItem(it);p.savedId=it.id};
+  $$("[data-savep]",out).forEach(b=>b.onclick=async()=>{await save(+b.dataset.savep);toast("Guardada en Borradores");renderAIOut(main)});
+  $$("[data-dropp]",out).forEach(b=>b.onclick=()=>{a.proposals.splice(+b.dataset.dropp,1);renderAIOut(main)});
+  $$("[data-openp]",out).forEach(b=>b.onclick=()=>{const p=a.proposals[+b.dataset.openp];const it=item(p.savedId);if(!it)return;if(it.type==="carrusel"||it.type==="reel"){S.cur[it.type]=it.id;location.hash="#"+it.type}else openEditor(it.id)});
+  $$("[data-storyzip]",out).forEach(b=>b.onclick=async()=>{const it=item(a.proposals[+b.dataset.storyzip].savedId);if(!it)return;b.disabled=true;try{await saveFile(slug(it.title)+"-stories.zip",await buildStoryZip(it))}catch(e){toast(e.message)}finally{b.disabled=false}});
+  const sa=$("#ai_saveall",out);if(sa)sa.onclick=async()=>{for(let i=0;i<a.proposals.length;i++)await save(i);toast("Propuestas guardadas en Borradores");renderAIOut(main)};
+}
 
 /* ================= Boot ================= */
 (async()=>{

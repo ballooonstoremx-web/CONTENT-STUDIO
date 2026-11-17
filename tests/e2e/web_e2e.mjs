@@ -205,12 +205,103 @@ async function run(mode) {
   await page.waitForTimeout(800);
   await page.goto(BASE + "#panel");
   ok(P + "restore is idempotent (no duplicates)", (await page.$$(".kanban .card")).length === 5);
+  // ---- Hoy (daily home) ----
+  await page.goto(BASE + "#hoy");
+  await page.waitForSelector(".greet");
+  ok(P + "hoy: greeting + 6 KPI rings", /Buen(os|as) (días|tardes|noches)/.test(await page.textContent(".greet")) && (await page.$$(".kpis .kpi")).length === 6);
+  const todo = await page.$$eval("ol.todo li", l => l.map(x => x.textContent));
+  ok(P + "hoy: attention list derived from data", todo.some(x => x.startsWith("Aprobar:")), todo.join(" | "));
+  ok(P + "hoy: upcoming countdown with Mexican key dates", (await page.textContent(".soon")).includes("Fecha clave"));
+
+  // ---- Campañas ----
+  await page.goto(BASE + "#campanas");
+  await page.fill("#cp_name", "Navidad QA");
+  await page.fill("#cp_occ", "Navidad");
+  await page.click("#cp_create");
+  await page.waitForSelector(".countdown");
+  ok(P + "campaign: countdown 14 days", (await page.textContent(".countdown b")).trim() === "14");
+  await page.fill("#tk_text", "Pedir fotos reales de globos navideños");
+  await page.click("#tk_form button");
+  await page.waitForSelector("[data-tk]");
+  await page.check("[data-tk]");
+  await page.waitForSelector(".task.done");
+  const linkVal = await page.$$eval("#lk_sel option", os => os.find(o => o.value && o.textContent.includes("Checklist")).value);
+  await page.selectOption("#lk_sel", linkVal);
+  await page.click("#lk_btn");
+  await page.waitForSelector("[data-unlink]");
+  ok(P + "campaign: runway with prep/publish bars + item dot", (await page.$$(".rw-row")).length === 1 && !!(await page.$(".rw-bar.prep")) && !!(await page.$(".rw-bar.pub")) && !!(await page.$(".rw-dot")));
+  await page.screenshot({ path: path.join(OUT, mode + "-campanas.png"), fullPage: true });
+
+  // ---- Estudio semanal ----
+  await page.goto(BASE + "#estudio");
+  await page.click("#sg_add");
+  await page.waitForFunction(() => document.querySelectorAll(".scard").length === 5);
+  await page.click(".scard:nth-child(1) [data-ep]");
+  await page.waitForFunction(() => document.querySelector(".scard .ep").textContent.includes("Ep 2"));
+  ok(P + "studio: series episode counter advances", true);
+  await page.click("[data-step='2']");
+  await page.waitForSelector(".week7");
+  ok(P + "studio: episode scheduled in this week", (await page.textContent(".week7")).includes("Montaje en 60 segundos · Ep 1"));
+  await page.click("[data-step='3']");
+  await page.waitForSelector(".film-card");
+  const film = await page.$("[data-film]:has-text('Ep 1')");
+  ok(P + "studio: film mode card with script checklist", !!film && (await film.$$("[data-fc]")).length >= 5);
+  await (await film.$("[data-fc]")).check();
+  await page.waitForTimeout(300);
+  await page.check("#filmMode");
+  await page.waitForSelector("#stepBody.film");
+  await page.screenshot({ path: path.join(OUT, mode + "-estudio.png") });
+
+  // ---- Resultados ----
+  await page.goto(BASE + "#resultados");
+  await page.waitForSelector("[data-met]");
+  for (const [k, v] of [["reach", "1000"], ["profile", "80"], ["clicks", "12"], ["dms", "3"], ["saves", "40"], ["shares", "10"]]) {
+    const sel = `tbody tr:first-child [data-k='${k}']`;
+    await page.fill(sel, v);
+    await page.dispatchEvent(sel, "change");
+    await page.waitForTimeout(150);
+  }
+  await page.waitForSelector(".leaktag");
+  const leakStep = await page.$eval(".fstep.leak .eyebrow", e => e.textContent);
+  ok(P + "results: biggest leak = profile visits (8%)", leakStep.includes("Visitas al perfil") && (await page.textContent(".insight")).includes("8.0%"), leakStep);
+  ok(P + "results: conversion tiles", (await page.$$(".convs > div")).length === 3);
+  const csv = await downloadVia(page, mode, captured, () => page.click("#csv"));
+  const csvText = fs.readFileSync(csv, "utf8");
+  ok(P + "results: CSV download", csvText.split("\n")[0].includes("reach") && csvText.includes("1000"));
+  await page.screenshot({ path: path.join(OUT, mode + "-resultados.png"), fullPage: true });
+
+  // ---- Persistence of new modules ----
+  await page.reload();
+  await page.goto(BASE + "#campanas");
+  await page.waitForSelector(".countdown");
+  ok(P + "persistence: campaign, done task and linked piece", !!(await page.$(".task.done")) && (await page.$$("[data-unlink]")).length === 1);
+  await page.goto(BASE + "#estudio");
+  await page.click("[data-step='1']");
+  await page.waitForSelector(".scard");
+  ok(P + "persistence: series + episode counter", (await page.$$(".scard")).length === 5 && (await page.textContent(".scard .ep")).includes("Ep 2"));
+  await page.click("[data-step='3']");
+  await page.waitForSelector(".film-card");
+  ok(P + "persistence: film checklist state", (await page.$$(".fl.done")).length === 1);
+  await page.goto(BASE + "#resultados");
+  await page.waitForSelector(".leaktag");
+  ok(P + "persistence: metrics", (await page.inputValue("tbody tr:first-child [data-k='reach']")) === "1000");
+  await page.goto(BASE + "#respaldo");
+  await page.waitForSelector("#bk_json");
+  const bk2 = await downloadVia(page, mode, captured, () => page.click("#bk_json"));
+  const bk2j = JSON.parse(fs.readFileSync(bk2, "utf8"));
+  ok(P + "backup includes campaigns + series", bk2j.campaigns.length === 1 && bk2j.series.length === 5);
+
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(BASE + "#panel");
-  await page.waitForSelector(".kanban");
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
-  ok(P + "no horizontal scroll at phone width", !overflow);
+  for (const v of ["panel", "hoy", "campanas", "estudio", "resultados"]) {
+    await page.goto(BASE + "#" + v);
+    await page.waitForTimeout(300);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+    ok(P + `no horizontal scroll at phone width (#${v})`, !overflow);
+  }
+  await page.goto(BASE + "#hoy");
+  await page.waitForTimeout(300);
   await page.screenshot({ path: path.join(OUT, mode + "-phone.png") });
+
   ok(P + "no page errors", errors.length === 0, errors.join(" | "));
   await browser.close();
   return { zipC, zipR, bkz };

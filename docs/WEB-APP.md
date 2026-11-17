@@ -13,7 +13,19 @@ Use **Respaldo** to download a JSON or ZIP backup and to restore a JSON backup
 (merge by id, no duplicates).
 
 ## Stations
-- **Panel**: counts and kanban for Ideas / Borradores / Pendiente de aprobación /
+- **Hoy** (inicio): greeting, 6 KPI rings computed from your data, numbered
+  "te necesitan hoy" list (overdue, approvals, due ≤ 2 days, missing real
+  photos/footage, campaign tasks), upcoming countdowns incl. Mexican key dates.
+- **Estudio semanal**: 1 Formatos (recurring series with next episode number),
+  2 Ideas y agenda (7-day board + unscheduled idea bank), 3 Crear y grabar
+  (film mode: hook, script and shots as checklists, copy buttons).
+- **Campañas**: seasonal campaigns with countdown, runway (Preparar → Publicar,
+  pieces as dots, today line), this/next week tasks, linked pieces.
+- **Resultados**: manual per-post metrics, funnel Alcance → Visitas al perfil →
+  Clics al sitio → Mensajes, conversion tiles, "Mayor fuga" tag, period filter,
+  top saves+shares, CSV export. Nothing is estimated.
+- Design references and how they were adapted: [REFERENCIAS-VISUALES.md](REFERENCIAS-VISUALES.md).
+- **Tablero** (`#panel`): counts and kanban for Ideas / Borradores / Pendiente de aprobación /
   Terminado, upcoming dates, missing-photo warnings. Example data is labeled
   “[Ejemplo]” and only loads on request.
 - **Biblioteca**: upload photos/videos (button or drag-and-drop), tags,

@@ -14,6 +14,7 @@ Use **Respaldo** to download a JSON or ZIP backup and to restore a JSON backup
 
 ## Stations
 - **Fábrica** (`#fabrica`) y **Catálogo** (`#catalogo`): semana de 21 propuestas con productos reales, aprobación por lotes y ZIP semanal; ver [FABRICA.md](FABRICA.md).
+- **Producción y programación**: plan de grabación con casillas y paquete para programar en Instagram y Facebook con manifiesto CSV; ver [PROGRAMACION.md](PROGRAMACION.md).
 - **IA** (`#ia`): Claude propone Reels, carruseles y Stories desde un producto real, una foto o un tema. Directo en claude.ai o flujo asistido; ver [IA.md](IA.md).
 - **Hoy** (inicio): greeting, 6 KPI rings computed from your data, numbered
   "te necesitan hoy" list (overdue, approvals, due ≤ 2 days, missing real

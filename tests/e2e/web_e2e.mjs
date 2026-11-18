@@ -496,6 +496,19 @@ async function run(mode) {
   const zb = fs.readFileSync(weekZip);
   ok(P + "fábrica: week ZIP separates listos/ and pendientes/ with summary", ["RESUMEN.csv", "listos/", "pendientes/", "PENDIENTE.txt", "slides/01.png", "stories/01.png", "instrucciones-capcut.md"].every(n => zb.includes(Buffer.from(n))));
   fs.copyFileSync(weekZip, path.join(OUT, mode + "-semana.zip"));
+  // Scheduling package for Instagram + Facebook
+  const schedZip = await downloadVia(page, mode, captured, () => page.click("#fb_sched"));
+  const sb = fs.readFileSync(schedZip); const st = sb.toString("latin1");
+  ok(P + "programación: package with ready/material folders and CSV manifest", ["manifiesto_programacion.csv", "01_listos_para_programar/", "03_requieren_material/", "copy_instagram.txt", "copy_facebook.txt", "_1080x1350.png", "_1080x1920.png", "PENDIENTE.txt"].every(n => sb.includes(Buffer.from(n))));
+  const si = (st.match(/"LISTO","SI"/g) || []).length, no = (st.match(/"FALTA MATERIAL","NO"/g) || []).length;
+  ok(P + "programación: one row per network, only ready pieces publishable (34 SI / 2 NO)", si === 34 && no === 2, `${si}/${no}`);
+  fs.copyFileSync(schedZip, path.join(OUT, mode + "-programacion.zip"));
+  // Shooting checklist
+  await page.waitForSelector("#shoot [data-shot]");
+  const firstShot = await page.$eval("#shoot [data-shot]", e => e.dataset.shot);
+  await page.check(`#shoot [data-shot='${firstShot}']`);
+  await page.waitForTimeout(300);
+  ok(P + "plan de grabación: checklist for pending Reels", (await page.textContent("#shoot_count")).startsWith("1/"));
   await page.goto(BASE + "#calendario"); await page.waitForSelector(".cal");
   const evs = await page.$$eval(".cal .ev", e => e.map(x => x.textContent + "|" + x.className));
   ok(P + "calendar: approved pieces scheduled on their dates, pending one marked", evs.filter(x => x.includes(start)).length >= 3 && evs.some(x => x.includes(" pend")), String(evs.length));
@@ -503,9 +516,21 @@ async function run(mode) {
   const doneCol = await page.$$eval(".kanban .col:nth-child(4) .card .t", e => e.map(x => x.textContent));
   const draftMeta = await page.$$eval(".kanban .col:nth-child(1) .card .m, .kanban .col:nth-child(2) .card .m", e => e.map(x => x.textContent));
   ok(P + "tablero: ready pieces are Terminado; pending Reel is not", doneCol.filter(t => /^(carrusel|story|reel) \d{4}-/.test(t)).length === 17 && draftMeta.some(m => m.includes("Pendiente de material")));
+  // Material received only after a real video is in the Reel
+  await page.goto(BASE + "#fabrica"); await page.waitForSelector(".pcard");
+  await page.click(".pcard.aprobada.t-reel:has-text('Falta grabación') [data-openit]");
+  await page.waitForSelector("#r_recv");
+  ok(P + "reel: 'Material recibido' disabled until a real video is added", await page.$eval("#r_recv", b => b.disabled));
+  await page.click("#pickm .mcard:has-text('clip.mp4')");
+  await page.waitForSelector("#r_recv:not([disabled])");
+  await page.click("#r_recv");
+  await page.waitForFunction(() => !document.querySelector("#r_recv"));
+  ok(P + "reel: pending cleared after real video", true);
+  await page.goto(BASE + "#fabrica"); await page.waitForSelector(".pcard");
   await page.reload();
   await page.goto(BASE + "#fabrica"); await page.waitForFunction(() => document.querySelectorAll(".pcard").length === 21, null, { timeout: 15000 });
   ok(P + "persistence: week board and approvals survive reload", (await page.$$(".pcard.aprobada")).length === 18);
+  ok(P + "persistence: shooting checklist", await page.$eval(`#shoot [data-shot='${firstShot}']`, e => e.checked));
   await page.screenshot({ path: path.join(OUT, mode + "-fabrica.png"), fullPage: true });
   // Results comparison
   await page.goto(BASE + "#resultados"); await page.waitForSelector("#cmp_by");

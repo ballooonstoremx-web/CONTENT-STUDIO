@@ -240,6 +240,14 @@ label.ck input{width:18px;height:18px;accent-color:var(--ink)}
 .cal .ev.pend,.week7 .ev.pend{outline:1.5px dashed var(--pink);outline-offset:-1.5px}
 .cmpbar{position:relative;min-width:150px;height:22px;background:var(--surface2);border-radius:6px;overflow:hidden}.cmpbar i{position:absolute;inset:0 auto 0 0;background:var(--blue);border-radius:6px}.cmpbar span{position:relative;padding-left:8px;font-size:.78rem;font-weight:700;line-height:22px}
 table.cmp{min-width:720px}
+/* ---- Plan de grabación ---- */
+.shoot h3{font-size:1.15rem;margin:0}
+.shoot-list{margin:6px 0 0;padding-left:18px;display:grid;gap:4px;font-size:.88rem}.shoot-list small{color:var(--muted)}
+.station{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.shot-ck{flex-direction:row;align-items:flex-start;gap:10px;text-transform:none;letter-spacing:0;font-size:.9rem;color:var(--fg);font-weight:500;padding:8px 0;border-bottom:1px dashed var(--line)}
+.shot-ck .chip{justify-self:start}
+.shot-ck input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--ink)}.shot-ck span{display:grid;gap:2px}.shot-ck small{color:var(--muted);font-size:.8rem}
+.shot-ck.done span{color:var(--muted);text-decoration:line-through}
 /* ---- Responsive ---- */
 @media (max-width:900px){
   nav.rail{flex-wrap:nowrap}
@@ -872,7 +880,9 @@ VIEWS.reel=main=>{
   $("#r_copy",main).onclick=()=>{S.cur.copy=it.id};
   const rc=$("#rc",main);let ct;
   const refresh=()=>{clearTimeout(ct);ct=setTimeout(()=>renderReelCover(rc,it),150);const tl=reelTimeline(it);$("#r_guide",main).textContent=capcutGuide(it,tl);
-    const bad=!it.shots.length;$("#r_warn",main).innerHTML=bad?`<div class="err" style="margin-bottom:8px">Agrega al menos una toma con material real para exportar.</div>`:"";$("#r_zip",main).disabled=bad;$("#r_cov",main).disabled=false};
+    const bad=!it.shots.length;const hasVid=it.shots.some(s=>((mediaById(s.mediaId)||{}).mime||"").startsWith("video"));
+    $("#r_warn",main).innerHTML=(bad?`<div class="err" style="margin-bottom:8px">Agrega al menos una toma con material real para exportar.</div>`:"")+((it.pending||[]).length?`<div class="warn" style="margin-bottom:8px"><b>Pendiente de material:</b> ${esc(it.pending.join("; "))}<div class="row" style="margin-top:8px"><button id="r_recv" ${hasVid?"":"disabled"}>Material recibido</button>${hasVid?"":`<small>Agrega primero un video real a las tomas.</small>`}</div></div>`:"");
+    const rv=$("#r_recv",main);if(rv)rv.onclick=async()=>{it.pending=[];if(it.status==="borrador")it.status="revision";await touch(it,true);toast("Material recibido: el Reel pasa a Pendiente de aprobación");refresh()};$("#r_zip",main).disabled=bad;$("#r_cov",main).disabled=false};
   const shots=$("#shots",main);
   const drawShots=()=>{shots.innerHTML=it.shots.length?"":'<div class="panel empty">Sin tomas. Agrega clips o fotos desde abajo.</div>';const tl=reelTimeline(it);
     it.shots.forEach((s,i)=>{const m=mediaById(s.mediaId);const r=tl[i];const el=document.createElement("div");el.className="shot";
@@ -969,7 +979,7 @@ VIEWS.respaldo=main=>{
   $("#bk_zip",main).onclick=async e=>{e.target.disabled=true;try{const files=[{name:"respaldo.json",data:data()}];for(const m of S.media){const b=await Store.getBlob(m.ref).catch(()=>null);if(b)files.push({name:"media/"+m.id+"_"+m.name,data:b})}
     await saveFile("content-hq-respaldo-"+today()+".zip",await makeZip(files))}finally{e.target.disabled=false}};
   $("#bk_in",main).onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(j.app!=="balloon-store-content-hq"||!Array.isArray(j.items))throw new Error("El archivo no es un respaldo de Content HQ");
-    for(const [col,key] of [["campaigns","campaigns"],["series","series"]])for(const raw of (Array.isArray(j[key])?j[key]:[])){if(!raw||typeof raw.id!=="string")continue;const ex=S[key].findIndex(x=>x.id===raw.id);if(ex>=0)S[key][ex]=raw;else S[key].push(raw);await Store.save(col,raw)}
+    for(const [col,key] of [["campaigns","campaigns"],["series","series"],["weeks","weeks"]])for(const raw of (Array.isArray(j[key])?j[key]:[])){if(!raw||typeof raw.id!=="string")continue;const ex=S[key].findIndex(x=>x.id===raw.id);if(ex>=0)S[key][ex]=raw;else S[key].push(raw);await Store.save(col,raw)}
     let n=0;for(const raw of j.items){if(!raw||typeof raw.id!=="string")continue;const it=newItem(raw);const ex=S.items.findIndex(x=>x.id===it.id);if(ex>=0)S.items[ex]=it;else S.items.push(it);await touch(it,true);n++}
     toast(n+" contenido(s) restaurado(s). Los archivos de la biblioteca se vuelven a subir manualmente.");route()}catch(err){toast(err.message)}};
 };
@@ -1551,7 +1561,7 @@ async function approveProposal(doc,p,source){const r=fabReadiness(p);const prod=
 async function weekFiles(doc){const files=[];const rows=[["fecha","dia","formato","objetivo","producto","titulo","estado","pendiente"]];const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
   const approved=(doc.proposals||[]).filter(p=>p.state==="aprobada"&&item(p.itemId)).sort((a,b)=>a.slot>b.slot?1:-1);
   for(const p of approved){const it=item(p.itemId);const pend=(it.pending||[]).length>0;const dow=DIAS[parseD(it.date).getDay()].slice(0,3);
-    const dir=`${pend?"pendientes":"listos"}/${it.date}-${dow}/${p.slot.slice(-1)}-${it.type}-${slug(it.title).slice(0,40)}/`;let sub=[];
+    const dir=`${pend?"pendientes":"listos"}/${it.date}-${slug(dow)}/${p.slot.slice(-1)}-${it.type}-${slug(it.title).slice(0,40)}/`;let sub=[];
     try{if(it.type==="carrusel")sub=await carouselFiles(it);else if(it.type==="story"&&(it.frames||[]).length)sub=await storyFiles(it);else if(it.type==="reel"&&it.shots.length)sub=await reelFiles(it)}catch(e){sub=[]}
     if(!sub.length)sub=[{name:"guion.txt",data:textPack(it)}];
     if(pend)sub.push({name:"PENDIENTE.txt",data:`PIEZA PENDIENTE DE MATERIAL — no está terminada.\n\nFalta:\n- ${it.pending.join("\n- ")}\n\nCuando tengas el material, súbelo a Biblioteca (etiquétalo con el producto) y vuelve a exportar.\n`});
@@ -1614,7 +1624,7 @@ VIEWS.fabrica=main=>{
     const nReady=props.filter(p=>p.state==="aprobada"&&!(item(p.itemId)||{pending:[]}).pending.length).length,nApp=props.filter(p=>p.state==="aprobada").length;
     board.innerHTML=`<div class="fab-bar"><div><div class="eyebrow">Aprobación por lotes</div><h2 style="font-size:1.9rem">${props.length} propuestas · ${nApp} aprobadas</h2>
       <p class="ai-help" style="margin:2px 0 0">${props.filter(p=>R(p).ready).length} con material listo · ${props.filter(p=>!R(p).ready).length} necesitan material real</p></div>
-      <div class="row"><button id="fb_all">Seleccionar todas</button><button id="fb_ready">Solo las listas</button><button id="fb_none">Ninguna</button><button class="primary" id="fb_approve" ${sel.size?"":"disabled"}>Aprobar seleccionadas (${sel.size})</button><button id="fb_zip" ${nApp?"":"disabled"}>Exportar aprobadas (ZIP)</button><a class="btn" href="#calendario" id="fb_cal">Ver en calendario</a></div></div>
+      <div class="row"><button id="fb_all">Seleccionar todas</button><button id="fb_ready">Solo las listas</button><button id="fb_none">Ninguna</button><button class="primary" id="fb_approve" ${sel.size?"":"disabled"}>Aprobar seleccionadas (${sel.size})</button><button id="fb_zip" ${nApp?"":"disabled"}>Exportar aprobadas (ZIP)</button><button class="primary" id="fb_sched" ${nApp?"":"disabled"}>Paquete para programar (IG + FB)</button><a class="btn" href="#calendario" id="fb_cal">Ver en calendario</a></div></div>
       <div style="overflow-x:auto"><div class="fab-days">${days.map(dt=>`<div class="fab-day"><div class="eyebrow">${DIAS[parseD(dt).getDay()]} ${parseD(dt).getDate()} ${MES[parseD(dt).getMonth()]}</div>${props.filter(p=>p.date===dt).map(p=>{const r=R(p);const prod=catById(p.productId);const st=p.state;
         return`<article class="pcard t-${p.type} ${st}" data-slot="${esc(p.slot)}">
           <div class="row" style="justify-content:space-between;gap:6px">${st==="aprobada"?`<span class="chip s-terminado">Aprobada</span>`:st==="descartada"?`<span class="chip">Descartada</span>`:`<label class="ck"><input type="checkbox" data-sel ${sel.has(p.slot)?"checked":""}> Elegir</label>`}<span class="chip">${esc(label(TYPES,p.type))} · ${esc(p.objective)}</span></div>
@@ -1624,13 +1634,16 @@ VIEWS.fabrica=main=>{
           <details><summary>Ver pieza</summary>${p.slides.length?`<ol class="ai-list">${p.slides.map(s=>`<li>${esc(s.headline)}</li>`).join("")}</ol>`:""}${p.shots.length?`<ol class="ai-list">${p.shots.map(s=>`<li><b>${s.duration}s</b> ${esc(s.text)}${s.footage?`<small> · Toma: ${esc(s.footage)}</small>`:""}</li>`).join("")}</ol>`:""}${p.frames.length?`<ol class="ai-list">${p.frames.map(x=>`<li>${esc(x.text)}${x.sticker?` <span class="chip">${esc(x.sticker)}</span>`:""}</li>`).join("")}</ol>`:""}
             <p style="white-space:pre-wrap"><b>Instagram:</b> ${esc(p.caption)}</p>${p.caption_fb?`<p style="white-space:pre-wrap"><b>Facebook:</b> ${esc(p.caption_fb)}</p>`:""}<p><b>CTA:</b> ${esc(p.cta)}</p>${r.pend.length?`<div class="warn"><b>Pendiente:</b> ${esc(r.pend.join("; "))}</div>`:""}</details>
           ${st==="aprobada"?`<button data-openit>Abrir</button>`:st==="descartada"?`<button data-restore>Recuperar</button>`:`<div class="row" style="gap:6px"><button data-regen>Regenerar</button><button class="ghost danger" data-drop>Descartar</button></div><div data-regenbox hidden><input data-note placeholder="¿Qué cambiar? (opcional)"><button class="primary" data-regengo>Regenerar ahora</button></div>`}
-        </article>`}).join("")}</div>`).join("")}</div></div>`;
+        </article>`}).join("")}</div>`).join("")}</div></div>`+shootPlanHTML(doc);
     $$("[data-pimg]",board).forEach(el=>{const p=catById(el.dataset.pimg);const ref=catImageRef(p);if(ref)Store.url(ref).then(u=>{if(u)el.innerHTML=`<img src="${u}" alt="" loading="lazy">`});else el.remove()});
     const find=el=>props.find(p=>p.slot===el.closest("[data-slot]").dataset.slot);
     $$("[data-sel]",board).forEach(c=>c.onchange=()=>{const p=find(c);c.checked?sel.add(p.slot):sel.delete(p.slot);const b=$("#fb_approve",board);b.disabled=!sel.size;b.textContent=`Aprobar seleccionadas (${sel.size})`});
     $("#fb_all",board).onclick=()=>{open.forEach(p=>sel.add(p.slot));renderBoard()};$("#fb_ready",board).onclick=()=>{sel.clear();open.filter(p=>R(p).ready).forEach(p=>sel.add(p.slot));renderBoard()};$("#fb_none",board).onclick=()=>{sel.clear();renderBoard()};
     $("#fb_approve",board).onclick=async e=>{e.target.disabled=true;let n=0;for(const p of props.filter(x=>sel.has(x.slot)&&x.state!=="aprobada")){await approveProposal(doc,p,doc.source);n++}sel.clear();await saveWeek(doc);
       toast(`${n} pieza(s) aprobadas y agendadas en el calendario`);S.calMonth=parseD(f.start);renderBoard()};
+    $("#fb_sched",board).onclick=async e=>{e.target.disabled=true;e.target.textContent="Generando…";try{const r=await scheduleFiles(doc);await saveFile(`programacion-${f.start}.zip`,await makeZip(r.files));toast(`Listos: ${r.cnt.listo} · Por confirmar: ${r.cnt.confirmar} · Falta material: ${r.cnt.material}`)}catch(err){toast(err.message)}finally{e.target.disabled=false;e.target.textContent="Paquete para programar (IG + FB)"}};
+    $$("[data-shot]",board).forEach(c=>c.onchange=async()=>{doc.shootChecks={...(doc.shootChecks||{}),[c.dataset.shot]:c.checked};c.closest(".shot-ck").classList.toggle("done",c.checked);const sp=doc.shootPlan||autoShootPlan(doc);const all=sp.stations.flatMap(x=>x.shots||[]);$("#shoot_count",board).textContent=`${all.filter(x=>doc.shootChecks[x.id]).length}/${all.length} tomas`;await saveWeek(doc)});
+    const sdl=$("#shoot_dl",board);if(sdl)sdl.onclick=()=>saveFile(`plan-grabacion-${f.start}.txt`,new Blob([shootPlanText(doc.shootPlan||autoShootPlan(doc))],{type:"text/plain"}));
     $("#fb_zip",board).onclick=async e=>{e.target.disabled=true;e.target.textContent="Generando…";try{await saveFile(`semana-${f.start}.zip`,await makeZip(await weekFiles(doc)))}catch(err){toast(err.message)}finally{e.target.disabled=false;e.target.textContent="Exportar aprobadas (ZIP)"}};
     $$("[data-drop]",board).forEach(b=>b.onclick=async()=>{const p=find(b);p.state="descartada";sel.delete(p.slot);await saveWeek(doc);renderBoard()});
     $$("[data-restore]",board).forEach(b=>b.onclick=async()=>{find(b).state="nueva";await saveWeek(doc);renderBoard()});
@@ -1644,6 +1657,64 @@ VIEWS.fabrica=main=>{
   }
   renderBoard();
 };
+
+/* ================= Producción y programación =================
+   Shooting checklist for pending Reels and a scheduling package for Instagram + Facebook.
+   Nothing here publishes or schedules: the package is for manual upload or a scheduler. */
+const pad2=n=>String(n).padStart(2,"0");
+const contentText=it=>JSON.stringify([it.title,it.hook,it.caption,it.captionFb,it.cta,it.slides,it.frames,it.script]);
+function pubState(it){if((it.pending||[]).length)return"material";if(contentText(it).includes("[confirmar")||it.status!=="terminado")return"confirmar";return"listo"}
+const PUB_LABEL={listo:"LISTO",confirmar:"CONFIRMAR",material:"FALTA MATERIAL"};
+const HOUR_WINDOWS={carrusel:[9,11],reel:[17,20],story:[11,14]},HOUR_DEFAULT={carrusel:10,reel:18,story:12};
+function slotHour(doc,net,date,type){const bt=doc.bestTimes&&doc.bestTimes[net];const dow=String(((parseD(date).getDay()+6)%7)+1);const day=bt&&bt[dow];
+  if(!day)return{h:HOUR_DEFAULT[type],src:"horario predeterminado (sin datos)"};const[a,b]=HOUR_WINDOWS[type];let best=a,bv=-1;
+  for(let h=a;h<=b;h++){const v=+day[h]||0;if(v>bv){bv=v;best=h}}return{h:best,src:doc.bestTimes.source||"datos de audiencia"}}
+function pubType(net,type,n){if(type==="carrusel")return net==="Instagram"?`Instagram · Carrusel (${n} imágenes)`:`Facebook · Publicación con ${n} fotos`;
+  if(type==="story")return`${net} · Stories (${n} en secuencia)`;return`${net} · Reel`}
+function placeholders(it){const out=[];const walk=(v,where)=>{if(typeof v==="string"){const m=v.match(/[^.\n]*\[confirmar[^\]]*\][^.\n]*/g);if(m)m.forEach(x=>out.push(`${where}: ${x.trim()}`))}else if(Array.isArray(v))v.forEach((x,i)=>walk(x,`${where} ${i+1}`));else if(v&&typeof v==="object")Object.values(v).forEach(x=>walk(x,where))};
+  walk(it.hook,"Hook");walk(it.caption,"Copy Instagram");walk(it.captionFb,"Copy Facebook");walk(it.cta,"CTA");walk(it.slides,"Diapositiva");walk(it.frames,"Story");return[...new Set(out)]}
+async function scheduleFiles(doc){
+  const approved=(doc.proposals||[]).filter(p=>p.state==="aprobada"&&item(p.itemId)).sort((a,b)=>a.slot>b.slot?1:-1);
+  const tz=(doc.bestTimes&&doc.bestTimes.timezone)||"America/Mexico_City";const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const DIRS={listo:"01_listos_para_programar",confirmar:"02_requieren_confirmacion",material:"03_requieren_material"};
+  const head=["pieza","fecha","hora","zona_horaria","dia","red","tipo_publicacion","archivos","texto","enlace","stickers","estado","publicable","motivo","fuente_horario"];
+  const rows=[head];const files=[];const cnt={listo:0,confirmar:0,material:0};
+  for(const p of approved){const it=item(p.itemId);const st=pubState(it);cnt[st]++;const prod=catById(p.productId);
+    const hIG=slotHour(doc,"instagram",it.date,it.type),hFB=slotHour(doc,"facebook",it.date,it.type);const dow=DIAS[parseD(it.date).getDay()].slice(0,3);
+    const base=`${DIRS[st]}/${it.date}_${pad2(hIG.h)}00_${slug(dow)}_${it.type}_${slug(it.title).slice(0,36)}/`;let media=[];
+    try{if(it.type==="carrusel")media=(await carouselFiles(it)).filter(f=>f.name.startsWith("slides/")).map((f,i)=>({name:`${pad2(i+1)}_1080x1350.png`,data:f.data}));
+      else if(it.type==="story"&&(it.frames||[]).length)media=(await storyFiles(it)).filter(f=>f.name.startsWith("stories/")).map((f,i)=>({name:`story_${pad2(i+1)}_1080x1920.png`,data:f.data}));
+      else if(it.type==="reel"){if(st!=="material"&&it.shots.some(s=>((mediaById(s.mediaId)||{}).mime||"").startsWith("video")))media=(await reelFiles(it)).map(f=>({name:"capcut/"+f.name,data:f.data}));
+        else{const c=document.createElement("canvas");await renderReelCover(c,it);media=[{name:"portada_1080x1920.png",data:await canvasBlob(c)}]}}}catch(e){media=[]}
+    const ig=[it.caption,it.cta&&!(it.caption||"").includes(it.cta)?it.cta:""].filter(Boolean).join("\n\n");
+    const fb=it.captionFb||(it.caption||"").replace(/(^|\s)#\S+/g,"").trim();
+    files.push(...media.map(f=>({name:base+f.name,data:f.data})));
+    if(it.type!=="story"||ig)files.push({name:base+"copy_instagram.txt",data:ig+"\n"});if(it.type!=="story"||it.captionFb)files.push({name:base+"copy_facebook.txt",data:fb+"\n"});
+    if(it.type==="story")files.push({name:base+"stickers.txt",data:(it.frames||[]).map((f,i)=>`Story ${i+1}: ${f.text}${f.sticker?`\n  Sticker: ${f.sticker}`:""}`).join("\n")+"\n"});
+    if(it.type==="reel"||st!=="listo")files.push({name:base+"guion.txt",data:textPack(it)});
+    const ph=placeholders(it);let reason="";
+    if(st==="confirmar"){reason=ph.length?"Datos sin verificar: "+ph.join(" · "):"Estado “"+label(STATUSES,it.status)+"”: falta aprobación final";
+      files.push({name:base+"CONFIRMAR.txt",data:`NO PUBLICAR hasta confirmar.\n\n${ph.length?"Datos marcados para confirmar:\n- "+ph.join("\n- "):"La pieza no está marcada como Terminado en Content HQ."}\n\nCuando lo resuelvas, edita la pieza en Content HQ, márcala como Terminado y vuelve a exportar este paquete.\n`})}
+    if(st==="material"){reason="Falta: "+it.pending.join(" · ");files.push({name:base+"PENDIENTE.txt",data:`NO PUBLICAR: falta material real.\n\n- ${it.pending.join("\n- ")}\n\nSigue el Plan de grabación de la Fábrica, sube el video a Biblioteca, agrégalo en el editor de Reel y pulsa “Material recibido”.\n`})}
+    const stickers=it.type==="story"?(it.frames||[]).map(f=>f.sticker).filter(Boolean).join(" | "):"";
+    for(const[net,h,txt]of[["Instagram",hIG,ig],["Facebook",hFB,fb]])rows.push([p.slot,it.date,`${pad2(h.h)}:00`,tz,dow,net,pubType(net,it.type,media.filter(f=>/\.png$/.test(f.name)&&!/portada/.test(f.name)).length||1),media.map(f=>base+f.name).join(" | "),it.type==="story"?"":txt,prod?prod.url:"",stickers,PUB_LABEL[st],st==="listo"?"SI":"NO",reason,h.src].map(q))}
+  const readme=`PAQUETE DE PROGRAMACIÓN · Semana del ${fmtShort(doc.start)} al ${fmtShort(addD(doc.start,6))}\n\n01_listos_para_programar/  ${cnt.listo} pieza(s) con archivos completos y datos verificados.\n02_requieren_confirmacion/ ${cnt.confirmar} pieza(s) con datos sin verificar: NO programar hasta resolver CONFIRMAR.txt.\n03_requieren_material/     ${cnt.material} pieza(s) a las que les falta grabación o foto real: NO programar.\n\nmanifiesto_programacion.csv: una fila por red (Instagram y Facebook). Programa solo las filas con publicable = SI.\nNombres: fecha_hora_día_formato_título. La hora sale de ${doc.bestTimes?doc.bestTimes.source:"un horario predeterminado"} (zona ${tz}).\nCarruseles: 1080×1350 (4:5) para feed de Instagram y Facebook. Stories y portadas de Reel: 1080×1920 (9:16).\nStories: agrega el sticker indicado en stickers.txt dentro de Instagram o Facebook; el recuadro rosa marca su lugar.\n\nContent HQ no publica ni programa en ninguna cuenta.\n`;
+  files.unshift({name:"manifiesto_programacion.csv",data:"﻿"+rows.map(r=>r.join(",")).join("\n")+"\n"},{name:"LEEME.txt",data:readme});
+  return{files,cnt}}
+/* Shooting plan: authored plan (doc.shootPlan) or an automatic list grouped by product */
+function autoShootPlan(doc){const groups={};(doc.proposals||[]).filter(p=>p.type==="reel"&&p.state!=="descartada").forEach(p=>{if(fabReadiness(p).ready)return;const k=p.productId||"general";(groups[k]=groups[k]||[]).push(p)});
+  return{title:"Lista de tomas por producto",stations:Object.entries(groups).map(([k,ps],i)=>{const prod=catById(k);return{id:"A"+(i+1),name:prod?prod.title:"Tema general",where:"",shots:ps.flatMap(p=>(p.shots||[]).filter(s=>s.footage).map((s,j)=>({id:`${p.slot}-${j+1}`,reel:p.slot,reelTitle:p.title,desc:s.footage,dur:s.duration})))}})}}
+function shootPlanText(sp){return[sp.title,sp.summary||"","",...(sp.setup||[]).map(x=>"[ ] "+x),...(sp.materials||[]).map(m=>`[ ] ${m.item}${m.sku?` (SKU ${m.sku})`:""}${m.qty?` × ${m.qty}`:""}`),"",
+  ...(sp.stations||[]).flatMap(st=>[`${st.id}. ${st.name}${st.time?` · ${st.time}`:""}`,st.where?`   ${st.where}`:"",st.settings?`   iPhone: ${st.settings}`:"",...(st.shots||[]).map(s=>`   [ ] ${s.id} · ${s.desc}${s.dur?` (${s.dur} s)`:""}${s.reelTitle?` → ${s.reelTitle}`:""}${s.how?`\n       ${s.how}`:""}`),""]),
+  ...(sp.after||[]).map(x=>"→ "+x)].filter(x=>x!=null).join("\n")}
+function shootPlanHTML(doc){const sp=doc.shootPlan||autoShootPlan(doc);if(!sp.stations||!sp.stations.length)return"";const ck=doc.shootChecks||{};
+  const all=sp.stations.flatMap(s=>s.shots||[]);const done=all.filter(s=>ck[s.id]).length;
+  return`<section class="panel shoot" id="shoot" style="margin-top:18px"><div class="row" style="justify-content:space-between;align-items:end"><div><div class="eyebrow">Plan de grabación · iPhone</div><h2 style="font-size:1.7rem">${esc(sp.title||"Plan de grabación")}</h2>${sp.summary?`<p class="ai-help" style="margin:4px 0 0;max-width:70ch">${esc(sp.summary)}</p>`:""}</div>
+   <div class="row"><span class="chip" id="shoot_count">${done}/${all.length} tomas</span><button id="shoot_dl">Descargar plan (.txt)</button></div></div>
+   ${(sp.setup||[]).length||(sp.materials||[]).length?`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:12px">${(sp.materials||[]).length?`<div><h3>Materiales</h3><ul class="shoot-list">${sp.materials.map(m=>`<li><b>${esc(m.item)}</b>${m.sku?` <span class="chip">${esc(m.sku)}</span>`:""}${m.qty?` × ${esc(String(m.qty))}`:""}${m.for?`<small> · ${esc(m.for)}</small>`:""}</li>`).join("")}</ul></div>`:""}${(sp.setup||[]).length?`<div><h3>Antes de empezar</h3><ul class="shoot-list">${sp.setup.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}</div>`:""}
+   ${sp.stations.map(st=>`<div class="station"><div class="row" style="justify-content:space-between"><h3>${esc(st.id)} · ${esc(st.name)}</h3>${st.time?`<span class="chip">${esc(st.time)}</span>`:""}</div>${st.where?`<p class="ai-help" style="margin:2px 0">${esc(st.where)}</p>`:""}${st.settings?`<p class="ai-help" style="margin:2px 0"><b>iPhone:</b> ${esc(st.settings)}</p>`:""}
+     ${(st.shots||[]).map(s=>`<label class="shot-ck${ck[s.id]?" done":""}"><input type="checkbox" data-shot="${esc(s.id)}" ${ck[s.id]?"checked":""}><span><b>${esc(s.id)}</b> ${esc(s.desc)}${s.dur?` <span class="chip">${esc(String(s.dur))} s</span>`:""}${s.reelTitle?`<small>Reel: ${esc(s.reelTitle)}</small>`:""}${s.how?`<small>${esc(s.how)}</small>`:""}</span></label>`).join("")}</div>`).join("")}
+   ${(sp.after||[]).length?`<div class="station"><h3>Después de grabar</h3><ol class="shoot-list">${sp.after.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>`:""}</section>`}
 
 /* ================= Boot ================= */
 (async()=>{

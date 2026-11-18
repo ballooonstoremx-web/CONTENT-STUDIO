@@ -11,6 +11,18 @@ let playwright;
 try { playwright = require("playwright"); } catch { playwright = require("/opt/node22/lib/node_modules/playwright"); }
 const [, , BASE, FIX, OUT] = process.argv;
 fs.mkdirSync(OUT, { recursive: true });
+function fakeWeek(input, ver) {
+  const re = /slot ([^ ]+) · [^·]+ · (reel|carrusel|story) · objetivo ([^ ]+)/g; let m; const out = [];
+  while ((m = re.exec(input))) {
+    const [, slot, type, objective] = m; const v = ver(slot);
+    out.push({ slot, type, objective, title: `${type} ${slot}${v > 1 ? ` (v${v})` : ""}`, pillar: "Producto real", hook: "Hook de prueba corto", caption: "Copy de Instagram", caption_fb: "Copy de Facebook con enlace", cta: "Consulta el catálogo disponible en balloonstoreco.com", hashtags: ["#globos"],
+      slides: type === "carrusel" ? [{ template: "portada", headline: "Portada QA", body: "" }, { template: "producto", headline: "Producto QA", body: "Detalle" }, { template: "cta", headline: "Cierre", body: "Catálogo" }] : [],
+      shots: type === "reel" ? [{ duration: 3, text: "Toma 1", voice: "Voz 1", note: "", footage: "Video vertical del producto" }, { duration: 4, text: "Toma 2", voice: "Voz 2", note: "", footage: "Montaje real" }] : [],
+      frames: type === "story" ? [{ text: "Story 1", sticker: "encuesta", note: "" }, { text: "Story 2", sticker: "", note: "" }] : [],
+      materials: ["foto oficial"], needs: type === "reel" ? ["Video vertical del producto"] : [], verify: [] });
+  }
+  return { proposals: out };
+}
 const results = [];
 const ok = (name, cond, detail = "") => { results.push({ name, pass: !!cond, detail }); if (!cond) console.error("FAIL", name, detail); else console.log("PASS", name); };
 
@@ -52,15 +64,37 @@ const MOCK = `(() => {
     async delete(id) { await window.__assetDelete(id); return { deleted: true }; } };
   const downloads = { async save({ filename, data }) { const b = data instanceof Blob ? data : new Blob([data]); await window.__saveDownload(filename, await toB64(b)); return { status: "saved" }; } };
   window.__sampleCalls = [];
+  window.__slotVer = {};
+  function fakeWeek(input, ver) {
+    const re = /slot ([^ ]+) · [^·]+ · (reel|carrusel|story) · objetivo ([^ ]+)/g; let m; const out = [];
+    while ((m = re.exec(input))) {
+      const [, slot, type, objective] = m; const v = ver(slot);
+      out.push({ slot, type, objective, title: \`\${type} \${slot}\${v > 1 ? \` (v\${v})\` : ""}\`, pillar: "Producto real", hook: "Hook de prueba corto", caption: "Copy de Instagram", caption_fb: "Copy de Facebook con enlace", cta: "Consulta el catálogo disponible en balloonstoreco.com", hashtags: ["#globos"],
+        slides: type === "carrusel" ? [{ template: "portada", headline: "Portada QA", body: "" }, { template: "producto", headline: "Producto QA", body: "Detalle" }, { template: "cta", headline: "Cierre", body: "Catálogo" }] : [],
+        shots: type === "reel" ? [{ duration: 3, text: "Toma 1", voice: "Voz 1", note: "", footage: "Video vertical del producto" }, { duration: 4, text: "Toma 2", voice: "Voz 2", note: "", footage: "Montaje real" }] : [],
+        frames: type === "story" ? [{ text: "Story 1", sticker: "encuesta", note: "" }, { text: "Story 2", sticker: "", note: "" }] : [],
+        materials: ["foto oficial"], needs: type === "reel" ? ["Video vertical del producto"] : [], verify: [] });
+    }
+    return { proposals: out };
+  }
   const sample = async (input, opts = {}) => { throw { code: "upstream_error", message: "text mode not used" }; };
   sample.limits = async () => ({ maxPromptBytes: 262144, images: { maxCount: 4, maxInputBytes: 20971520, mediaTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"] } });
   sample.json = async (input, opts = {}) => {
     const imgs = opts.images ? [].concat(opts.images) : [];
     window.__sampleCalls.push({ input: String(input), images: imgs.length, imageTypes: imgs.map(b => b.type) });
     if (window.__sampleMode === "not_granted") throw { code: "not_granted", message: "declined" };
+    if (String(input).includes("PIEZAS A PROPONER")) return fakeWeek(String(input), slot => (window.__slotVer[slot] = (window.__slotVer[slot] || 0) + 1));
     return JSON.parse(window.__aiFixture);
   };
-  const caps = { db, assets, downloads, sample };
+  window.__mcpCalls = [];
+  const mcp = { async listTools() { return { servers: [{ server: "Shopify", tools: [{ name: "search_products" }] }] }; },
+    async callTool(server, tool, input) { window.__mcpCalls.push({ server, tool, input });
+      return { content: [], payload: { data: { products: { edges: [
+        { node: { handle: "numero-qa", title: '34 pulgadas Número QA 86 cm', vendor: "Anagram", productType: "Globo Metálico", status: "ACTIVE", priceRangeV2: { minVariantPrice: { amount: "47.0" } }, totalInventory: 9, variants: { edges: [{ node: { sku: "QA-002", price: "47.00", inventoryQuantity: 5 } }] } } },
+        { node: { handle: "globo-nuevo-qa", title: "Globo Nuevo QA", vendor: "Anagram", productType: "Globo Metálico", status: "ACTIVE", variants: { edges: [{ node: { sku: "QA-NEW", price: "30.00", inventoryQuantity: 3 } }] } } },
+        { node: { handle: "archivado-qa", title: "Archivado QA", status: "ARCHIVED", variants: { edges: [] } } }] } } } };
+    } };
+  const caps = { db, assets, downloads, sample, mcp };
   window.claude = { use: async n => (n in caps ? caps[n] : null) };
 })();`;
 
@@ -358,8 +392,131 @@ async function run(mode) {
   ok(P + "ai: draft notes keep source, flags and verification list", notes.includes("Propuesta generada con Claude") && notes.includes("menciona un precio"));
   await page.keyboard.press("Escape");
 
+  // ---- Catálogo ----
+  const photoB64 = fs.readFileSync(path.join(FIX, "photo.png")).toString("base64");
+  const catFile = path.join(OUT, mode + "-catalog.json");
+  const catProd = (id, title, handle, type, vendor, sku) => ({ id, title, handle, url: "https://balloonstoreco.com/products/" + handle, vendor, type, tags: ["QA"], skus: [{ sku, variant: "" }], description: "Producto de prueba.", images: [{ dataUrl: "data:image/png;base64," + photoB64, alt: title, width: 1080, height: 1350, sha256: "sha-" + handle }] });
+  fs.writeFileSync(catFile, JSON.stringify({ app: "balloon-store-content-hq", kind: "catalog", fetchedAt: "2026-11-18", products: [
+    catProd("shopify-1", "18\" Estrella QA 45 cm", "estrella-qa", "Globo Metálico", "Anagram", "QA-001"),
+    catProd("shopify-2", "34\" Número QA 86 cm", "numero-qa", "Globo Metálico", "Anagram", "QA-002"),
+    catProd("shopify-3", "9\" Látex QA 23 cm", "latex-qa", "Globo Látex", "Sensacional (Qualatex)", "QA-003")] }));
+  await page.goto(BASE + "#catalogo");
+  await page.setInputFiles("#cat_file", catFile);
+  await page.waitForFunction(() => document.querySelectorAll(".cat-card img").length === 3, null, { timeout: 20000 });
+  ok(P + "catalog: 3 verified products imported with official photo", (await page.$$(".cat-card")).length === 3);
+  await page.fill("#cat_q", "QA-002");
+  const visible = await page.$$eval(".cat-card:not([hidden]) b", e => e.map(x => x.textContent));
+  ok(P + "catalog: search by SKU", visible.length === 1 && visible[0].includes("Número QA"), visible.join("|"));
+  await page.setInputFiles("#cat_file", catFile);
+  await page.waitForSelector(".toast:has-text('0 fotos nuevas')");
+  ok(P + "catalog: re-import updates without duplicating photos", (await page.$$(".cat-card")).length === 3);
+  await page.fill("#cat_q", "QA-002");
+  await page.click(".cat-card:not([hidden]) [data-cat-lib]");
+  await page.waitForSelector(".cat-card:not([hidden]) [data-cat-lib]:has-text('En Biblioteca')");
+  await page.goto(BASE + "#hoy"); await page.goto(BASE + "#biblioteca");
+  await page.waitForSelector(".mcard:has-text('numero-qa.jpg') img");
+  ok(P + "catalog: official photo selectable in Biblioteca", true);
+  if (mode === "cloud") {
+    const db0 = JSON.parse(await page.evaluate(() => localStorage.getItem("__mockdb")));
+    ok(P + "catalog: stored without price or inventory", !/price|inventory|precio/i.test(JSON.stringify(db0.catalog)));
+    await page.goto(BASE + "#catalogo");
+    await page.waitForSelector("#cat_live:not([hidden])");
+    await page.fill("#live_q", "QA"); await page.click("#live_go");
+    await page.waitForFunction(() => document.querySelectorAll("#live_out .idea").length === 2);
+    const live = await page.textContent("#live_out");
+    ok(P + "live Shopify: active results only, catalog match recognised", live.includes("En catálogo") && live.includes("Globo Nuevo QA") && !live.includes("Archivado"));
+    const call = (await page.evaluate(() => window.__mcpCalls))[0];
+    ok(P + "live Shopify: read-only search_products call", call.server === "Shopify" && call.tool === "search_products" && call.input.search_query === "QA");
+    await page.click("#live_out [data-req]");
+    await page.waitForSelector("#live_out .chip:has-text('Solicitado')");
+    const db1 = JSON.parse(await page.evaluate(() => localStorage.getItem("__mockdb")));
+    const req = Object.values(db1.requests || {});
+    ok(P + "live Shopify: import request saved without price/stock", req.length === 1 && req[0].handle === "globo-nuevo-qa" && !/price|inventory/i.test(JSON.stringify(req)));
+  }
+  // Real video for one product, so its Reels count as ready
+  await page.goto(BASE + "#hoy"); await page.goto(BASE + "#biblioteca");
+  await page.waitForSelector(".mcard:has-text('clip.mp4') [data-tags]");
+  await page.$eval(".mcard:has-text('clip.mp4') [data-tags]", e => { e.value = "estrella-qa, montaje"; e.dispatchEvent(new Event("change")); });
+  await page.waitForTimeout(300);
+  // IA picks a catalog product
+  await page.goto(BASE + "#ia"); await page.waitForSelector("#ai_cat");
+  await page.selectOption("#ai_cat", "shopify-1");
+  await page.waitForFunction(() => document.querySelector("#ai_facts") && document.querySelector("#ai_facts").value.includes("QA-001"));
+  ok(P + "ia: product from catalog fills name, SKU facts and official photo", (await page.inputValue("#ai_product")).includes("Estrella QA") && !!(await page.$("#ai_thumb img")));
+
+  // ---- Fábrica semanal ----
+  await page.goto(BASE + "#fabrica"); await page.waitForSelector(".fab-days");
+  const slotTypes = await page.$$eval(".fab-slot b", e => e.map(x => x.textContent));
+  ok(P + "fábrica: plan of 21 slots (7 Reels, 7 carruseles, 7 Stories)", slotTypes.length === 21 && ["Reel", "Carrusel", "Stories"].every(t => slotTypes.filter(x => x === t).length === 7));
+  const weekPrompt = await page.textContent("#fab_prompt");
+  ok(P + "fábrica: prompt uses real products, SKUs, library video and brand rules", weekPrompt.includes("QA-001") && weekPrompt.includes("clip.mp4") && weekPrompt.includes("No inventes") && (weekPrompt.match(/- slot /g) || []).length === 21 && !/\$\s?\d/.test(weekPrompt));
+  const start = await page.inputValue("#fab_start");
+  if (mode === "local") {
+    await page.waitForFunction(() => /claude\.ai/.test(document.querySelector("#fab_help").textContent));
+    await page.click("#fab_copy");
+    await page.waitForTimeout(400);
+    await page.reload(); await page.goto(BASE + "#hoy"); await page.goto(BASE + "#fabrica"); await page.waitForSelector("#fab_reply");
+    await page.fill("#fab_reply", JSON.stringify(fakeWeek(weekPrompt, () => 1)));
+    await page.click("#fab_import");
+  } else {
+    await page.waitForSelector("#fab_go:not([hidden])"); await page.click("#fab_go");
+  }
+  await page.waitForFunction(() => document.querySelectorAll(".pcard").length === 21, null, { timeout: 30000 });
+  ok(P + "fábrica: 21 proposals on the batch board", true);
+  const pmap = {}; for (const m of weekPrompt.matchAll(/\[(P\d+)\]\nProducto: (.+)/g)) pmap[m[1]] = m[2];
+  const promptProd = Object.fromEntries([...weekPrompt.matchAll(/- slot ([^ ]+) · .*? · producto (P\d+)/g)].map(m => [m[1], pmap[m[2]]]));
+  const boardProd = Object.fromEntries(await page.$$eval(".pcard", cs => cs.map(c => [c.dataset.slot, c.querySelector(".cat-meta").textContent])));
+  ok(P + "fábrica: every piece keeps the product it was written for (after reload)", Object.keys(promptProd).length === 21 && Object.entries(promptProd).every(([k, v]) => boardProd[k] === v));
+  const reelBadges = await page.$$eval(".pcard.t-reel .badge", e => e.map(x => x.textContent));
+  ok(P + "fábrica: Reels without real video marked 'Falta grabación' (3 ready, 4 pending)", reelBadges.filter(x => x === "Material listo").length === 3 && reelBadges.filter(x => x === "Falta grabación").length === 4, reelBadges.join("|"));
+  ok(P + "fábrica: carousels and Stories ready with official photo", (await page.$$(".pcard.t-carrusel .badge.ok, .pcard.t-story .badge.ok")).length === 14);
+  // Regenerate one carousel
+  const firstCar = await page.$eval(".pcard.t-carrusel", e => e.dataset.slot);
+  await page.click(`.pcard[data-slot='${firstCar}'] [data-regen]`);
+  await page.fill(`.pcard[data-slot='${firstCar}'] [data-note]`, "Más enfocado en XV años");
+  await page.click(`.pcard[data-slot='${firstCar}'] [data-regengo]`);
+  if (mode === "local") {
+    await page.waitForSelector("#fab_ah:has-text('Regenerar 1 pieza')");
+    const one = await page.textContent("#fab_prompt");
+    ok(P + "fábrica: single-piece prompt carries the change request", (one.match(/- slot /g) || []).length === 1 && one.includes("Más enfocado en XV años"));
+    await page.fill("#fab_reply", JSON.stringify(fakeWeek(one, () => 2)));
+    await page.click("#fab_import");
+  }
+  await page.waitForSelector(`.pcard[data-slot='${firstCar}'] .ptitle:has-text('(v2)')`, { timeout: 15000 });
+  ok(P + "fábrica: regenerated one piece in place", (await page.$$(".pcard")).length === 21);
+  // Batch approval
+  await page.click("#fb_ready");
+  const readyLabel = await page.textContent("#fb_approve");
+  ok(P + "fábrica: 'Solo las listas' selects 17", readyLabel.includes("(17)"), readyLabel);
+  await page.check(".pcard.t-reel:has(.badge.pend) [data-sel]");
+  await page.click("#fb_approve");
+  await page.waitForFunction(() => document.querySelectorAll(".pcard.aprobada").length === 18, null, { timeout: 20000 });
+  ok(P + "fábrica: 18 approved in one action", true);
+  const weekZip = await downloadVia(page, mode, captured, () => page.click("#fb_zip"));
+  const zb = fs.readFileSync(weekZip);
+  ok(P + "fábrica: week ZIP separates listos/ and pendientes/ with summary", ["RESUMEN.csv", "listos/", "pendientes/", "PENDIENTE.txt", "slides/01.png", "stories/01.png", "instrucciones-capcut.md"].every(n => zb.includes(Buffer.from(n))));
+  fs.copyFileSync(weekZip, path.join(OUT, mode + "-semana.zip"));
+  await page.goto(BASE + "#calendario"); await page.waitForSelector(".cal");
+  const evs = await page.$$eval(".cal .ev", e => e.map(x => x.textContent + "|" + x.className));
+  ok(P + "calendar: approved pieces scheduled on their dates, pending one marked", evs.filter(x => x.includes(start)).length >= 3 && evs.some(x => x.includes(" pend")), String(evs.length));
+  await page.goto(BASE + "#panel"); await page.waitForSelector(".kanban");
+  const doneCol = await page.$$eval(".kanban .col:nth-child(4) .card .t", e => e.map(x => x.textContent));
+  const draftMeta = await page.$$eval(".kanban .col:nth-child(1) .card .m, .kanban .col:nth-child(2) .card .m", e => e.map(x => x.textContent));
+  ok(P + "tablero: ready pieces are Terminado; pending Reel is not", doneCol.filter(t => /^(carrusel|story|reel) \d{4}-/.test(t)).length === 17 && draftMeta.some(m => m.includes("Pendiente de material")));
+  await page.reload();
+  await page.goto(BASE + "#fabrica"); await page.waitForFunction(() => document.querySelectorAll(".pcard").length === 21, null, { timeout: 15000 });
+  ok(P + "persistence: week board and approvals survive reload", (await page.$$(".pcard.aprobada")).length === 18);
+  await page.screenshot({ path: path.join(OUT, mode + "-fabrica.png"), fullPage: true });
+  // Results comparison
+  await page.goto(BASE + "#resultados"); await page.waitForSelector("#cmp_by");
+  await page.selectOption("tbody tr:has(input[data-k='reach'][value='1000']) [data-plat]", "Instagram");
+  await page.waitForTimeout(300);
+  await page.selectOption("#cmp_by", "platform");
+  await page.waitForSelector("table.cmp td:has-text('Instagram')");
+  ok(P + "results: comparison by platform with interaction rate", (await page.textContent("table.cmp")).includes("%"));
+
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const v of ["panel", "hoy", "campanas", "estudio", "resultados", "ia"]) {
+  for (const v of ["panel", "hoy", "campanas", "estudio", "resultados", "ia", "catalogo", "fabrica"]) {
     await page.goto(BASE + "#" + v);
     await page.waitForTimeout(300);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);

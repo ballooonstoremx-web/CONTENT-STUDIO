@@ -22,3 +22,5 @@ brand/fonts/*
 !brand/fonts/README.md
 brand/product-photos/*
 !brand/product-photos/README.md
+catalog/images/
+catalog/import/

@@ -216,6 +216,30 @@ label.ck input{width:18px;height:18px;accent-color:var(--ink)}
 .ai-hook{font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.3;margin:0}
 .ai-list{margin:0;padding-left:20px;display:grid;gap:4px;font-size:.86rem}.ai-list small{color:var(--muted)}
 .ai-prop details{font-size:.86rem}.ai-prop ul{margin:6px 0 0;padding-left:18px}
+/* ---- Catálogo ---- */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.cat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);min-width:0}
+.cat-card .thumb{aspect-ratio:1;background:#fff;display:grid;place-items:center;border-bottom:1px solid var(--line);padding:14px}
+.cat-card .thumb img{width:100%;height:100%;object-fit:contain}
+.cat-card .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;font-size:.84rem}.cat-card .body b{font-size:.92rem;line-height:1.3;overflow-wrap:anywhere}
+.cat-meta{color:var(--muted);font-size:.76rem}
+/* ---- Fábrica semanal ---- */
+.fab-picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 12px;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.fab-pick{flex-direction:row;align-items:flex-start;gap:8px;text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--fg);font-weight:500}.fab-pick input{width:16px;height:16px;margin-top:2px;accent-color:var(--ink)}
+.fab-bar{display:flex;flex-wrap:wrap;gap:14px;align-items:end;justify-content:space-between;margin-bottom:14px}
+.fab-days{display:grid;grid-template-columns:repeat(7,minmax(158px,1fr));gap:10px;min-width:1160px}
+.fab-day{display:flex;flex-direction:column;gap:10px;min-width:0}
+.fab-slot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:2px;font-size:.8rem}.fab-slot small{color:var(--muted)}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);font-size:.82rem;min-width:0}
+.pcard.aprobada{background:var(--greensoft);border-color:#C6EBB2}.pcard.descartada{opacity:.55}
+.pcard .pthumb{height:110px;background:#fff;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden}.pcard .pthumb img{max-height:100%;max-width:100%;object-fit:contain}
+.pcard .ptitle{font-family:var(--serif);font-size:1.02rem;font-weight:600;line-height:1.2;overflow-wrap:anywhere}.pcard .phook{margin:0;font-style:italic;color:var(--fg)}
+.pcard details{font-size:.8rem}.pcard .chip{font-size:.66rem}
+.badge{display:inline-block;align-self:start;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:999px}
+.badge.ok{background:var(--greensoft);color:#2D6A1C;border:1px solid #C6EBB2}.badge.pend{background:var(--accentsoft);color:#9A1F3A;border:1px solid #F6C0CC}.badge.warnb{background:var(--yellowsoft);color:#5E4C00;border:1px solid #F2E08A}
+.cal .ev.pend,.week7 .ev.pend{outline:1.5px dashed var(--pink);outline-offset:-1.5px}
+.cmpbar{position:relative;min-width:150px;height:22px;background:var(--surface2);border-radius:6px;overflow:hidden}.cmpbar i{position:absolute;inset:0 auto 0 0;background:var(--blue);border-radius:6px}.cmpbar span{position:relative;padding-left:8px;font-size:.78rem;font-weight:700;line-height:22px}
+table.cmp{min-width:720px}
 /* ---- Responsive ---- */
 @media (max-width:900px){
   nav.rail{flex-wrap:nowrap}
@@ -268,12 +292,14 @@ label.ck input{width:18px;height:18px;accent-color:var(--ink)}
         <a href="#campanas" data-r="campanas">Campañas</a>
         <a href="#calendario" data-r="calendario">Calendario</a></span>
         <span class="grp"><span class="sec">Crear</span>
+        <a href="#fabrica" data-r="fabrica" title="Fábrica semanal con IA">Fábrica</a>
         <a href="#ia" data-r="ia" title="Generar con IA">IA</a>
         <a href="#copy" data-r="copy" title="Hooks, guiones y copies">Copies</a>
         <a href="#carrusel" data-r="carrusel">Carrusel</a>
         <a href="#reel" data-r="reel">Reel</a>
         <a href="#plantillas" data-r="plantillas">Plantillas</a>
-        <a href="#biblioteca" data-r="biblioteca">Biblioteca</a></span>
+        <a href="#biblioteca" data-r="biblioteca">Biblioteca</a>
+        <a href="#catalogo" data-r="catalogo">Catálogo</a></span>
         <span class="grp"><span class="sec">Revisar</span>
         <a href="#panel" data-r="panel">Tablero</a>
         <a href="#resultados" data-r="resultados">Resultados</a>
@@ -308,9 +334,9 @@ const hasClaude=()=>!!(window.claude&&typeof window.claude.use==="function");
 function withTimeout(p,ms){return Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))])}
 
 /* ================= Storage: claude.ai db+assets when hosted, IndexedDB otherwise ================= */
-const COLS=["items","media","campaigns","series"];
+const COLS=["items","media","campaigns","series","catalog","weeks","requests"];
 const IDB={db:null,
-  open(){return new Promise((res,rej)=>{const r=indexedDB.open("bs-content-hq",2);r.onupgradeneeded=()=>{const d=r.result;["items","media","blobs","campaigns","series"].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n)})};r.onsuccess=()=>{this.db=r.result;res(this)};r.onerror=()=>rej(r.error)})},
+  open(){return new Promise((res,rej)=>{const r=indexedDB.open("bs-content-hq",3);r.onupgradeneeded=()=>{const d=r.result;["items","media","blobs","campaigns","series","catalog","weeks","requests"].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n)})};r.onsuccess=()=>{this.db=r.result;res(this)};r.onerror=()=>rej(r.error)})},
   tx(store,mode,fn){return new Promise((res,rej)=>{const t=this.db.transaction(store,mode);const s=t.objectStore(store);const out=fn(s);t.oncomplete=()=>res(out&&out.result!==undefined?out.result:undefined);t.onerror=()=>rej(t.error)})},
   all(store){return new Promise((res,rej)=>{const t=this.db.transaction(store,"readonly");const r=t.objectStore(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})},
   get(store,key){return new Promise((res,rej)=>{const r=this.db.transaction(store,"readonly").objectStore(store).get(key);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
@@ -402,10 +428,10 @@ async function makeZip(files){ // files: [{name, data: Blob|string}]
 }
 
 /* ================= State ================= */
-const S={items:[],media:[],campaigns:[],series:[],curCamp:null,week:null,studioStep:1,seriesFilter:"",resPeriod:"todo",cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
+const S={items:[],media:[],campaigns:[],series:[],catalog:[],weeks:[],requests:[],curCamp:null,week:null,studioStep:1,seriesFilter:"",resPeriod:"todo",cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
 const item=id=>S.items.find(i=>i.id===id);
 const mediaById=id=>S.media.find(m=>m.id===id);
-function newItem(p={}){return Object.assign({id:uid(),type:"reel",title:"Contenido sin título",status:"idea",date:"",pillar:"",occasion:"",line:"",audience:"decoradoras",hook:"",script:"",caption:"",cta:"",notes:"",slides:[],shots:[],metrics:{},campaignId:"",seriesId:"",ep:0,filmChecks:{},frames:[],storyMedia:"",example:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()},p)}
+function newItem(p={}){return Object.assign({id:uid(),type:"reel",title:"Contenido sin título",status:"idea",date:"",pillar:"",occasion:"",line:"",audience:"decoradoras",hook:"",script:"",caption:"",cta:"",notes:"",slides:[],shots:[],metrics:{},campaignId:"",seriesId:"",ep:0,filmChecks:{},frames:[],storyMedia:"",objective:"",productId:"",pending:[],captionFb:"",weekId:"",example:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()},p)}
 const saveTimers=new Map();
 function touch(it,immediate){it.updatedAt=new Date().toISOString();clearTimeout(saveTimers.get(it.id));
   const go=()=>Store.save("items",it).catch(e=>toast("No se guardó: "+(e.message||e.code||e)));
@@ -561,7 +587,7 @@ function route(){const r=(location.hash||"#hoy").slice(1);const v=VIEWS[r]?r:"ho
 window.addEventListener("hashchange",route);
 function head(t,p,actions=""){return`<div class="head"><div><h1>${t}</h1>${p?`<p>${p}</p>`:""}</div><div class="row">${actions}</div></div>`}
 function statusChip(s){return`<span class="chip s-${s}">${esc(label(STATUSES,s))}</span>`}
-function itemCard(it){return`<div class="card t-${it.type}" data-open="${it.id}" tabindex="0" role="button"><div class="t">${esc(it.title)}</div><div class="m">${esc(label(TYPES,it.type))}${it.date?" · "+esc(it.date):""}${it.example?" · Ejemplo":""}</div></div>`}
+function itemCard(it){return`<div class="card t-${it.type}" data-open="${it.id}" tabindex="0" role="button"><div class="t">${esc(it.title)}</div><div class="m">${esc(label(TYPES,it.type))}${it.date?" · "+esc(it.date):""}${it.example?" · Ejemplo":""}${(it.pending||[]).length?" · Pendiente de material":""}</div></div>`}
 function bindOpen(root){$$("[data-open]",root).forEach(el=>{const f=()=>openEditor(el.dataset.open);el.onclick=f;el.onkeydown=e=>{if(e.key==="Enter")f()}})}
 function itemOptions(type,sel){return S.items.filter(i=>!type||i.type===type).map(i=>`<option value="${i.id}" ${i.id===sel?"selected":""}>${esc(i.title)}</option>`).join("")}
 
@@ -641,7 +667,7 @@ VIEWS.biblioteca=main=>{
     $("[data-rm]",el).onclick=()=>{const used=S.items.filter(i=>i.slides.some(s=>s.mediaId===m.id)||i.shots.some(s=>s.mediaId===m.id));
       $("[data-cf]",el).innerHTML=`<p style="margin:0">${used.length?"Se usa en "+used.length+" contenido(s). ":""}¿Eliminar?</p><button class="danger" data-yes>Sí, eliminar</button>`;
       $("[data-yes]",el).onclick=async()=>{used.forEach(i=>{i.slides.forEach(s=>{if(s.mediaId===m.id)s.mediaId=""});i.shots=i.shots.filter(s=>s.mediaId!==m.id);touch(i,true)});
-        await Store.dropBlob(m.ref);await Store.remove("media",m.id);S.media=S.media.filter(x=>x.id!==m.id);imgCache.delete(m.id);toast("Archivo eliminado");route()}};
+        if(!m.catalogId)await Store.dropBlob(m.ref);await Store.remove("media",m.id);S.media=S.media.filter(x=>x.id!==m.id);imgCache.delete(m.id);toast("Archivo eliminado");route()}};
   });
 };
 $("#filePick").onchange=e=>{uploadFiles([...e.target.files]);e.target.value=""};
@@ -705,7 +731,7 @@ VIEWS.copy=main=>{
   $("#c_copy",main).onclick=()=>{const t=$("#c_caption",main);navigator.clipboard.writeText(t.value).then(()=>toast("Copiado"),()=>{t.select();toast("Selecciónalo y copia con Ctrl+C")})};
   $("#c_dl",main).onclick=()=>{sync();saveFile(slug(it.title)+"-copy.txt",new Blob([textPack(it)],{type:"text/plain"}))};
 };
-function textPack(it){return`${it.title}\nFormato: ${label(TYPES,it.type)} · Estado: ${label(STATUSES,it.status)} · Fecha: ${it.date||"sin fecha"}\n\nHOOK\n${it.hook}\n\nGUION\n${it.script}\n\nCOPY\n${it.caption}\n\nCTA\n${it.cta}\n\nNOTAS\n${it.notes}\n`}
+function textPack(it){return`${it.title}\nFormato: ${label(TYPES,it.type)} · Estado: ${label(STATUSES,it.status)} · Fecha: ${it.date||"sin fecha"}\n\nHOOK\n${it.hook}\n\nGUION\n${it.script}\n\nCOPY INSTAGRAM\n${it.caption}${it.captionFb?`\n\nCOPY FACEBOOK\n${it.captionFb}`:""}\n\nCTA\n${it.cta}${(it.pending||[]).length?`\n\nPENDIENTE DE MATERIAL\n- ${it.pending.join("\n- ")}`:""}\n\nNOTAS\n${it.notes}\n`}
 
 /* ---- Plantillas ---- */
 VIEWS.plantillas=main=>{
@@ -758,15 +784,16 @@ VIEWS.carrusel=main=>{
   $("#k_png",main).onclick=async()=>{const c=document.createElement("canvas");await renderSlide(c,it.slides[S.slideIdx],{index:S.slideIdx+1,total:it.slides.length});saveFile(`${slug(it.title)}-${String(S.slideIdx+1).padStart(2,"0")}.png`,await canvasBlob(c))};
   $("#k_zip",main).onclick=async e=>{e.target.disabled=true;e.target.textContent="Generando…";try{const z=await buildCarouselZip(it);await saveFile(slug(it.title)+"-carrusel.zip",z)}catch(err){toast(err.message)}finally{e.target.disabled=false;e.target.textContent="Exportar ZIP"}};
 };
-async function buildCarouselZip(it){
+async function carouselFiles(it){
   const miss=it.slides.filter(s=>s.template==="producto"&&!s.mediaId);if(miss.length)throw new Error("Falta foto real en diapositivas de producto");
   const files=[];const n=it.slides.length;
   for(let i=0;i<n;i++){const c=document.createElement("canvas");await renderSlide(c,it.slides[i],{index:i+1,total:n});files.push({name:`slides/${String(i+1).padStart(2,"0")}.png`,data:await canvasBlob(c)})}
   files.push({name:"copy.txt",data:textPack(it)});
   files.push({name:"ficha.json",data:JSON.stringify({title:it.title,status:it.status,date:it.date,format:"1080x1350 PNG",slides:it.slides.map((s,i)=>({n:i+1,template:s.template,headline:s.headline,photo:s.mediaId?(mediaById(s.mediaId)||{}).name:null})),exportedAt:new Date().toISOString(),site:BRAND.site},null,2)});
   files.push({name:"LEEME.txt",data:`Carrusel: ${it.title}\nSube las imágenes de /slides en orden (01, 02, …) a Instagram o Facebook.\nPega el texto de copy.txt como pie de publicación.\nAntes de publicar: confirma que no queda texto marcado ${PH} y que las fotos son del producto real.\nEsta herramienta no publica en redes sociales.\n`});
-  return makeZip(files);
+  return files;
 }
+async function buildCarouselZip(it){return makeZip(await carouselFiles(it))}
 
 /* ---- Reel ---- */
 const fmtT=s=>{const m=Math.floor(s/60),r=(s-m*60);return String(m).padStart(2,"0")+":"+r.toFixed(1).padStart(4,"0")};
@@ -868,7 +895,7 @@ VIEWS.reel=main=>{
   $("#r_cov",main).onclick=async()=>{const c=document.createElement("canvas");await renderReelCover(c,it);saveFile(slug(it.title)+"-portada.png",await canvasBlob(c))};
   $("#r_zip",main).onclick=async e=>{e.target.disabled=true;e.target.textContent="Generando…";try{await saveFile(slug(it.title)+"-reel-capcut.zip",await buildReelZip(it))}catch(err){toast(err.message)}finally{e.target.disabled=false;e.target.textContent="Exportar paquete ZIP"}};
 };
-async function buildReelZip(it){
+async function reelFiles(it){
   if(!it.shots.length)throw new Error("Agrega al menos una toma con material real");
   const tl=reelTimeline(it);const files=[];const seen=new Set();
   for(const r of tl){if(!r.media||!r.media.ref)throw new Error("La toma "+r.n+" no tiene archivo; vuelve a agregarla");
@@ -881,8 +908,9 @@ async function buildReelZip(it){
   files.push({name:"guion.txt",data:`HOOK\n${it.hook}\n\nGUION\n${it.script}\n\nVOZ POR TOMA\n${tl.map(r=>`${r.n}. ${r.voice||"—"}`).join("\n")}\n`});
   files.push({name:"copy-instagram.txt",data:it.caption||genCaption(it)});
   files.push({name:"LEEME.txt",data:`Paquete de Reel: ${it.title}\n1. Descomprime este ZIP.\n2. Sigue instrucciones-capcut.md.\n3. Material incluido: ${tl.length} archivo(s) real(es) en /clips.\nEsta herramienta no publica en redes sociales.\n`});
-  return makeZip(files);
+  return files;
 }
+async function buildReelZip(it){return makeZip(await reelFiles(it))}
 
 
 /* ---- Stories export (1080x1920 frames with the real photo; stickers are added in Instagram) ---- */
@@ -899,13 +927,14 @@ async function renderStoryFrame(c,it,i){
     drawText(ctx,"STICKER EN INSTAGRAM",120,y+28,W-240,26,1,"700 {s}px 'Inter', sans-serif",C.pink,1);drawText(ctx,f.sticker,120,y+66,W-240,34,1.2,"600 {s}px 'Inter', sans-serif",C.navy,2)}
   drawText(ctx,"Balloon Store",80,H-460,600,40,1,DISPLAY,C.navy,1);drawText(ctx,BRAND.site,W-80,H-452,600,30,1,"700 {s}px 'Inter', sans-serif",C.navy,1,"right");
 }
-async function buildStoryZip(it){
+async function storyFiles(it){
   if(!it.frames||!it.frames.length)throw new Error("Estas Stories no tienen historias definidas.");
   const files=[];for(let i=0;i<it.frames.length;i++){const c=document.createElement("canvas");await renderStoryFrame(c,it,i);files.push({name:`stories/${String(i+1).padStart(2,"0")}.png`,data:await canvasBlob(c)})}
   files.push({name:"guion.txt",data:textPack(it)});
   files.push({name:"LEEME.txt",data:`Stories: ${it.title}\nSube las imágenes de /stories en orden (01, 02, …).\nEl recuadro rosa marca dónde poner el sticker en Instagram (encuesta, quiz, preguntas o enlace); colócalo encima y quita el recuadro con el sticker.\nZona segura: el texto ya está fuera de los 220 px superiores y 420 px inferiores.\nAntes de publicar: confirma que no queda texto marcado ${PH}.\nEsta herramienta no publica en redes sociales.\n`});
-  return makeZip(files);
+  return files;
 }
+async function buildStoryZip(it){return makeZip(await storyFiles(it))}
 
 /* ---- Calendario ---- */
 VIEWS.calendario=main=>{
@@ -918,7 +947,7 @@ VIEWS.calendario=main=>{
   main.innerHTML=head("Calendario editorial","Fechas y estados de cada pieza. Haz clic en una pieza para cambiar fecha o estado.",`<button id="prev" aria-label="Mes anterior">←</button><b style="min-width:150px;text-align:center">${months[mo]} ${y}</b><button id="next" aria-label="Mes siguiente">→</button><button id="tod">Hoy</button>`)+
   `<div class="row" style="margin-bottom:10px">${STATUSES.map(([k,l])=>`<span class="chip s-${k}">${l}</span>`).join("")}</div>
   <div style="overflow-x:auto"><div class="cal" style="min-width:560px">${["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d=>`<div class="dow">${d}</div>`).join("")}
-  ${days.map(d=>{const k=iso(d);const its=S.items.filter(i=>i.date===k);return`<div class="day ${d.getMonth()!==mo?"other":""} ${k===today()?"today":""}"><span class="n">${d.getDate()}</span>${its.map(i=>`<button class="ev s-${i.status}" data-open="${i.id}" title="${esc(i.title)}">${esc(label(TYPES,i.type))}: ${esc(i.title)}</button>`).join("")}</div>`}).join("")}</div></div>
+  ${days.map(d=>{const k=iso(d);const its=S.items.filter(i=>i.date===k);return`<div class="day ${d.getMonth()!==mo?"other":""} ${k===today()?"today":""}"><span class="n">${d.getDate()}</span>${its.map(i=>`<button class="ev s-${i.status}${(i.pending||[]).length?" pend":""}" data-open="${i.id}" title="${esc(i.title)}${(i.pending||[]).length?" · Pendiente: "+esc(i.pending.join("; ")):""}">${esc(label(TYPES,i.type))}: ${esc(i.title)}</button>`).join("")}</div>`}).join("")}</div></div>
   <div class="panel" style="margin-top:14px"><h2>Sin fecha (${unsched.length})</h2><div class="list" style="margin-top:8px">${unsched.map(i=>`<div class="idea"><div>${statusChip(i.status)} <b>${esc(i.title)}</b></div><input type="date" data-date="${i.id}" aria-label="Fecha para ${esc(i.title)}" style="max-width:170px"></div>`).join("")||'<p style="color:var(--muted)">Todo tiene fecha.</p>'}</div></div>`;
   bindOpen(main);
   $("#prev",main).onclick=()=>{S.calMonth=new Date(y,mo-1,1);route()};$("#next",main).onclick=()=>{S.calMonth=new Date(y,mo+1,1);route()};$("#tod",main).onclick=()=>{S.calMonth=null;route()};
@@ -935,7 +964,7 @@ VIEWS.respaldo=main=>{
   $$("[data-pk]",main).forEach(b=>b.onclick=async()=>{const it=item(b.dataset.pk);b.disabled=true;try{let z;
     if(it.type==="carrusel"&&it.slides.length)z=await buildCarouselZip(it);else if(it.type==="reel"&&it.shots.length)z=await buildReelZip(it);else if(it.type==="story"&&it.frames&&it.frames.length)z=await buildStoryZip(it);else z=await makeZip([{name:"contenido.txt",data:textPack(it)}]);
     await saveFile(slug(it.title)+".zip",z)}catch(e){toast(e.message)}finally{b.disabled=false}});
-  const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,campaigns:S.campaigns,series:S.series,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
+  const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,campaigns:S.campaigns,series:S.series,weeks:S.weeks,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
   $("#bk_json",main).onclick=()=>saveFile("content-hq-respaldo-"+today()+".json",new Blob([data()],{type:"application/json"}));
   $("#bk_zip",main).onclick=async e=>{e.target.disabled=true;try{const files=[{name:"respaldo.json",data:data()}];for(const m of S.media){const b=await Store.getBlob(m.ref).catch(()=>null);if(b)files.push({name:"media/"+m.id+"_"+m.name,data:b})}
     await saveFile("content-hq-respaldo-"+today()+".zip",await makeZip(files))}finally{e.target.disabled=false}};
@@ -989,7 +1018,7 @@ VIEWS.hoy=main=>{
     ...S.campaigns.filter(c=>c.start>=t).map(c=>({d:c.start,txt:"Arranca: "+c.name,k:"Campaña",camp:c.id})),
     ...seasons(t).slice(0,3).map(([d,n])=>({d,txt:n,k:"Fecha clave"}))].sort((a,b)=>a.d>b.d?1:-1).slice(0,8);
   const camps=S.campaigns.filter(c=>c.end>=t).sort((a,b)=>a.start>b.start?1:-1).slice(0,3);
-  main.innerHTML=`<div class="hello"><div><div class="eyebrow">Balloon Store · Content HQ · ${esc(fmtLong(t))}</div><h1 class="greet">${greet}, <em>equipo</em></h1></div><div class="row"><a class="btn" href="#estudio">Estudio semanal</a><a class="btn" href="#ia">Generar con IA</a><button class="primary" id="newBtn">Nuevo contenido</button></div></div>
+  main.innerHTML=`<div class="hello"><div><div class="eyebrow">Balloon Store · Content HQ · ${esc(fmtLong(t))}</div><h1 class="greet">${greet}, <em>equipo</em></h1></div><div class="row"><a class="btn" href="#estudio">Estudio semanal</a><a class="btn" href="#fabrica">Generar semana con IA</a><button class="primary" id="newBtn">Nuevo contenido</button></div></div>
   <div class="kpis">${ring(att.length,Math.max(att.length,1),att.length?BRAND.colors.pink:BRAND.colors.green,att.length,"te necesitan hoy",att.length>0)}
    ${ring(rev,Math.max(open,1),BRAND.colors.pink,rev,"por aprobar")}
    ${ring(wDone,Math.max(week.length,1),BRAND.colors.blue,week.length?`${wDone}/${week.length}`:"0","listas esta semana")}
@@ -1136,7 +1165,21 @@ function studioFilm(body,list){
 }
 
 /* ---- Resultados (embudo con datos capturados por el usuario) ---- */
-const MET=[["reach","Alcance"],["saves","Guardados"],["shares","Compartidos"],["profile","Visitas al perfil"],["clicks","Clics al sitio"],["dms","Mensajes"]];
+const MET=[["reach","Alcance"],["likes","Me gusta"],["comments","Comentarios"],["saves","Guardados"],["shares","Compartidos"],["profile","Visitas al perfil"],["clicks","Clics al sitio"],["dms","Mensajes"],["orders","Pedidos atribuidos"],["revenue","Ventas atribuidas (MXN)"]];
+const PLATFORMS=["Instagram","Facebook","Ambas"];
+const CMP_BY=[["type","Formato"],["objective","Objetivo"],["product","Producto"],["pillar","Pilar"],["platform","Plataforma"],["dow","Día de la semana"]];
+function cmpKey(i,by){if(by==="type")return label(TYPES,i.type);if(by==="product"){const p=catById(i.productId);return p?p.title:"(sin producto)"}if(by==="platform")return(i.metrics||{}).platform||"Sin especificar";if(by==="dow")return i.date?DIAS[parseD(i.date).getDay()]:"(sin fecha)";return i[by]||"(sin dato)"}
+function compareRows(list,by){const g={};list.forEach(i=>{const k=cmpKey(i,by);(g[k]=g[k]||[]).push(i)});const sum=a=>a.reduce((x,y)=>x+y,0);const avg=a=>a.length?sum(a)/a.length:null;
+  return Object.entries(g).map(([k,arr])=>{const v=f=>arr.map(i=>num(i.metrics[f])).filter(x=>x!=null);
+    const rate=arr.map(i=>{const r=num(i.metrics.reach);return r?["likes","comments","saves","shares"].map(f=>num(i.metrics[f])||0).reduce((a,b)=>a+b,0)/r*100:null}).filter(x=>x!=null);
+    const ctr=arr.map(i=>{const r=num(i.metrics.reach),c=num(i.metrics.clicks);return r&&c!=null?c/r*100:null}).filter(x=>x!=null);
+    return{k,n:arr.length,reach:avg(v("reach")),rate:avg(rate),ctr:avg(ctr),orders:v("orders").length?sum(v("orders")):null,revenue:v("revenue").length?sum(v("revenue")):null}}).sort((a,b)=>(b.rate||0)-(a.rate||0))}
+function compareHTML(list,by){const rows=compareRows(list,by);const max=Math.max(1,...rows.map(r=>r.rate||0));const f=(n,d=0)=>n==null?"—":n.toLocaleString("es-MX",{maximumFractionDigits:d});
+  return`<div class="panel" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:end"><div><div class="eyebrow">Captura manual · sin conexión verificada con Meta</div><h2>Comparar publicaciones</h2></div>
+  <label style="min-width:200px">Comparar por<select id="cmp_by">${CMP_BY.map(([k,l])=>`<option value="${k}" ${k===by?"selected":""}>${l}</option>`).join("")}</select></label></div>
+  <div style="overflow-x:auto;margin-top:10px"><table class="met cmp"><thead><tr><th>${esc(label(CMP_BY,by))}</th><th>Piezas</th><th>Alcance prom.</th><th>Interacción</th><th>Clics / alcance</th><th>Pedidos</th><th>Ventas (MXN)</th></tr></thead><tbody>
+  ${rows.map(r=>`<tr><td><b>${esc(r.k)}</b></td><td>${r.n}</td><td>${f(r.reach)}</td><td><div class="cmpbar"><i style="width:${r.rate==null?0:Math.max(3,r.rate/max*100)}%"></i><span>${r.rate==null?"—":f(r.rate,1)+"%"}</span></div></td><td>${r.ctr==null?"—":f(r.ctr,2)+"%"}</td><td>${f(r.orders)}</td><td>${r.revenue==null?"—":"$"+f(r.revenue)}</td></tr>`).join("")}</tbody></table></div>
+  <p class="ai-help" style="margin:8px 0 0">Interacción = (me gusta + comentarios + guardados + compartidos) ÷ alcance. Pedidos y ventas son los que tú atribuyes a la pieza.</p></div>`}
 const FUNNEL=[["reach","Alcance"],["profile","Visitas al perfil"],["clicks","Clics al sitio"],["dms","Mensajes"]];
 const LEAK_TIPS={profile:"Pocas personas pasan al perfil. Prueba hooks que prometan algo que se completa en el perfil y una CTA explícita para visitarlo.",clicks:"Visitan el perfil pero no van al sitio. Revisa el enlace de la bio y que la CTA diga qué encontrarán en balloonstoreco.com.",dms:"Llegan pero no escriben. Cierra con una pregunta concreta que se responda por mensaje directo."};
 const num=v=>v===""||v==null||isNaN(+v)?null:+v;
@@ -1157,11 +1200,14 @@ VIEWS.resultados=main=>{
    ${leak?`<div class="insight" style="margin-top:12px"><div class="eyebrow">Dónde se cae</div><h2 style="margin:4px 0">${esc(leak.from.l)} → ${esc(leak.to.l)}: solo ${leak.pct.toFixed(1)}%</h2><p style="margin:0">${esc(LEAK_TIPS[leak.to.k]||"")}</p><p style="margin:6px 0 0;font-size:.8rem;color:var(--muted)">Basado en ${withData.length} publicación(es) con datos${withData.length<3?". Con menos de 3 publicaciones tómalo como señal, no como conclusión.":"."}</p></div>`:""}
    ${ranked.length?`<div class="panel" style="margin-top:12px"><h2>Lo que más guardan y comparten</h2><div class="list" style="margin-top:8px">${ranked.map(x=>`<div class="idea"><div><b>${esc(x.i.title)}</b> <span style="color:var(--muted);font-size:.8rem">${esc(label(TYPES,x.i.type))}${x.i.pillar?" · "+esc(x.i.pillar):""}</span></div><span class="chip">${x.r.toFixed(1)}% del alcance</span></div>`).join("")}</div></div>`:""}`
   :`<div class="panel empty">${pub.length?"Captura al menos el alcance de una pieza publicada para ver el embudo.":"Cuando una pieza esté en “Terminado”, aparecerá aquí para capturar sus métricas."}</div>`}
-  ${inP.length?`<div class="panel" style="margin-top:14px"><h2>Métricas por pieza</h2><div style="overflow-x:auto;margin-top:8px"><table class="met"><thead><tr><th>Pieza</th><th>Fecha</th>${MET.map(([,l])=>`<th>${l}</th>`).join("")}</tr></thead><tbody>${inP.map(i=>`<tr><td style="min-width:200px"><b>${esc(i.title)}</b><br><small>${esc(label(TYPES,i.type))}</small></td><td>${i.date?fmtShort(i.date):"—"}</td>${MET.map(([k,l])=>`<td><input type="number" min="0" step="1" inputmode="numeric" data-met="${i.id}" data-k="${k}" value="${(i.metrics||{})[k]??""}" aria-label="${l} de ${esc(i.title)}"></td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`:""}`;
+  ${withData.length?compareHTML(withData,S.cmpBy||"type"):""}
+  ${inP.length?`<div class="panel" style="margin-top:14px"><h2>Métricas por pieza</h2><div style="overflow-x:auto;margin-top:8px"><table class="met"><thead><tr><th>Pieza</th><th>Fecha</th><th>Plataforma</th>${MET.map(([,l])=>`<th>${l}</th>`).join("")}</tr></thead><tbody>${inP.map(i=>`<tr><td style="min-width:200px"><b>${esc(i.title)}</b><br><small>${esc(label(TYPES,i.type))}</small></td><td>${i.date?fmtShort(i.date):"—"}</td><td><select data-plat="${i.id}" aria-label="Plataforma de ${esc(i.title)}" style="width:130px"><option value="">—</option>${PLATFORMS.map(x=>`<option ${(i.metrics||{}).platform===x?"selected":""}>${x}</option>`).join("")}</select></td>${MET.map(([k,l])=>`<td><input type="number" min="0" step="1" inputmode="numeric" data-met="${i.id}" data-k="${k}" value="${(i.metrics||{})[k]??""}" aria-label="${l} de ${esc(i.title)}"></td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`:""}`;
   $$("[data-per]",main).forEach(b=>b.onclick=()=>{S.resPeriod=b.dataset.per;route()});
+  const cb=$("#cmp_by",main);if(cb)cb.onchange=()=>{S.cmpBy=cb.value;route()};
+  $$("[data-plat]",main).forEach(sl=>sl.onchange=async()=>{const i=item(sl.dataset.plat);i.metrics={...(i.metrics||{}),platform:sl.value};await touch(i,true);route()});
   $$("[data-met]",main).forEach(inp=>inp.onchange=async()=>{const i=item(inp.dataset.met);const v=inp.value===""?"":Math.max(0,Math.round(+inp.value));i.metrics={...(i.metrics||{}),[inp.dataset.k]:v};await touch(i,true);route()});
   const cs=$("#csv",main);if(cs)cs.onclick=()=>{const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
-    const rows=[["titulo","formato","fecha","pilar",...MET.map(m=>m[0])].join(","),...pub.map(i=>[q(i.title),q(label(TYPES,i.type)),q(i.date),q(i.pillar),...MET.map(([k])=>q((i.metrics||{})[k]))].join(","))];
+    const rows=[["titulo","formato","fecha","objetivo","producto","plataforma","pilar",...MET.map(m=>m[0])].join(","),...pub.map(i=>[q(i.title),q(label(TYPES,i.type)),q(i.date),q(i.objective),q((catById(i.productId)||{}).title),q((i.metrics||{}).platform),q(i.pillar),...MET.map(([k])=>q((i.metrics||{})[k]))].join(","))];
     saveFile("content-hq-resultados-"+t+".csv",new Blob([rows.join("\n")],{type:"text/csv"}))};
 };
 
@@ -1214,21 +1260,21 @@ Responde solo con JSON válido, sin texto adicional, con esta forma:
 {"proposals":[{"type":"reel|carrusel|story","title":"","pillar":"${PILLARS.join("|")}","hook":"","alt_hooks":["",""],"caption":"","cta":"","hashtags":["#globos"],"slides":[{"template":"portada","headline":"","body":""}],"shots":[{"duration":3,"text":"","voice":"","note":"","footage":""}],"frames":[{"text":"","sticker":"","note":""}],"needs":["material real que falta"],"verify":["dato que el equipo debe confirmar"]}]}
 Incluye "slides" solo en carrusel, "shots" solo en reel y "frames" solo en story.`;
 }
-function parseAIReply(raw){
-  if(raw&&typeof raw==="object")return normalizeAI(raw);
+function parseAIReply(raw,limit){
+  if(raw&&typeof raw==="object")return normalizeAI(raw,limit);
   let t=String(raw||"").trim();if(!t)throw new Error("Pega la respuesta de Claude.");
   const fence=t.match(/```(?:json)?\s*([\s\S]*?)```/i);if(fence)t=fence[1].trim();
   let data;try{data=JSON.parse(t)}catch(e){const i=t.search(/[\[{]/),j=Math.max(t.lastIndexOf("}"),t.lastIndexOf("]"));
     if(i<0||j<=i)throw new Error("La respuesta no contiene JSON. Pide a Claude que responda solo con el JSON.");
     try{data=JSON.parse(t.slice(i,j+1))}catch(e2){throw new Error("El JSON está incompleto o mal formado. Copia la respuesta completa de Claude.")}}
-  return normalizeAI(data);
+  return normalizeAI(data,limit);
 }
 const str=(v,n=2000)=>v==null?"":String(v).slice(0,n);
-function normalizeAI(data){
+function normalizeAI(data,limit=6){
   const list=Array.isArray(data)?data:Array.isArray(data&&data.proposals)?data.proposals:null;
   if(!list||!list.length)throw new Error("La respuesta no trae propuestas (\"proposals\").");
   const typeOf=x=>{x=String(x||"").toLowerCase();return/carr|carous/.test(x)?"carrusel":/stor|histor/.test(x)?"story":"reel"};
-  return list.slice(0,6).map(p=>({type:typeOf(p.type),title:str(p.title,140)||"Propuesta",pillar:str(p.pillar,40),hook:str(p.hook,160),
+  return list.slice(0,limit).map(p=>({slot:str(p.slot,40),objective:str(p.objective,40),caption_fb:str(p.caption_fb,2200),materials:(Array.isArray(p.materials)?p.materials:[]).map(x=>str(x,200)).filter(Boolean).slice(0,8),type:typeOf(p.type),title:str(p.title,140)||"Propuesta",pillar:str(p.pillar,40),hook:str(p.hook,160),
     alt_hooks:(Array.isArray(p.alt_hooks)?p.alt_hooks:[]).map(x=>str(x,160)).filter(Boolean).slice(0,5),caption:str(p.caption,2200),cta:str(p.cta,200),
     hashtags:(Array.isArray(p.hashtags)?p.hashtags:[]).map(x=>str(x,40).trim()).filter(Boolean).map(x=>x.startsWith("#")?x:"#"+x).slice(0,8),
     slides:(Array.isArray(p.slides)?p.slides:[]).slice(0,10).map(s=>({template:AI_TEMPLATES.includes(s&&s.template)?s.template:"tip",headline:str(s&&s.headline,140),body:str(s&&s.body,600)})),
@@ -1274,7 +1320,7 @@ VIEWS.ia=main=>{
   `<div class="split ai-split"><div class="panel grid">
     <div class="chips" role="tablist" aria-label="Punto de partida">${[["producto","Producto real"],["foto","Foto"],["tema","Tema"]].map(([k,l])=>`<button role="tab" data-mode="${k}" class="${a.mode===k?"on":""}" aria-selected="${a.mode===k}">${l}</button>`).join("")}</div>
     ${a.mode==="tema"?`<label>Tema<input id="ai_topic" value="${esc(a.topic)}" placeholder="ej. Cómo armar una mesa de postres para XV años"></label>`
-      :`<label>Nombre exacto del producto${a.mode==="foto"?" (opcional)":""}<input id="ai_product" value="${esc(a.product)}" placeholder='ej. 18" Iridescent Pastel Rainbow Star 45 cm (Anagram)'></label>`}
+      :`${S.catalog.length?`<label>Producto del catálogo<select id="ai_cat"><option value="">Escribir a mano</option>${S.catalog.slice().sort((x,y)=>x.title.localeCompare(y.title,"es")).map(p=>`<option value="${esc(p.id)}" ${a.catalogId===p.id?"selected":""}>${esc(p.title)}${p.skus[0]?" · "+esc(p.skus[0].sku):""}</option>`).join("")}</select></label>`:""}<label>Nombre exacto del producto${a.mode==="foto"?" (opcional)":""}<input id="ai_product" value="${esc(a.product)}" placeholder='ej. 18" Iridescent Pastel Rainbow Star 45 cm (Anagram)'></label>`}
     <label>Datos confirmados<textarea id="ai_facts" style="min-height:110px" placeholder="Pega de la ficha del producto solo lo que es cierto: medida, forma, material, marca, inflado, usos.">${esc(a.facts)}</textarea></label>
     <div class="ai-photo"><label style="flex:1 1 220px">Foto o video real de la biblioteca<select id="ai_media"><option value="">Sin foto</option>${imgs.map(m=>`<option value="${m.id}" ${m.id===a.mediaId?"selected":""}>${esc(m.name)}${(m.tags||[]).length?" · "+esc(m.tags.join(", ")):""}</option>`).join("")}</select></label><div class="ai-thumb" id="ai_thumb" aria-hidden="true"></div></div>
     ${imgs.length?"":`<p class="warn" style="margin:0">Tu biblioteca está vacía. <a href="#biblioteca">Sube fotos reales</a> para que Claude trabaje con tu material.</p>`}
@@ -1298,7 +1344,7 @@ VIEWS.ia=main=>{
   const sync=()=>{if($m("ai_topic"))a.topic=$m("ai_topic").value;if($m("ai_product"))a.product=$m("ai_product").value;a.facts=$m("ai_facts").value;a.mediaId=$m("ai_media").value;
     a.occasion=$m("ai_occasion").value;a.line=$m("ai_line").value;a.audience=$m("ai_audience").value;a.notes=$m("ai_notes").value;$$("[data-fmt]",main).forEach(c=>a.formats[c.dataset.fmt]=c.checked);
     $m("ai_prompt").textContent=buildAIPrompt(a,false)};
-  const form=$(".ai-split",main);form.addEventListener("input",()=>sync());form.addEventListener("change",e=>{sync();if(e.target.id==="ai_media")route()});
+  const form=$(".ai-split",main);form.addEventListener("input",e=>{if(e.target.id!=="ai_cat")sync()});form.addEventListener("change",async e=>{if(e.target.id==="ai_cat"){const p=catById(e.target.value);a.catalogId=p?p.id:"";if(p){const m=await ensureCatalogMedia(p);Object.assign(a,{product:p.title+(p.skus[0]?` (SKU ${p.skus[0].sku})`:""),facts:catFacts(p),mediaId:m?m.id:a.mediaId,line:productLine(p)})}route();return}sync();if(e.target.id==="ai_media")route()});
   $$("[data-mode]",main).forEach(b=>b.onclick=()=>{sync();a.mode=b.dataset.mode;route()});
   sync();
   const m=a.mediaId&&mediaById(a.mediaId);if(m)Store.url(m.ref).then(u=>{if(u)$m("ai_thumb").innerHTML=m.mime.startsWith("video")?`<video src="${u}" muted playsinline preload="metadata"></video>`:`<img src="${u}" alt="">`});
@@ -1348,9 +1394,260 @@ function renderAIOut(main){
   const sa=$("#ai_saveall",out);if(sa)sa.onclick=async()=>{for(let i=0;i<a.proposals.length;i++)await save(i);toast("Propuestas guardadas en Borradores");renderAIOut(main)};
 }
 
+/* ================= Catálogo Balloon Store =================
+   Verified products imported from Shopify (read-only) with their official photo stored once
+   (assets in claude.ai, IndexedDB locally). Live search uses the viewer's Shopify connector
+   (search_products only) and never stores price or inventory. */
+const CAT_TYPES=[["","Todo"],["Globo Metálico","Metálicos"],["Globo Látex","Látex"]];
+const catById=id=>S.catalog.find(p=>p.id===id);
+const catImageRef=p=>p&&p.images&&p.images[0]&&p.images[0].ref;
+const catSearchText=p=>[p.title,p.handle,p.vendor,p.type,...(p.tags||[]),...(p.skus||[]).map(s=>s.sku)].join(" ").toLowerCase();
+function catFacts(p){return[`Producto: ${p.title}`,p.skus.length?`SKU: ${p.skus.slice(0,4).map(s=>s.sku+(s.variant?` (${s.variant})`:"")).join(", ")}`:"SKU: [confirmar con catálogo real]",`Marca: ${p.vendor}`,`Tipo: ${p.type}`,
+  p.tags.length?`Etiquetas de la tienda: ${p.tags.join(", ")}`:"",p.description?`Ficha: ${p.description}`:"",p.url?`Enlace: ${p.url}`:""].filter(Boolean).join("\n")}
+const productLine=p=>!p?"":/látex|sensacional/i.test(p.type+" "+p.vendor)?"Látex Sensacional":/kaleidoscope/i.test(p.vendor)?"Globos metálicos Kaleidoscope":"Globos metálicos Anagram";
+function productMedia(p){if(!p)return[];const keys=new Set([p.handle,...p.skus.map(s=>s.sku.toLowerCase())]);
+  return S.media.filter(m=>m.catalogId===p.id||(m.tags||[]).some(t=>keys.has(t)))}
+async function ensureCatalogMedia(p){const ref=catImageRef(p);if(!ref)return null;let m=S.media.find(x=>x.catalogId===p.id);if(m)return m;const img=p.images[0];
+  m={id:uid(),name:p.handle+".jpg",mime:"image/jpeg",size:img.size||0,width:img.width||0,height:img.height||0,tags:["oficial",p.handle,...p.skus.slice(0,3).map(s=>s.sku.toLowerCase())],ref,catalogId:p.id,createdAt:new Date().toISOString()};
+  await Store.save("media",m);S.media.push(m);return m}
+function dataUrlBlob(u){const m=/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(u||"");if(!m)return null;const bin=atob(m[2]);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:m[1]})}
+async function importCatalog(json,onProgress){
+  if(!json||json.kind!=="catalog"||!Array.isArray(json.products))throw new Error("El archivo no es un catálogo de Content HQ (falta \"kind\": \"catalog\").");
+  let n=0,up=0;
+  for(const raw of json.products){
+    if(!raw||typeof raw.id!=="string"||!raw.title)continue;
+    const prev=catById(raw.id);const images=[];
+    for(const im of (Array.isArray(raw.images)?raw.images:[]).slice(0,4)){
+      const same=prev&&(prev.images||[]).find(x=>x.sha256&&x.sha256===im.sha256&&x.ref);if(same){images.push(same);continue}
+      const blob=dataUrlBlob(im.dataUrl);if(!blob)continue;
+      const ref=await Store.putBlob(new File([blob],str(raw.handle,120)+".jpg",{type:blob.type}));up++;
+      images.push({ref,alt:str(im.alt,200),width:+im.width||0,height:+im.height||0,sha256:str(im.sha256,64),size:blob.size})}
+    const doc={id:str(raw.id,80),shopifyId:str(raw.shopifyId,40),title:str(raw.title,200),handle:str(raw.handle,200).toLowerCase(),
+      url:/^https:\/\/balloonstoreco\.com\/products\/[a-z0-9-]+$/.test(raw.url||"")?raw.url:"",vendor:str(raw.vendor,80),type:str(raw.type,60),
+      tags:(Array.isArray(raw.tags)?raw.tags:[]).map(t=>str(t,40)).filter(Boolean).slice(0,20),
+      skus:(Array.isArray(raw.skus)?raw.skus:[]).filter(s=>s&&s.sku).map(s=>({sku:str(s.sku,40),variant:str(s.variant,40)})).slice(0,20),
+      description:str(raw.description,600),images:images.length?images:(prev?prev.images:[]),source:"shopify",importedAt:new Date().toISOString(),catalogDate:str(json.fetchedAt,30)};
+    await Store.save("catalog",doc);const i=S.catalog.findIndex(x=>x.id===doc.id);if(i>=0)S.catalog[i]=doc;else S.catalog.push(doc);
+    n++;if(onProgress)onProgress(n,json.products.length)}
+  return{n,up}}
+let mcpCap;
+async function getMcp(){if(mcpCap!==undefined)return mcpCap;if(!hasClaude()){mcpCap=null;return null}try{mcpCap=await withTimeout(window.claude.use("mcp"),12000)}catch(e){mcpCap=null}return mcpCap}
+const MCP_ERR={server_not_connected:"Shopify no está conectado en tu cuenta. Agrégalo en claude.ai → Configuración → Conectores.",not_in_manifest:"No diste permiso para que esta app consulte Shopify. Puedes permitirlo desde el menú de permisos del Artifact.",
+  selection_required:"Tienes más de una conexión de Shopify; elige una cuando claude.ai te lo pida.",needs_reauth:"Vuelve a conectar Shopify en claude.ai → Configuración → Conectores.",blocked_by_policy:"Tu organización bloquea esta consulta de Shopify.",
+  server_unavailable:"Shopify no respondió. Intenta de nuevo en un momento.",tool_error:"Shopify devolvió un error para esta búsqueda."};
+function liveProducts(payload){const edges=payload&&payload.data&&payload.data.products&&payload.data.products.edges;if(!Array.isArray(edges))return[];
+  return edges.map(e=>e&&e.node).filter(n=>n&&n.handle&&String(n.status||"ACTIVE").toUpperCase()==="ACTIVE").map(n=>({handle:str(n.handle,200),title:str(n.title,200),vendor:str(n.vendor,80),type:str(n.productType,60),
+    skus:((n.variants&&n.variants.edges)||[]).map(v=>v&&v.node&&v.node.sku).filter(Boolean).map(s=>str(s,40)).slice(0,5)}))}
+VIEWS.catalogo=main=>{
+  const ty=S.catType||"";const list=S.catalog.filter(p=>!ty||p.type===ty).sort((a,b)=>a.title.localeCompare(b.title,"es"));
+  const last=S.catalog.reduce((m,p)=>p.catalogDate>m?p.catalogDate:m,"");const reqs=S.requests.filter(r=>r.status!=="importado");
+  main.innerHTML=head("Catálogo Balloon Store",`Productos verificados de tu tienda con su foto oficial. Sin precios ni existencias.${S.catalog.length?` ${S.catalog.length} productos · datos de Shopify del ${esc(last||"—")}.`:""}`,
+    `<label class="btn" for="cat_file" style="cursor:pointer">Importar catálogo (.json)</label><input type="file" id="cat_file" accept=".json,application/json" hidden>`)+
+  `<div class="panel" style="margin-bottom:14px"><label>Buscar por nombre, SKU o etiqueta<input id="cat_q" type="search" value="${esc(S.catQ||"")}" placeholder="ej. rosa gold, 36190/01, baby shower" autocomplete="off"></label>
+   <div class="chips">${CAT_TYPES.map(([k,l])=>`<button data-ct="${esc(k)}" class="${k===ty?"on":""}">${l}</button>`).join("")}</div><div id="cat_status" role="status" style="font-size:.85rem;color:var(--muted)"></div>
+   ${reqs.length?`<p class="warn" style="margin:8px 0 0">${reqs.length} producto(s) solicitados para importar con foto: ${reqs.map(r=>esc(r.title)).slice(0,4).join(", ")}${reqs.length>4?"…":""}. Pídele a Claude Code “importa los productos solicitados del catálogo”.</p>`:""}</div>
+  <section class="panel" id="cat_live" hidden style="margin-bottom:14px"><div class="eyebrow">Shopify en vivo · solo lectura</div><h3 style="font-size:1.3rem;margin:4px 0">Buscar en tu tienda</h3>
+   <p class="ai-help">Consulta tu Shopify con tu conexión de claude.ai: nombre, SKU y enlace. Las fotos de Shopify no se pueden cargar dentro de esta app, así que un producto nuevo queda como “foto por importar”.</p>
+   <form class="row" id="live_form"><input id="live_q" placeholder="Nombre o SKU" style="flex:1 1 220px" aria-label="Buscar en Shopify"><button class="primary" id="live_go">Buscar en Shopify</button></form><div id="live_out" class="list" style="margin-top:10px"></div></section>
+  ${S.catalog.length?`<p id="cat_count" style="color:var(--muted);font-size:.85rem;margin:0 0 10px"></p><div class="cat-grid">${list.map(p=>`<article class="cat-card" data-cat="${esc(p.id)}" data-s="${esc(catSearchText(p))}">
+    <div class="thumb">${catImageRef(p)?"":`<span class="chip s-revision">Foto por importar</span>`}</div>
+    <div class="body"><b>${esc(p.title)}</b><div class="row" style="gap:4px">${p.skus.slice(0,3).map(s=>`<span class="chip">${esc(s.sku)}${s.variant?` · ${esc(s.variant)}`:""}</span>`).join("")||'<span class="chip">Sin SKU en Shopify</span>'}${p.skus.length>3?`<span class="chip">+${p.skus.length-3}</span>`:""}</div>
+    <span class="cat-meta">${esc(p.vendor)} · ${esc(p.type)}</span>
+    <div class="row"><button class="primary" data-cat-ia>Generar con IA</button><button data-cat-lib ${S.media.some(m=>m.catalogId===p.id)||!catImageRef(p)?"disabled":""}>${S.media.some(m=>m.catalogId===p.id)?"En Biblioteca":"Usar foto"}</button>${p.url?`<a class="btn ghost" href="${esc(p.url)}" target="_blank" rel="noopener">Ver en tienda</a>`:""}</div></div></article>`).join("")}</div>`
+  :`<div class="panel empty"><h2>Aún no hay catálogo</h2><p>Importa <b>catalogo-balloon-store.json</b> (lo genera <code>scripts/catalog_build.py</code>) o pide a Claude Code “actualiza el catálogo de Content HQ”.</p></div>`}`;
+  const filter=()=>{const q=($("#cat_q",main).value||"").trim().toLowerCase();S.catQ=q;let k=0;$$(".cat-card",main).forEach(c=>{const on=!q||q.split(/\s+/).every(w=>c.dataset.s.includes(w));c.hidden=!on;if(on)k++});const ct=$("#cat_count",main);if(ct)ct.textContent=`${k} producto(s)`};
+  $("#cat_q",main).addEventListener("input",filter);filter();
+  $$("[data-ct]",main).forEach(b=>b.onclick=()=>{S.catType=b.dataset.ct;route()});
+  $$(".cat-card",main).forEach(card=>{const p=catById(card.dataset.cat);const ref=catImageRef(p);
+    if(ref)Store.url(ref).then(u=>{if(u)$(".thumb",card).innerHTML=`<img src="${u}" alt="${esc(p.images[0].alt||p.title)}" loading="lazy">`});
+    $("[data-cat-lib]",card).onclick=async()=>{await ensureCatalogMedia(p);toast("Foto oficial agregada a Biblioteca");route()};
+    $("[data-cat-ia]",card).onclick=async()=>{const m=await ensureCatalogMedia(p);const a=aiState();Object.assign(a,{mode:"producto",product:p.title+(p.skus[0]?` (SKU ${p.skus[0].sku})`:""),facts:catFacts(p),mediaId:m?m.id:"",catalogId:p.id,line:productLine(p),proposals:[]});location.hash="#ia"}});
+  $("#cat_file",main).onchange=async e=>{const f=e.target.files[0];if(!f)return;const st=$("#cat_status",main);
+    try{const json=JSON.parse(await f.text());const r=await importCatalog(json,(i,n)=>{st.textContent=`Importando ${i} de ${n}…`});toast(`${r.n} productos importados (${r.up} fotos nuevas)`);route()}catch(err){st.textContent=err.message;toast(err.message)}};
+  getMcp().then(mcp=>{const box=$("#cat_live",main);if(!mcp||!box)return;box.hidden=false;const out=$("#live_out",main);
+    $("#live_form",main).onsubmit=async e=>{e.preventDefault();const raw=$("#live_q",main).value.trim();if(!raw){toast("Escribe un nombre o SKU");return}
+      const query=/^[A-Za-z]?\d{3,}[\w/-]*$/.test(raw)?`sku:${raw}`:raw;out.innerHTML=`<p><span class="spin" aria-hidden="true"></span> Consultando Shopify…</p>`;
+      try{const res=await mcp.callTool("Shopify","search_products",{search_query:query,first:10,search_summary:"Productos de Balloon Store"});const rows=liveProducts(res&&res.payload);
+        out.innerHTML=rows.length?rows.map(r=>{const inCat=S.catalog.find(p=>p.handle===r.handle);const asked=S.requests.find(q=>q.handle===r.handle);
+          return`<div class="idea"><div><b>${esc(r.title)}</b><div class="cat-meta">${esc(r.vendor)} · ${r.skus.map(esc).join(", ")||"sin SKU"}</div></div>${inCat?`<span class="chip s-terminado">En catálogo</span>`:asked?`<span class="chip s-idea">Solicitado</span>`:`<button data-req="${esc(r.handle)}">Solicitar importación</button>`}</div>`}).join(""):`<p>No hay productos activos con “${esc(raw)}”.</p>`;
+        $$("[data-req]",out).forEach(b=>b.onclick=async()=>{const r=rows.find(x=>x.handle===b.dataset.req);const doc={id:"req-"+r.handle.slice(0,150),handle:r.handle,title:r.title,skus:r.skus,vendor:r.vendor,status:"pendiente",requestedAt:new Date().toISOString()};
+          await Store.save("requests",doc);S.requests.push(doc);b.replaceWith(Object.assign(document.createElement("span"),{className:"chip s-idea",textContent:"Solicitado"}));toast("Solicitud guardada")})}
+      catch(err){out.innerHTML=`<p class="err">${esc(MCP_ERR[err&&err.code]||"No se pudo consultar Shopify ("+((err&&err.code)||"error")+").")}</p>`}}});
+};
+
+/* ================= Fábrica semanal ================= */
+const FAB_OBJ={reel:["Educativo","Demostrativo"],carrusel:["Producto","Consejo"],story:["Novedad","Interacción","Venta"]};
+const nextMonday=()=>{const t=today();const w=weekStart(t);return w<=t?addD(w,7):w};
+function fabState(){if(!S.fab)S.fab={start:nextMonday(),productIds:[],notes:"",audience:"decoradoras",busy:false,regen:null};return S.fab}
+function fabProducts(f){const chosen=f.productIds.map(catById).filter(Boolean);if(chosen.length)return chosen;
+  const withPhoto=S.catalog.filter(p=>catImageRef(p)).sort((a,b)=>a.title.localeCompare(b.title,"es")||a.id.localeCompare(b.id));const seen=new Set();const out=[];
+  for(const p of withPhoto){const k=(p.tags||[]).find(t=>/números|estrella|orbz|baby shower|graduación|navidad|cumpleaños|perla|pastel/i.test(t))||p.type;if(!seen.has(k)){seen.add(k);out.push(p)}if(out.length>=7)break}
+  for(const p of withPhoto){if(out.length>=7)break;if(!out.includes(p))out.push(p)}
+  return out}
+function fabSlots(f){const prods=fabProducts(f);const n=prods.length;const out=[];
+  for(let d=0;d<7;d++){const date=addD(f.start,d);[["reel",FAB_OBJ.reel[d%2]],["carrusel",FAB_OBJ.carrusel[d%2]],["story",FAB_OBJ.story[d%3]]].forEach(([fmt,obj],k)=>{
+    const p=n?prods[(d+k)%n]:null;out.push({id:`${date}-${k+1}`,date,day:d,format:fmt,objective:obj,productId:p?p.id:""})})}
+  return out}
+const weekDoc=start=>S.weeks.find(w=>w.id==="week-"+start);
+const weekPlan=f=>{const d=weekDoc(f.start);return d&&Array.isArray(d.planSlots)&&d.planSlots.length===21?d.planSlots:fabSlots(f)};
+async function savePlan(f){const d=weekDoc(f.start)||{id:"week-"+f.start,start:f.start,proposals:[],createdAt:new Date().toISOString()};d.planSlots=fabSlots(f);d.audience=f.audience;await saveWeek(d);return d.planSlots}
+function fabMaterials(p){const lib=productMedia(p);return{photo:!!catImageRef(p)||lib.some(m=>(m.mime||"").startsWith("image")),video:lib.some(m=>(m.mime||"").startsWith("video")),lib}}
+function buildWeekPrompt(slots,f,extra){
+  const prods=[...new Set(slots.map(s=>s.productId).filter(Boolean))].map(catById).filter(Boolean);const pid=p=>"P"+(prods.indexOf(p)+1);
+  const mediaLines=[];prods.forEach(p=>fabMaterials(p).lib.filter(m=>!m.catalogId).forEach(m=>mediaLines.push(`- ${m.name} (${(m.mime||"").startsWith("video")?"video":"foto"}${m.duration?`, ${m.duration.toFixed(1)} s`:""}) · producto ${pid(p)}${(m.tags||[]).length?` · etiquetas: ${m.tags.join(", ")}`:""}`)));
+  const slotLine=s=>{const p=catById(s.productId);const mt=p?fabMaterials(p):{photo:false,video:false};
+    return`- slot ${s.id} · ${DIAS[parseD(s.date).getDay()]} ${fmtShort(s.date)} · ${s.format} · objetivo ${s.objective} · producto ${p?pid(p):"(ninguno: tema general)"} · material: ${mt.photo?"foto real disponible":"sin foto"}${s.format==="reel"?(mt.video?", video real disponible":", sin video (pide la grabación en needs)"):""}`};
+  return `Eres el equipo de contenido de Balloon Store (${BRAND.site}), venta de globos al mayoreo en México.
+PÚBLICO: ${f.audience} en México (también ${BRAND.audiences.filter(x=>x!==f.audience).join(" y ")}). Clientes B2B que compran para decorar o revender.
+VOZ: español de México, tuteo, cercana, clara, festiva y práctica. Frases cortas.
+
+REGLAS OBLIGATORIAS
+1. No inventes productos, modelos, empaques, precios, descuentos, existencias, tiempos de entrega ni promociones. No menciones precios ni inventario.
+2. Usa solo los datos de PRODUCTOS. Cualquier dato específico que no esté ahí escríbelo como [confirmar con catálogo real].
+3. Los productos se muestran solo con fotos o video reales. Si una pieza necesita una toma o foto que no existe, pídela en "needs" con descripción concreta. Nunca propongas generar o ilustrar el producto.
+4. Llamadas a la acción sin precios (ej.: ${CTAS.slice(0,3).join(" / ")}).
+5. Hooks de máximo 9 palabras; texto en pantalla de máximo 7 palabras.
+
+PRODUCTOS (datos confirmados de la tienda)
+${prods.map(p=>`[${pid(p)}]\n${catFacts(p)}`).join("\n\n")||"(sin productos: usa temas generales de decoración con globos)"}
+
+MATERIAL REAL EN BIBLIOTECA
+${mediaLines.join("\n")||"(solo fotos oficiales del catálogo)"}
+${f.notes?`\nNOTAS DEL EQUIPO: ${f.notes}\n`:""}${extra?`\nINDICACIÓN PARA ESTA VERSIÓN: ${extra}\n`:""}
+PIEZAS A PROPONER (una propuesta por slot, con el mismo "slot")
+${slots.map(slotLine).join("\n")}
+
+OBJETIVOS: Educativo = enseña algo útil a la decoradora; Demostrativo = muestra el producto en uso; Producto = presenta el producto y sus usos; Consejo = tips prácticos; Novedad = qué hay o qué llegó (sin hablar de existencias); Interacción = encuesta, quiz o preguntas; Venta = invita a pedir o ver el catálogo, sin precios.
+- reel: 15 a 30 s, 4 a 6 tomas con duración, texto en pantalla, voz, nota de edición y "footage" (la toma real que se necesita).
+- carrusel: 5 a 7 diapositivas; plantillas portada, tip, lista, producto (usa la foto real), foto, cta; primera portada y última cta.
+- story: 3 a 5 historias con texto y sticker sugerido.
+- "caption" es para Instagram (con hashtags aparte). "caption_fb" es la versión para Facebook: más directa, sin hashtags, con el enlace del producto si existe.
+
+FORMATO DE RESPUESTA
+Responde solo con JSON válido:
+{"proposals":[{"slot":"","type":"reel|carrusel|story","title":"","objective":"","pillar":"${PILLARS.join("|")}","hook":"","caption":"","caption_fb":"","cta":"","hashtags":["#globos"],"slides":[{"template":"portada","headline":"","body":""}],"shots":[{"duration":3,"text":"","voice":"","note":"","footage":""}],"frames":[{"text":"","sticker":"","note":""}],"materials":["material real que usa la pieza"],"needs":["material real que falta"],"verify":["dato a confirmar"]}]}
+Incluye "slides" solo en carrusel, "shots" solo en reel y "frames" solo en story.`}
+function fabReadiness(p){const prod=catById(p.productId);const mt=fabMaterials(prod);const pend=[];
+  if(p.type==="reel"&&!mt.video)pend.push("Grabar el video del Reel"+((p.shots||[]).some(s=>s.footage)?": "+p.shots.filter(s=>s.footage).map(s=>s.footage).slice(0,3).join(" · "):""));
+  if((p.type==="carrusel"||p.type==="story")&&!mt.photo)pend.push("Foto real del producto");
+  const confirm=JSON.stringify(p).includes("[confirmar");return{ready:!pend.length,pend,confirm,flags:aiFlags(p)}}
+function mergeWeekProposals(doc,list,slots){const props=doc.proposals||[];let k=0;
+  for(const s of slots){const p=list.find(x=>x.slot===s.id)||list.filter(x=>!x.slot&&x.type===s.format)[k++]||null;if(!p)continue;
+    const typeOk=p.type===s.format;const np={...p,slot:s.id,date:s.date,type:s.format,objective:s.objective,productId:s.productId,state:"nueva",version:((props.find(x=>x.slot===s.id)||{}).version||0)+1,formatMismatch:!typeOk};
+    const i=props.findIndex(x=>x.slot===s.id);if(i>=0){if(props[i].state==="aprobada")continue;props[i]=np}else props.push(np)}
+  doc.proposals=props.sort((a,b)=>a.slot>b.slot?1:-1);return doc}
+async function saveWeek(doc){doc.updatedAt=new Date().toISOString();await Store.save("weeks",doc);const i=S.weeks.findIndex(w=>w.id===doc.id);if(i>=0)S.weeks[i]=doc;else S.weeks.push(doc)}
+async function approveProposal(doc,p,source){const r=fabReadiness(p);const prod=catById(p.productId);
+  let mediaId="";const lib=fabMaterials(prod).lib;
+  if(p.type==="reel"){const v=lib.find(m=>(m.mime||"").startsWith("video"));if(v)mediaId=v.id}
+  if(!mediaId){const own=lib.find(m=>!m.catalogId&&(m.mime||"").startsWith("image"));const off=prod?await ensureCatalogMedia(prod):null;mediaId=(own||off||{}).id||""}
+  const a={mode:"producto",product:prod?prod.title:"",mediaId,occasion:"",line:productLine(prod),audience:S.fab?S.fab.audience:"decoradoras",topic:""};
+  const it=proposalToItem(p,a,source||doc.source||"directo");
+  Object.assign(it,{date:p.date,objective:p.objective,productId:p.productId,weekId:doc.id,captionFb:p.caption_fb||"",pending:r.pend,
+    status:r.ready&&!r.confirm&&!r.flags.length?"terminado":r.ready?"revision":"borrador"});
+  if(r.pend.length)it.notes="PENDIENTE DE MATERIAL:\n- "+r.pend.join("\n- ")+"\n\n"+it.notes;
+  if(r.confirm)it.notes="Hay datos marcados [confirmar con catálogo real]: revísalos antes de publicar.\n\n"+it.notes;
+  await addItem(it);p.state="aprobada";p.itemId=it.id;return it}
+async function weekFiles(doc){const files=[];const rows=[["fecha","dia","formato","objetivo","producto","titulo","estado","pendiente"]];const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const approved=(doc.proposals||[]).filter(p=>p.state==="aprobada"&&item(p.itemId)).sort((a,b)=>a.slot>b.slot?1:-1);
+  for(const p of approved){const it=item(p.itemId);const pend=(it.pending||[]).length>0;const dow=DIAS[parseD(it.date).getDay()].slice(0,3);
+    const dir=`${pend?"pendientes":"listos"}/${it.date}-${dow}/${p.slot.slice(-1)}-${it.type}-${slug(it.title).slice(0,40)}/`;let sub=[];
+    try{if(it.type==="carrusel")sub=await carouselFiles(it);else if(it.type==="story"&&(it.frames||[]).length)sub=await storyFiles(it);else if(it.type==="reel"&&it.shots.length)sub=await reelFiles(it)}catch(e){sub=[]}
+    if(!sub.length)sub=[{name:"guion.txt",data:textPack(it)}];
+    if(pend)sub.push({name:"PENDIENTE.txt",data:`PIEZA PENDIENTE DE MATERIAL — no está terminada.\n\nFalta:\n- ${it.pending.join("\n- ")}\n\nCuando tengas el material, súbelo a Biblioteca (etiquétalo con el producto) y vuelve a exportar.\n`});
+    files.push(...sub.map(x=>({name:dir+x.name,data:x.data})));
+    const prod=catById(p.productId);rows.push([it.date,dow,label(TYPES,it.type),it.objective,prod?prod.title:"",it.title,pend?"Pendiente de material":label(STATUSES,it.status),(it.pending||[]).join(" | ")].map(q))}
+  const ready=approved.filter(p=>!(item(p.itemId).pending||[]).length).length;
+  files.unshift({name:"RESUMEN.csv",data:rows.map(r=>r.join(",")).join("\n")+"\n"},{name:"LEEME.txt",data:`Semana del ${fmtShort(doc.start)} al ${fmtShort(addD(doc.start,6))}\n\nlistos/: ${ready} pieza(s) con archivos completos.\npendientes/: ${approved.length-ready} pieza(s) que necesitan material real (ver PENDIENTE.txt en cada carpeta).\n\nCada pieza incluye copy para Instagram y versión para Facebook en guion/copy.\nEsta herramienta no publica ni programa en redes sociales.\n`});
+  return files}
+VIEWS.fabrica=main=>{
+  const f=fabState();const slots=fabSlots(f);let doc=weekDoc(f.start);const props=doc?doc.proposals||[]:[];const prods=fabProducts(f);
+  const days=[...Array(7)].map((_,i)=>addD(f.start,i));
+  main.innerHTML=`<div class="hello"><div><div class="eyebrow">Fábrica semanal · ${fmtShort(f.start)} al ${fmtShort(addD(f.start,6))}</div><h1 class="greet">Semana con <em>IA</em></h1></div>
+   <div class="row"><button id="fw_prev" aria-label="Semana anterior">←</button><input type="date" id="fab_start" value="${f.start}" aria-label="Lunes de la semana" style="width:auto"><button id="fw_next" aria-label="Semana siguiente">→</button></div></div>
+  <div class="split ai-split"><div class="panel grid">
+    <div><div class="eyebrow">Plan · 21 piezas</div><p class="ai-help" style="margin:4px 0 0">Cada día: 1 Reel (educativo / demostrativo), 1 carrusel (producto / consejo) y 1 Story (novedad / interacción / venta). Claude escribe cada pieza con tus productos y tu material.</p></div>
+    <div><div class="eyebrow" style="margin-bottom:6px">Productos de la semana ${f.productIds.length?`(${f.productIds.length} elegidos)`:"(automático: variados con foto)"}</div>
+      ${S.catalog.length?`<input id="fab_pq" type="search" placeholder="Filtrar catálogo" aria-label="Filtrar catálogo" style="margin-bottom:8px"><div class="fab-picks">${S.catalog.slice().sort((x,y)=>x.title.localeCompare(y.title,"es")).map(p=>`<label class="fab-pick" data-s="${esc(catSearchText(p))}"><input type="checkbox" data-pid="${esc(p.id)}" ${f.productIds.includes(p.id)?"checked":""}> <span>${esc(p.title)}</span></label>`).join("")}</div>`:`<p class="warn" style="margin:0">Importa el <a href="#catalogo">catálogo</a> para que la semana use tus productos reales.</p>`}</div>
+    <div class="f2"><label>Público principal<select id="fab_aud">${BRAND.audiences.map(x=>`<option ${x===f.audience?"selected":""}>${esc(x)}</option>`).join("")}</select></label></div>
+    <label>Notas para Claude (opcional)<textarea id="fab_notes" placeholder="ej. Esta semana empuja temporada navideña y XV años.">${esc(f.notes)}</textarea></label>
+  </div>
+  <div class="grid" style="align-content:start">
+    <section class="panel ai-card" id="ai_direct"><div class="eyebrow">Automático · dentro de la app</div><h3>Generar semana con IA</h3><p class="ai-help" id="fab_help">Comprobando si esta vista puede usar Claude…</p>
+      <div class="row"><button class="primary" id="fab_go" hidden>Generar semana con IA</button><button id="fab_stop" hidden>Detener</button></div><div id="fab_status" role="status" aria-live="polite" style="margin-top:10px;font-size:.88rem"></div></section>
+    <section class="panel ai-card"><div class="eyebrow">Asistido · copiar y pegar</div><h3 id="fab_ah">${f.regen?"Regenerar 1 pieza":"Semana completa en claude.ai"}</h3>
+      <ol class="steps"><li>Copia las instrucciones${f.regen?` de la pieza ${esc(f.regen)}`:""}.<div class="row"><button id="fab_copy">Copiar instrucciones</button><button class="ghost" id="fab_dl">Descargar .txt</button>${f.regen?`<button class="ghost" id="fab_cancel">Volver a semana completa</button>`:""}</div></li>
+      <li>Pégalas en <b>claude.ai</b> y espera la respuesta completa.</li><li>Pega aquí la respuesta.<textarea id="fab_reply" placeholder='{"proposals":[ … ]}' style="min-height:90px"></textarea><div class="row"><button class="primary" id="fab_import">Importar respuesta</button></div></li></ol>
+      <details><summary>Ver instrucciones</summary><pre class="mono" id="fab_prompt"></pre></details></section>
+  </div></div>
+  <div id="fab_board" style="margin-top:24px"></div>`;
+  const sync=()=>{f.audience=$("#fab_aud",main).value;f.notes=$("#fab_notes",main).value;const ss=f.regen?weekPlan(f):fabSlots(f);const target=f.regen?ss.filter(s=>s.id===f.regen):ss;$("#fab_prompt",main).textContent=buildWeekPrompt(target,f,f.regenNote||"")};
+  sync();$("#fab_aud",main).onchange=sync;$("#fab_notes",main).oninput=sync;
+  const pq=$("#fab_pq",main);if(pq)pq.oninput=()=>{const q=pq.value.trim().toLowerCase();$$(".fab-pick",main).forEach(l=>l.hidden=!!q&&!l.dataset.s.includes(q))};
+  $$("[data-pid]",main).forEach(c=>c.onchange=()=>{const id=c.dataset.pid;f.productIds=c.checked?[...f.productIds,id]:f.productIds.filter(x=>x!==id);sync();renderBoard()});
+  const setStart=v=>{if(!v)return;f.start=weekStart(v);f.regen=null;route()};
+  $("#fab_start",main).onchange=e=>setStart(e.target.value);$("#fw_prev",main).onclick=()=>setStart(addD(f.start,-7));$("#fw_next",main).onclick=()=>setStart(addD(f.start,7));
+  const ensureDoc=src=>{doc=weekDoc(f.start)||{id:"week-"+f.start,start:f.start,proposals:[],createdAt:new Date().toISOString()};doc.source=src;doc.audience=f.audience;return doc};
+  $("#fab_copy",main).onclick=async()=>{sync();if(!f.regen)await savePlan(f);const t=$("#fab_prompt",main).textContent;navigator.clipboard.writeText(t).then(()=>toast("Instrucciones copiadas. Pégalas en claude.ai"),()=>{$("details",$("#fab_prompt",main).parentElement.parentElement).open=true;toast("Copia el texto de “Ver instrucciones”")})};
+  $("#fab_dl",main).onclick=async()=>{sync();if(!f.regen)await savePlan(f);saveFile(`instrucciones-semana-${f.start}.txt`,new Blob([$("#fab_prompt",main).textContent],{type:"text/plain"}))};
+  const cancel=$("#fab_cancel",main);if(cancel)cancel.onclick=()=>{f.regen=null;f.regenNote="";route()};
+  $("#fab_import",main).onclick=async()=>{try{const list=parseAIReply($("#fab_reply",main).value,40);const ss=weekPlan(f);const target=f.regen?ss.filter(s=>s.id===f.regen):ss;
+      const d=ensureDoc("asistido");mergeWeekProposals(d,list,target);d.planSlots=ss;await saveWeek(d);toast(`${list.length} propuesta(s) importada(s)`);f.regen=null;f.regenNote="";route()}catch(e){toast(e.message)}};
+  // Direct generation, one day per call, two at a time
+  const help=$("#fab_help",main),go=$("#fab_go",main),stop=$("#fab_stop",main),st=$("#fab_status",main);let ctl=null;
+  getSample().then(smp=>{if(!document.body.contains(go))return;
+    if(!smp||(S.ai&&S.ai.directOff)){help.innerHTML="Disponible cuando abres la app publicada en <b>claude.ai</b>. Aquí usa el flujo asistido.";return}
+    help.textContent="Genera los 7 días con tu cuenta de Claude (7 solicitudes, de 2 en 2). Cada día queda listo en cuanto termina; puedes revisar mientras avanza.";go.hidden=false;
+    go.onclick=async()=>{sync();const ss=fabSlots(f);if(!ss.some(s=>s.productId)&&S.catalog.length){st.textContent="Elige productos o deja el modo automático.";return}
+      ctl=new AbortController();go.disabled=true;stop.hidden=false;const d=ensureDoc("directo");d.planSlots=ss;const dates=[...new Set(ss.map(s=>s.date))];let i=0,done=0,failed=[];
+      const tick=()=>{st.innerHTML=`<span class="spin" aria-hidden="true"></span> Claude está escribiendo la semana: ${done} de 7 días listos.`};tick();
+      const worker=async()=>{while(i<dates.length&&!ctl.signal.aborted){const day=dates[i++];const ds=ss.filter(s=>s.date===day);
+        try{const data=await smp.json(buildWeekPrompt(ds,f),{signal:ctl.signal,cache:false});mergeWeekProposals(d,parseAIReply(data,10),ds);await saveWeek(d);done++;tick();renderBoard()}
+        catch(e){const c=e&&e.code;if(c==="cancelled")break;failed.push(fmtShort(day));if(AI_HARD.includes(c)){if(S.ai)S.ai.directOff=true;st.textContent=AI_ERR[c];ctl.abort();break}}}};
+      try{await Promise.all([worker(),worker()])}finally{go.disabled=false;stop.hidden=true;
+        if(!(S.ai&&S.ai.directOff))st.textContent=`Listo: ${done} de 7 días generados.${failed.length?` No se pudieron generar: ${failed.join(", ")} (vuelve a intentar).`:""}`;ctl=null;renderBoard()}};
+    stop.onclick=()=>ctl&&ctl.abort()});
+  // Board
+  function renderBoard(){const board=$("#fab_board",main);if(!board)return;doc=weekDoc(f.start);const props=doc?doc.proposals||[]:[];
+    if(!props.length){board.innerHTML=`<div class="panel"><div class="eyebrow">Vista previa del plan</div><div style="overflow-x:auto"><div class="fab-days">${days.map(dt=>`<div class="fab-day"><div class="eyebrow">${DIAS[parseD(dt).getDay()].slice(0,3)} ${parseD(dt).getDate()}</div>${weekPlan(f).filter(s=>s.date===dt).map(s=>{const p=catById(s.productId);return`<div class="fab-slot t-${s.format}"><b>${esc(label(TYPES,s.format))}</b><span>${esc(s.objective)}</span><small>${esc(p?p.title:"Tema general")}</small></div>`}).join("")}</div>`).join("")}</div></div></div>`;return}
+    const sel=S.fabSel||(S.fabSel=new Set());const open=props.filter(p=>p.state!=="aprobada"&&p.state!=="descartada");const R=p=>fabReadiness(p);
+    const nReady=props.filter(p=>p.state==="aprobada"&&!(item(p.itemId)||{pending:[]}).pending.length).length,nApp=props.filter(p=>p.state==="aprobada").length;
+    board.innerHTML=`<div class="fab-bar"><div><div class="eyebrow">Aprobación por lotes</div><h2 style="font-size:1.9rem">${props.length} propuestas · ${nApp} aprobadas</h2>
+      <p class="ai-help" style="margin:2px 0 0">${props.filter(p=>R(p).ready).length} con material listo · ${props.filter(p=>!R(p).ready).length} necesitan material real</p></div>
+      <div class="row"><button id="fb_all">Seleccionar todas</button><button id="fb_ready">Solo las listas</button><button id="fb_none">Ninguna</button><button class="primary" id="fb_approve" ${sel.size?"":"disabled"}>Aprobar seleccionadas (${sel.size})</button><button id="fb_zip" ${nApp?"":"disabled"}>Exportar aprobadas (ZIP)</button><a class="btn" href="#calendario" id="fb_cal">Ver en calendario</a></div></div>
+      <div style="overflow-x:auto"><div class="fab-days">${days.map(dt=>`<div class="fab-day"><div class="eyebrow">${DIAS[parseD(dt).getDay()]} ${parseD(dt).getDate()} ${MES[parseD(dt).getMonth()]}</div>${props.filter(p=>p.date===dt).map(p=>{const r=R(p);const prod=catById(p.productId);const st=p.state;
+        return`<article class="pcard t-${p.type} ${st}" data-slot="${esc(p.slot)}">
+          <div class="row" style="justify-content:space-between;gap:6px">${st==="aprobada"?`<span class="chip s-terminado">Aprobada</span>`:st==="descartada"?`<span class="chip">Descartada</span>`:`<label class="ck"><input type="checkbox" data-sel ${sel.has(p.slot)?"checked":""}> Elegir</label>`}<span class="chip">${esc(label(TYPES,p.type))} · ${esc(p.objective)}</span></div>
+          <div class="pthumb" data-pimg="${esc(p.productId)}"></div>
+          <b class="ptitle">${esc(p.title)}</b><p class="phook">${esc(p.hook)}</p><small class="cat-meta">${esc(prod?prod.title:"Tema general")}</small>
+          ${r.ready?`<span class="badge ok">Material listo</span>`:`<span class="badge pend">${p.type==="reel"?"Falta grabación":"Falta foto"}</span>`}${r.confirm?`<span class="badge warnb">Datos por confirmar</span>`:""}${r.flags.length?`<span class="badge pend">Revisa: ${esc(r.flags.join(", "))}</span>`:""}
+          <details><summary>Ver pieza</summary>${p.slides.length?`<ol class="ai-list">${p.slides.map(s=>`<li>${esc(s.headline)}</li>`).join("")}</ol>`:""}${p.shots.length?`<ol class="ai-list">${p.shots.map(s=>`<li><b>${s.duration}s</b> ${esc(s.text)}${s.footage?`<small> · Toma: ${esc(s.footage)}</small>`:""}</li>`).join("")}</ol>`:""}${p.frames.length?`<ol class="ai-list">${p.frames.map(x=>`<li>${esc(x.text)}${x.sticker?` <span class="chip">${esc(x.sticker)}</span>`:""}</li>`).join("")}</ol>`:""}
+            <p style="white-space:pre-wrap"><b>Instagram:</b> ${esc(p.caption)}</p>${p.caption_fb?`<p style="white-space:pre-wrap"><b>Facebook:</b> ${esc(p.caption_fb)}</p>`:""}<p><b>CTA:</b> ${esc(p.cta)}</p>${r.pend.length?`<div class="warn"><b>Pendiente:</b> ${esc(r.pend.join("; "))}</div>`:""}</details>
+          ${st==="aprobada"?`<button data-openit>Abrir</button>`:st==="descartada"?`<button data-restore>Recuperar</button>`:`<div class="row" style="gap:6px"><button data-regen>Regenerar</button><button class="ghost danger" data-drop>Descartar</button></div><div data-regenbox hidden><input data-note placeholder="¿Qué cambiar? (opcional)"><button class="primary" data-regengo>Regenerar ahora</button></div>`}
+        </article>`}).join("")}</div>`).join("")}</div></div>`;
+    $$("[data-pimg]",board).forEach(el=>{const p=catById(el.dataset.pimg);const ref=catImageRef(p);if(ref)Store.url(ref).then(u=>{if(u)el.innerHTML=`<img src="${u}" alt="" loading="lazy">`});else el.remove()});
+    const find=el=>props.find(p=>p.slot===el.closest("[data-slot]").dataset.slot);
+    $$("[data-sel]",board).forEach(c=>c.onchange=()=>{const p=find(c);c.checked?sel.add(p.slot):sel.delete(p.slot);const b=$("#fb_approve",board);b.disabled=!sel.size;b.textContent=`Aprobar seleccionadas (${sel.size})`});
+    $("#fb_all",board).onclick=()=>{open.forEach(p=>sel.add(p.slot));renderBoard()};$("#fb_ready",board).onclick=()=>{sel.clear();open.filter(p=>R(p).ready).forEach(p=>sel.add(p.slot));renderBoard()};$("#fb_none",board).onclick=()=>{sel.clear();renderBoard()};
+    $("#fb_approve",board).onclick=async e=>{e.target.disabled=true;let n=0;for(const p of props.filter(x=>sel.has(x.slot)&&x.state!=="aprobada")){await approveProposal(doc,p,doc.source);n++}sel.clear();await saveWeek(doc);
+      toast(`${n} pieza(s) aprobadas y agendadas en el calendario`);S.calMonth=parseD(f.start);renderBoard()};
+    $("#fb_zip",board).onclick=async e=>{e.target.disabled=true;e.target.textContent="Generando…";try{await saveFile(`semana-${f.start}.zip`,await makeZip(await weekFiles(doc)))}catch(err){toast(err.message)}finally{e.target.disabled=false;e.target.textContent="Exportar aprobadas (ZIP)"}};
+    $$("[data-drop]",board).forEach(b=>b.onclick=async()=>{const p=find(b);p.state="descartada";sel.delete(p.slot);await saveWeek(doc);renderBoard()});
+    $$("[data-restore]",board).forEach(b=>b.onclick=async()=>{find(b).state="nueva";await saveWeek(doc);renderBoard()});
+    $$("[data-openit]",board).forEach(b=>b.onclick=()=>{const p=find(b);const it=item(p.itemId);if(!it)return;if(it.type==="carrusel"||it.type==="reel"){S.cur[it.type]=it.id;location.hash="#"+it.type}else openEditor(it.id)});
+    $$("[data-regen]",board).forEach(b=>b.onclick=()=>{const box=$("[data-regenbox]",b.closest("[data-slot]"));box.hidden=!box.hidden});
+    $$("[data-regengo]",board).forEach(b=>b.onclick=async()=>{const card=b.closest("[data-slot]");const p=find(b);const note=$("[data-note]",card).value.trim();const slot=weekPlan(f).find(s=>s.id===p.slot&&s.productId===p.productId)||{id:p.slot,date:p.date,format:p.type,objective:p.objective,productId:p.productId};
+      const smp=await getSample();const extra=`Propón una versión distinta de “${p.title}”.${note?" "+note:""}`;
+      if(!smp||(S.ai&&S.ai.directOff)){f.regen=p.slot;f.regenNote=extra;route();toast("Copia las instrucciones de esta pieza y pégalas en claude.ai");return}
+      b.disabled=true;b.innerHTML=`<span class="spin" aria-hidden="true"></span> Regenerando…`;
+      try{const data=await smp.json(buildWeekPrompt([slot],f,extra),{cache:false});mergeWeekProposals(doc,parseAIReply(data,5),[slot]);await saveWeek(doc);toast("Pieza regenerada")}catch(e){toast(AI_ERR[e&&e.code]||"No se pudo regenerar")}renderBoard()});
+  }
+  renderBoard();
+};
+
 /* ================= Boot ================= */
 (async()=>{
-  try{await Store.init();const d=await Store.load();S.items=d.items.map(x=>newItem(x));S.media=d.media;S.campaigns=d.campaigns||[];S.series=d.series||[];
+  try{await Store.init();const d=await Store.load();S.items=d.items.map(x=>newItem(x));S.media=d.media;S.campaigns=d.campaigns||[];S.series=d.series||[];S.catalog=d.catalog||[];S.weeks=d.weeks||[];S.requests=d.requests||[];
     $("#storageInfo").innerHTML=Store.mode==="cloud"?'<span class="lg">Guardado en </span>la nube de Claude':'<span class="lg">Guardado en </span>este navegador';}
   catch(e){$("#view").innerHTML=`<div class="err">${esc(e.message||e)}</div>`;return}
   route();

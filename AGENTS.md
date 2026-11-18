@@ -30,3 +30,7 @@ Brand: read `brand/BRAND-BRAIN.md` (rules) and `brand/profile.json` (facts) befo
 any content task; do not duplicate them. Role skills live in `skills/<name>/SKILL.md`
 (linked into `.claude/skills` and `.agents/skills`); Claude Code subagents live in
 `.claude/agents`. See docs/AGENTS-AND-SKILLS.md.
+
+Catalog: product data comes only from the read-only Shopify connector (`catalog/source.json`,
+never prices, inventory or costs). Rebuild with `python scripts/catalog_build.py`; see docs/FABRICA.md.
+Never write to Shopify, Meta Ads or Omnisend.

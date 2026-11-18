@@ -499,10 +499,12 @@ async function run(mode) {
   // Scheduling package for Instagram + Facebook
   const schedZip = await downloadVia(page, mode, captured, () => page.click("#fb_sched"));
   const sb = fs.readFileSync(schedZip); const st = sb.toString("latin1");
-  ok(P + "programación: package with ready/material folders and CSV manifest", ["manifiesto_programacion.csv", "01_listos_para_programar/", "03_requieren_material/", "copy_instagram.txt", "copy_facebook.txt", "_1080x1350.png", "_1080x1920.png", "PENDIENTE.txt"].every(n => sb.includes(Buffer.from(n))));
+  ok(P + "programación: package with ready/material folders and CSV manifest", ["manifiesto_programacion.csv", "01_listos_para_programar/", "03_requieren_material/", "copy_instagram.txt", "copy_facebook.txt", "_1080x1350.jpg", "_1080x1920.jpg", "PENDIENTE.txt"].every(n => sb.includes(Buffer.from(n))));
   const si = (st.match(/"LISTO","SI"/g) || []).length, no = (st.match(/"FALTA MATERIAL","NO"/g) || []).length;
   ok(P + "programación: one row per network, only ready pieces publishable (34 SI / 2 NO)", si === 34 && no === 2, `${si}/${no}`);
   fs.copyFileSync(schedZip, path.join(OUT, mode + "-programacion.zip"));
+  ok(P + "programación: Stories with stickers flagged as manual (7 pieces × 2 networks)", (st.match(/"Manual: agregar stickers en la app","LISTO"/g) || []).length === 14);
+  ok(P + "programación: JPEG files are real JPEGs", sb.includes(Buffer.from([0xff, 0xd8, 0xff])));
   // Shooting checklist
   await page.waitForSelector("#shoot [data-shot]");
   const firstShot = await page.$eval("#shoot [data-shot]", e => e.dataset.shot);

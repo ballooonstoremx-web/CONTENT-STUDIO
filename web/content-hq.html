@@ -389,6 +389,12 @@ a.cell,a.cell:hover{text-decoration:none}
 .props input[type=color]{height:40px;padding:4px;cursor:pointer;min-width:0}
 .props label.row{display:flex}
 .flt select{width:auto;flex:0 1 280px;min-width:0}
+.st-guardada{background:var(--surface2)}.st-por_analizar{background:var(--bluesoft);color:#0E4F70}.st-en_produccion{background:var(--greensoft);color:#2D6A1C}.st-utilizada{background:#E9E3F7;color:#3E2C7A}.st-descartada{background:var(--accentsoft);color:#9A1F3A;text-decoration:line-through}
+.qsave{white-space:nowrap;font-size:.78rem;padding:7px 14px}
+.report h3{font-family:var(--serif);font-size:1.15rem;margin:0 0 6px}
+.hooks{columns:2 260px;column-gap:18px;margin:0;padding-left:20px}.hooks li{break-inside:avoid;margin-bottom:6px;font-size:.88rem}
+@media (max-width:600px){.top .storage{display:none}.qsave{padding:7px 12px}}
+label.chk{display:flex!important;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-weight:500;font-size:.85rem;color:var(--fg)}label.chk input{width:auto;margin:0}
 </style>
 
 <div class="app">
@@ -396,12 +402,13 @@ a.cell,a.cell:hover{text-decoration:none}
     <div class="top-in">
       <div class="topbar">
         <div class="brand"><span class="dots" aria-hidden="true"><i style="background:#54C1FA"></i><i style="background:#EA4566"></i><i style="background:#FFD400"></i><i style="background:#7ED957"></i></span><b>Balloon Store</b><span class="sub">Content HQ</span></div>
-        <div class="storage" id="storageInfo">Conectando almacenamiento…</div>
+        <div class="row" style="gap:8px;flex-wrap:nowrap"><button class="qsave primary" id="qsave" type="button">+ Guardar inspiración</button><div class="storage" id="storageInfo">Conectando almacenamiento…</div></div>
       </div>
       <nav class="rail" id="rail" aria-label="Secciones">
         <a href="#hoy" data-r="hoy">Hoy</a>
         <span class="grp"><span class="sec">Investigar</span>
         <a href="#intel" data-r="intel" title="Centro de inteligencia">Inteligencia</a>
+        <a href="#semanal" data-r="semanal" title="Investigador semanal con IA">Semanal</a>
         <a href="#analisis" data-r="analisis" title="Mis resultados en Metricool">Resultados IG</a>
         <a href="#diagnostico" data-r="diagnostico" title="Qué estoy haciendo bien / Qué debo mejorar">Diagnóstico</a>
         <a href="#competencia" data-r="competencia">Competencia</a>
@@ -455,9 +462,9 @@ const hasClaude=()=>!!(window.claude&&typeof window.claude.use==="function");
 function withTimeout(p,ms){return Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))])}
 
 /* ================= Storage: claude.ai db+assets when hosted, IndexedDB otherwise ================= */
-const COLS=["items","media","campaigns","series","catalog","weeks","requests","competitors","inspo","ideabank","metrics","learnings","plans"];
+const COLS=["items","media","campaigns","series","catalog","weeks","requests","competitors","inspo","ideabank","metrics","learnings","plans","settings","reports"];
 const IDB={db:null,
-  open(){return new Promise((res,rej)=>{const r=indexedDB.open("bs-content-hq",4);r.onupgradeneeded=()=>{const d=r.result;["items","media","blobs","campaigns","series","catalog","weeks","requests","competitors","inspo","ideabank","metrics","learnings","plans"].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n)})};r.onsuccess=()=>{this.db=r.result;res(this)};r.onerror=()=>rej(r.error)})},
+  open(){return new Promise((res,rej)=>{const r=indexedDB.open("bs-content-hq",5);r.onupgradeneeded=()=>{const d=r.result;["items","media","blobs","campaigns","series","catalog","weeks","requests","competitors","inspo","ideabank","metrics","learnings","plans","settings","reports"].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n)})};r.onsuccess=()=>{this.db=r.result;res(this)};r.onerror=()=>rej(r.error)})},
   tx(store,mode,fn){return new Promise((res,rej)=>{const t=this.db.transaction(store,mode);const s=t.objectStore(store);const out=fn(s);t.oncomplete=()=>res(out&&out.result!==undefined?out.result:undefined);t.onerror=()=>rej(t.error)})},
   all(store){return new Promise((res,rej)=>{const t=this.db.transaction(store,"readonly");const r=t.objectStore(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})},
   get(store,key){return new Promise((res,rej)=>{const r=this.db.transaction(store,"readonly").objectStore(store).get(key);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
@@ -549,7 +556,7 @@ async function makeZip(files){ // files: [{name, data: Blob|string}]
 }
 
 /* ================= State ================= */
-const S={items:[],media:[],campaigns:[],series:[],catalog:[],weeks:[],requests:[],competitors:[],inspo:[],ideabank:[],metrics:[],learnings:[],plans:[],curCamp:null,week:null,studioStep:1,seriesFilter:"",resPeriod:"todo",cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
+const S={items:[],media:[],campaigns:[],series:[],catalog:[],weeks:[],requests:[],competitors:[],inspo:[],ideabank:[],metrics:[],learnings:[],plans:[],settings:[],reports:[],curCamp:null,week:null,studioStep:1,seriesFilter:"",resPeriod:"todo",cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
 const item=id=>S.items.find(i=>i.id===id);
 const mediaById=id=>S.media.find(m=>m.id===id);
 function newItem(p={}){return Object.assign({id:uid(),type:"reel",title:"Contenido sin título",status:"idea",date:"",pillar:"",occasion:"",line:"",audience:"decoradoras",hook:"",script:"",caption:"",cta:"",notes:"",slides:[],shots:[],metrics:{},campaignId:"",seriesId:"",ep:0,filmChecks:{},frames:[],storyMedia:"",objective:"",productId:"",pending:[],captionFb:"",weekId:"",example:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()},p)}
@@ -712,7 +719,7 @@ const pngToJpeg=async blob=>{const bm=await createImageBitmap(blob);const c=docu
 
 /* ================= Router & views ================= */
 const VIEWS={};
-function route(){const r=(location.hash||"#hoy").slice(1);const v=VIEWS[r]?r:"hoy";const navR=v==="ficha"||v==="disenar"?"calendario":v;$$("nav.rail a").forEach(a=>{const on=a.dataset.r===navR;a.classList.toggle("on",on);if(on){a.setAttribute("aria-current","page");try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}else a.removeAttribute("aria-current")});window.scrollTo(0,0);
+function route(){let r=(location.hash||"#hoy").slice(1);if(r.startsWith("guardar")){const u=new URLSearchParams(r.split("?")[1]||"").get("u")||"";try{history.replaceState(null,"","#inspiracion")}catch(e){}r="inspiracion";setTimeout(()=>quickSaveDlg({url:u}),0)}const v=VIEWS[r]?r:"hoy";const navR=v==="ficha"||v==="disenar"?"calendario":v==="insp"?"inspiracion":v;$$("nav.rail a").forEach(a=>{const on=a.dataset.r===navR;a.classList.toggle("on",on);if(on){a.setAttribute("aria-current","page");try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}else a.removeAttribute("aria-current")});window.scrollTo(0,0);
   const main=$("#view");main.innerHTML="";VIEWS[v](main);main.focus?.()}
 window.addEventListener("hashchange",route);
 function head(t,p,actions=""){return`<div class="head"><div><h1>${t}</h1>${p?`<p>${p}</p>`:""}</div><div class="row">${actions}</div></div>`}
@@ -1096,12 +1103,12 @@ VIEWS.respaldo=main=>{
   $$("[data-pk]",main).forEach(b=>b.onclick=async()=>{const it=item(b.dataset.pk);b.disabled=true;try{let z;
     if(it.type==="carrusel"&&it.slides.length)z=await buildCarouselZip(it);else if(it.type==="reel"&&it.shots.length)z=await buildReelZip(it);else if(it.type==="story"&&it.frames&&it.frames.length)z=await buildStoryZip(it);else z=await makeZip([{name:"contenido.txt",data:textPack(it)}]);
     await saveFile(slug(it.title)+".zip",z)}catch(e){toast(e.message)}finally{b.disabled=false}});
-  const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,campaigns:S.campaigns,series:S.series,weeks:S.weeks,competitors:S.competitors,inspo:S.inspo,ideabank:S.ideabank,metrics:S.metrics,learnings:S.learnings,plans:S.plans,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
+  const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,campaigns:S.campaigns,series:S.series,weeks:S.weeks,competitors:S.competitors,inspo:S.inspo,ideabank:S.ideabank,metrics:S.metrics,learnings:S.learnings,plans:S.plans,settings:S.settings,reports:S.reports,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
   $("#bk_json",main).onclick=()=>saveFile("content-hq-respaldo-"+today()+".json",new Blob([data()],{type:"application/json"}));
   $("#bk_zip",main).onclick=async e=>{e.target.disabled=true;try{const files=[{name:"respaldo.json",data:data()}];for(const m of S.media){const b=await Store.getBlob(m.ref).catch(()=>null);if(b)files.push({name:"media/"+m.id+"_"+m.name,data:b})}
     await saveFile("content-hq-respaldo-"+today()+".zip",await makeZip(files))}finally{e.target.disabled=false}};
   $("#bk_in",main).onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(j.app!=="balloon-store-content-hq"||!Array.isArray(j.items))throw new Error("El archivo no es un respaldo de Content HQ");
-    for(const [col,key] of [["campaigns","campaigns"],["series","series"],["weeks","weeks"],["competitors","competitors"],["inspo","inspo"],["ideabank","ideabank"],["metrics","metrics"],["learnings","learnings"],["plans","plans"]])for(const raw of (Array.isArray(j[key])?j[key]:[])){if(!raw||typeof raw.id!=="string")continue;const ex=S[key].findIndex(x=>x.id===raw.id);if(ex>=0)S[key][ex]=raw;else S[key].push(raw);await Store.save(col,raw)}
+    for(const [col,key] of [["campaigns","campaigns"],["series","series"],["weeks","weeks"],["competitors","competitors"],["inspo","inspo"],["ideabank","ideabank"],["metrics","metrics"],["learnings","learnings"],["plans","plans"],["settings","settings"],["reports","reports"]])for(const raw of (Array.isArray(j[key])?j[key]:[])){if(!raw||typeof raw.id!=="string")continue;const ex=S[key].findIndex(x=>x.id===raw.id);if(ex>=0)S[key][ex]=raw;else S[key].push(raw);await Store.save(col,raw)}
     let n=0;for(const raw of j.items){if(!raw||typeof raw.id!=="string")continue;const it=newItem(raw);const ex=S.items.findIndex(x=>x.id===it.id);if(ex>=0)S.items[ex]=it;else S.items.push(it);await touch(it,true);n++}
     toast(n+" contenido(s) restaurado(s). Los archivos de la biblioteca se vuelven a subir manualmente.");route()}catch(err){toast(err.message)}};
 };
@@ -1846,7 +1853,10 @@ const MC_SERVER="Metricool Social Media Management";
 const COMP_CATS=[["distribuidores","Distribuidores y tiendas de globos"],["decoradoras","Decoradoras y creadoras de contenido"],["marcas","Marcas de fiestas e inspiración visual"]];
 const INSPO_CATS=["Navidad","Año Nuevo","Cumpleaños","Baby shower","Globos metálicos","Látex","Tutoriales","Montaje","Técnicas","Tendencias","Hooks","Planeación y herramientas","Otra"];
 const INSPO_TYPES=[["reel","Reel"],["foto","Fotografía"],["carrusel","Carrusel"],["enlace","Enlace"],["captura","Captura"],["propia","Idea propia"]];
-const INSPO_ST=[["guardar","Guardar"],["investigar","Investigar"],["adaptar","Adaptar"],["producir","Producir"],["descartar","Descartar"]];
+const INSPO_ST=[["guardada","Guardada"],["por_analizar","Por analizar"],["adaptar","Adaptar"],["en_produccion","En producción"],["utilizada","Utilizada"],["descartada","Descartada"]];
+const INSPO_LEGACY={guardar:"guardada",investigar:"por_analizar",producir:"en_produccion",descartar:"descartada"};
+const inspSt=x=>INSPO_LEGACY[x.status]||x.status||"guardada";
+const INSPO_COLS_DEFAULT=["Reels","Tutoriales","Decoraciones","Globos metálicos","Látex","Navidad","Año Nuevo","Hooks","Diseños","Por investigar"];
 const IDEA_ST=[["nueva","Nueva"],["guardada","Guardada"],["aprobada","Aprobada"],["produccion","En producción"],["descartada","Descartada"]];
 const IDEA_OBJ=[["educar","Educar"],["atraer","Atraer"],["interactuar","Interactuar"],["vender","Vender"]];
 const PRI=[["alta","Alta"],["media","Media"],["baja","Baja"]];
@@ -1903,7 +1913,8 @@ async function mcCompetitors(status,days=90){const b=await mcBrand();const to=to
     let c=S.competitors.find(x=>(x.handle||"").toLowerCase()===h.toLowerCase());
     if(!c)c={id:uid(),handle:h,name:r[1]||h,platform:"instagram",category:"distribuidores",url:"https://instagram.com/"+h,notes:"",observations:[],createdAt:nowISO()};
     const mine=rows=>rows.filter(x=>String(x[0]||"").toLowerCase().includes(h.toLowerCase()));
-    c.metricool={fetchedAt:nowISO(),from,to,followers:N(r[2]),posts:N(r[3]),reels:N(r[4]),avgLikes:N(r[5]),comments:N(r[6]),engagement:N(r[7]),source:"Metricool · competidores",
+    const allP=mine(posts).map(x=>({caption:x[1]||"",date:tsISO(x[2]),likes:N(x[3]),comments:N(x[4]),interactions:N(x[5]),engagement:N(x[6]),url:x[7],kind:"Publicación"})),allR=mine(reels).map(x=>({caption:x[1]||"",url:x[2],date:tsISO(x[3]),likes:N(x[4]),comments:N(x[5]),interactions:N(x[6]),engagement:N(x[7]),kind:"Reel"}));
+    c.metricool={fetchedAt:nowISO(),from,to,items:[...allP,...allR].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,80).map(p=>({...p,caption:String(p.caption).slice(0,300)})),followers:N(r[2]),posts:N(r[3]),reels:N(r[4]),avgLikes:N(r[5]),comments:N(r[6]),engagement:N(r[7]),source:"Metricool · competidores",
       topPosts:mine(posts).map(x=>({caption:x[1]||"",date:tsISO(x[2]),likes:N(x[3]),comments:N(x[4]),interactions:N(x[5]),engagement:N(x[6]),url:x[7],kind:"Publicación"})).sort((a,b)=>(b.interactions||0)-(a.interactions||0)).slice(0,6),
       topReels:mine(reels).map(x=>({caption:x[1]||"",url:x[2],date:tsISO(x[3]),likes:N(x[4]),comments:N(x[5]),interactions:N(x[6]),engagement:N(x[7]),kind:"Reel"})).sort((a,b)=>(b.interactions||0)-(a.interactions||0)).slice(0,6)};
     await saveDoc("competitors",c);n++}
@@ -2118,51 +2129,10 @@ VIEWS.competencia=main=>{S.compTab=S.compTab||"distribuidores";const list=S.comp
   $$("[data-cobs]",main).forEach(b=>b.onclick=()=>obsForm(S.competitors.find(c=>c.id===b.dataset.cobs)));
   const co=k=>{const[ci,oi]=k.split(":");const c=S.competitors.find(x=>x.id===ci);return[c,(c.observations||[]).find(o=>o.id===oi)]};
   $$("[data-oedit]",main).forEach(b=>b.onclick=()=>{const[c,o]=co(b.dataset.oedit);obsForm(c,o)});
-  $$("[data-oinsp]",main).forEach(b=>b.onclick=async()=>{const[c,o]=co(b.dataset.oinsp);await saveDoc("inspo",{id:uid(),type:o.format==="reel"?"reel":o.format==="carrusel"?"carrusel":"foto",url:o.url,creator:"@"+c.handle,category:"Otra",tags:[o.theme].filter(Boolean),notes:[o.hook&&"Hook: "+o.hook,o.style&&"Estilo: "+o.style,o.adapt&&"Adaptar: "+o.adapt].filter(Boolean).join("\n"),status:"investigar",source:`Observación de competencia (${fmtDT(o.date)})`,createdAt:nowISO()});toast("Guardada en Inspiración")});
+  $$("[data-oinsp]",main).forEach(b=>b.onclick=async()=>{const[c,o]=co(b.dataset.oinsp);const r=await inspoQuickSave({type:o.format==="reel"?"reel":o.format==="carrusel"?"carrusel":"foto",url:o.url,creator:"@"+c.handle,collection:"Por investigar",tags:[o.theme].filter(Boolean),notes:[o.hook&&"Hook: "+o.hook,o.style&&"Estilo: "+o.style,o.adapt&&"Adaptar: "+o.adapt].filter(Boolean).join("\n"),status:"por_analizar",source:`Observación de competencia (${fmtDT(o.date)})`});toast(r.dup?"Ya estaba en Inspiración: no se duplicó":"Guardada en Inspiración")});
   $$("[data-oidea]",main).forEach(b=>b.onclick=()=>{const[c,o]=co(b.dataset.oidea);ideaForm(null,{hook:"",topic:o.theme,format:o.format==="reel"?"reel":"carrusel",refs:[{kind:"competencia",label:`@${c.handle} · ${fmtDT(o.date)}`,url:o.url}],why:o.adapt,evidence:o.metrics?`Métricas públicas: ${o.metrics} (${o.metricsSource}, ${fmtDT(o.date)})`:""})});
   mcButton(main,"cp_mc",async st=>{const r=await mcCompetitors(st);st.textContent=r.accounts?`${r.accounts} cuenta(s) actualizadas desde Metricool.`:"Metricool no tiene competidores configurados en tu marca. Agrégalos en Metricool › Competidores y vuelve a intentarlo.";if(r.accounts)setTimeout(route,800)})};
 
-/* --- Inspiración --- */
-async function inspoThumb(x){if(x.thumbRef){try{return await Store.url(x.thumbRef)}catch(e){return""}}return x.thumbUrl||""}
-function inspoForm(x){const isNew=!x;x=x||{id:uid(),type:"reel",url:"",creator:"",category:"Otra",tags:[],notes:"",status:"guardar",createdAt:nowISO()};
-  dlgOpen(isNew?"Guardar inspiración":"Editar inspiración",`<div class="grid" style="grid-template-columns:1fr 1fr">
-   <label>Tipo<select name="type">${optList(INSPO_TYPES,x.type)}</select></label><label>Estado<select name="status">${optList(INSPO_ST,x.status)}</select></label>
-   <label>Enlace original<input name="url" type="url" value="${esc(x.url)}" placeholder="https://www.instagram.com/reel/…"></label><label>Creador<input name="creator" value="${esc(x.creator)}" placeholder="@cuenta"></label>
-   <label>Categoría<select name="category">${optList(INSPO_CATS,x.category)}</select></label><label>Etiquetas (separadas por coma)<input name="tags" value="${esc((x.tags||[]).join(", "))}"></label></div>
-   <label>Título corto<input name="title" value="${esc(x.title||"")}"></label>
-   <label>Notas: qué te gustó, hook, estilo<textarea name="notes" rows="4">${esc(x.notes)}</textarea></label>
-   <label>Miniatura: sube tu captura de pantalla<input name="file" type="file" accept="image/*"></label>
-   <p class="src">Instagram no permite leer miniaturas de publicaciones ajenas sin autorización; por eso la miniatura es tu propia captura. ${x.thumbRef?"Ya tiene miniatura.":""}</p>`,async f=>{
-    const file=f.elements.file.files[0];if(file){x.thumbRef=await Store.putBlob(file)}
-    Object.assign(x,{type:fv(f,"type"),status:fv(f,"status"),url:fv(f,"url"),creator:fv(f,"creator"),category:fv(f,"category"),tags:fv(f,"tags").split(",").map(s=>s.trim()).filter(Boolean),title:fv(f,"title"),notes:fv(f,"notes")});
-    if(!x.url&&!x.notes&&!x.thumbRef&&!x.title){toast("Agrega al menos un enlace, una nota o una captura");return false}
-    await saveDoc("inspo",x);toast("Inspiración guardada");route()})}
-function parseIgExport(json){const out=[];const seen=new Set();(function walk(n,ctx){if(!n)return;if(Array.isArray(n))return n.forEach(v=>walk(v,ctx));if(typeof n!=="object")return;
-  const title=typeof n.title==="string"?n.title:ctx;for(const[k,v]of Object.entries(n)){if(k==="href"&&typeof v==="string"&&/instagram\.com\/(p|reel|tv)\//.test(v)&&!seen.has(v)){seen.add(v);out.push({url:v,creator:title||"",ts:(n.timestamp||0)})}else walk(v,title)}})(json,"");return out}
-async function importInspo(urls,source){let n=0;for(const u of urls){const url=u.url.trim();if(!url||S.inspo.some(x=>x.url===url))continue;
-  await saveDoc("inspo",{id:uid(),type:/\/reel\//.test(url)?"reel":"enlace",url,creator:u.creator?(u.creator.startsWith("@")?u.creator:"@"+u.creator):"",category:"Otra",tags:[],notes:"",status:"guardar",source,createdAt:nowISO()});n++}return n}
-VIEWS.inspiracion=main=>{const fl=S.inspoFilter||{cat:"",st:""};S.inspoFilter=fl;
-  const list=S.inspo.filter(x=>(!fl.cat||x.category===fl.cat)&&(!fl.st?x.status!=="descartar":x.status===fl.st)).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
-  main.innerHTML=head("Biblioteca de inspiración","Reels, fotos, carruseles, enlaces, capturas e ideas propias. Marca cada una como Guardar, Investigar, Adaptar, Producir o Descartar.",`<button id="in_imp">Importar enlaces o exportación</button><button id="in_add" class="primary">Guardar inspiración</button>`)+
-  `<div class="row flt" style="margin-bottom:12px"><select id="in_cat" aria-label="Categoría"><option value="">Todas las categorías</option>${optList(INSPO_CATS,fl.cat)}</select><select id="in_st" aria-label="Estado"><option value="">Activas (sin descartadas)</option>${optList(INSPO_ST,fl.st)}</select><span class="src">${list.length} de ${S.inspo.length}</span></div>
-  <div class="masonry">${list.map(x=>`<article class="pin"><div class="ph" data-th="${x.id}"><span class="noimg">${esc(x.title||firstLine(x.notes).slice(0,60)||label(INSPO_TYPES,x.type))}</span></div><div class="bd">
-   <div class="row" style="justify-content:space-between"><span class="chip">${esc(label(INSPO_TYPES,x.type))}</span><span class="chip st-${x.status}">${esc(label(INSPO_ST,x.status))}</span></div>
-   <b>${esc(x.title||x.creator||"Inspiración")}</b><div class="src">${esc(x.creator||"")} · ${esc(x.category)} · ${fmtDT(x.createdAt)} ${linkA(x.url,"original")}</div>
-   ${x.notes?`<p style="margin:0;font-size:.8rem;white-space:pre-wrap">${esc(x.notes.slice(0,240))}${x.notes.length>240?"…":""}</p>`:""}${x.source?`<div class="src">Origen: ${esc(x.source)}</div>`:""}
-   ${(x.tags||[]).length?`<div class="tags">${x.tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
-   <div class="stsel">${INSPO_ST.map(([k,l])=>`<button data-ist="${x.id}:${k}" class="${x.status===k?"on":""}">${l}</button>`).join("")}</div>
-   <div class="row"><button data-iedit="${x.id}">Editar</button><button data-iidea="${x.id}" class="primary">Convertir en idea</button></div></div></article>`).join("")||`<div class="empty">Sin inspiraciones con este filtro.</div>`}</div>
-  <section class="panel" style="margin-top:16px"><h2>Sobre tus guardados de Instagram</h2><p class="src">No existe un acceso autorizado para leer tus publicaciones guardadas desde esta app, así que no hay sincronización automática. Puedes pegar enlaces (uno por línea) o subir el archivo <b>saved_posts.json</b> de la exportación de datos de Instagram (Configuración › Centro de cuentas › Tu información › Descargar tu información, formato JSON).</p></section>`;
-  $$("[data-th]",main).forEach(el=>{const x=S.inspo.find(i=>i.id===el.dataset.th);inspoThumb(x).then(u=>{if(u)el.innerHTML=thumbImg(u,x.title||"")})});
-  $("#in_cat",main).onchange=e=>{fl.cat=e.target.value;route()};$("#in_st",main).onchange=e=>{fl.st=e.target.value;route()};
-  $("#in_add",main).onclick=()=>inspoForm(null);
-  $$("[data-iedit]",main).forEach(b=>b.onclick=()=>inspoForm(S.inspo.find(x=>x.id===b.dataset.iedit)));
-  $$("[data-ist]",main).forEach(b=>b.onclick=async()=>{const[id,st]=b.dataset.ist.split(":");const x=S.inspo.find(i=>i.id===id);x.status=st;await saveDoc("inspo",x);route()});
-  $$("[data-iidea]",main).forEach(b=>b.onclick=()=>{const x=S.inspo.find(i=>i.id===b.dataset.iidea);ideaForm(null,{topic:x.title||"",refs:[{kind:"inspiracion",id:x.id,label:(x.creator||x.title||"Inspiración")+" · "+x.category,url:x.url}],why:x.notes,format:x.type==="reel"?"reel":"carrusel"})});
-  $("#in_imp",main).onclick=()=>dlgOpen("Importar inspiración",`<label>Enlaces (uno por línea)<textarea name="links" rows="6" placeholder="https://www.instagram.com/reel/…"></textarea></label><label>o archivo de exportación de Instagram (saved_posts.json)<input name="file" type="file" accept=".json,application/json"></label>`,async f=>{
-    let urls=fv(f,"links").split(/\s+/).filter(u=>/^https?:\/\//.test(u)).map(url=>({url}));const file=f.elements.file.files[0];
-    if(file){try{urls=urls.concat(parseIgExport(JSON.parse(await file.text())))}catch(e){toast("El archivo no es un JSON válido");return false}}
-    const n=await importInspo(urls,file?"Exportación de Instagram":"Enlaces pegados");toast(`${n} inspiración(es) nuevas`);route()},{saveLabel:"Importar"})};
 
 /* ---------- Banco inteligente de ideas y hooks ---------- */
 const AUDS=[["decoradoras","Decoradoras"],["tiendas de fiestas","Tiendas de fiestas"],["revendedores","Revendedores"],["clientes finales","Clientes finales"]];
@@ -2199,7 +2169,7 @@ CATÁLOGO:
 ${JSON.stringify(cat)}`}
 function ideaSources(){const d=diagnose(latestSnap());const out=[];
   [...d.bien,...d.mejorar,...d.debil].forEach((f,i)=>out.push({id:"dx"+i,tipo:"hallazgo de mis métricas",titulo:f.title,detalle:f.detail,confianza:f.conf,label:f.title,url:(f.evidence[0]||{}).url||""}));
-  S.inspo.filter(x=>["investigar","adaptar","producir"].includes(x.status)).forEach(x=>out.push({id:"in_"+x.id,tipo:"inspiración guardada",titulo:x.title||"",creador:x.creator,categoria:x.category,notas:x.notes,label:(x.creator||x.title||"Inspiración")+" · "+x.category,url:x.url,ref:{kind:"inspiracion",id:x.id}}));
+  S.inspo.filter(x=>["por_analizar","adaptar","en_produccion"].includes(inspSt(x))).forEach(x=>out.push({id:"in_"+x.id,tipo:"inspiración guardada",titulo:x.title||"",creador:x.creator,categoria:x.collection||x.category,notas:x.notes,analisis:x.analysis?{hook:x.analysis.hook,estructura:x.analysis.estructura,tecnica:x.analysis.tecnica}:undefined,label:(x.creator||x.title||"Inspiración")+" · "+x.category,url:x.url,ref:{kind:"inspiracion",id:x.id}}));
   S.competitors.forEach(c=>(c.observations||[]).forEach(o=>out.push({id:"ob_"+o.id,tipo:"observación de competencia",cuenta:"@"+c.handle,hook:o.hook,tema:o.theme,estilo:o.style,metricas:o.metrics,adaptar:o.adapt,label:`@${c.handle} · ${fmtDT(o.date)}`,url:o.url})));
   return out}
 function genIdeasDlg(){const srcs=ideaSources();
@@ -2461,11 +2431,255 @@ VIEWS.disenar=main=>{const it=item(S.designId);if(!it||!it.design){main.innerHTM
   $("#e_back",main).onclick=()=>{clearTimeout(saveT);touch(it,true);S.fichaId=it.id;S.fSlide=S.edSlide;location.hash="#ficha"};
   props();paint();strip()};
 
+/* ================= Guardar inspiración (rápido, sin duplicados, con historial) ================= */
+const URL_JUNK=["igsh","igshid","utm_source","utm_medium","utm_campaign","utm_content","utm_term","si","fbclid","_r","_t","is_from_webapp","sender_device","share_id","mibextid","rdt"];
+function normUrl(u){const raw=String(u||"").trim();if(!raw)return"";try{const x=new URL(/^https?:\/\//i.test(raw)?raw:"https://"+raw);URL_JUNK.forEach(k=>x.searchParams.delete(k));
+  const h=x.hostname.toLowerCase().replace(/^(www|m|mobile)\./,"");let p=x.pathname.replace(/\/+$/,"");
+  if(h.endsWith("instagram.com"))p=p.replace(/^\/[^/]+\/(reel|reels|p|tv)\//,(m,a)=>"/"+a+"/").replace(/^\/reels\//,"/reel/");
+  const q=x.searchParams.toString();return h+p+(q?"?"+q:"")}catch(e){return raw.toLowerCase()}}
+function cleanUrl(u){const raw=String(u||"").trim();if(!raw)return"";try{const x=new URL(/^https?:\/\//i.test(raw)?raw:"https://"+raw);URL_JUNK.forEach(k=>x.searchParams.delete(k));x.hash="";return x.toString().replace(/\?$/,"")}catch(e){return raw}}
+function platformOf(u){const h=normUrl(u).split("/")[0];return/instagram\.com$/.test(h)?"Instagram":/tiktok\.com$/.test(h)?"TikTok":/(^|\.)pinterest\.|pin\.it$/.test(h)?"Pinterest":/youtube\.com$|youtu\.be$/.test(h)?"YouTube":/facebook\.com$|fb\.watch$/.test(h)?"Facebook":h?"Web":""}
+function creatorOf(u){const s=String(u||"");let m=s.match(/instagram\.com\/([A-Za-z0-9._]+)\/(?:reel|reels|p|tv)\//i);if(m)return"@"+m[1];
+  m=s.match(/tiktok\.com\/@([A-Za-z0-9._]+)/i);if(m)return"@"+m[1];m=s.match(/youtube\.com\/@([A-Za-z0-9._-]+)/i);if(m)return"@"+m[1];
+  m=s.match(/instagram\.com\/([A-Za-z0-9._]+)\/?$/i);if(m&&!/^(reel|reels|p|tv|explore|stories)$/i.test(m[1]))return"@"+m[1];return""}
+function typeFromUrl(u){const s=String(u||"");return/\/(reel|reels|tv)\//i.test(s)||/tiktok\.com\/.*\/video\//i.test(s)||/youtube\.com\/shorts\//i.test(s)?"reel":/instagram\.com\/(?:[^/]+\/)?p\//i.test(s)?"carrusel":/pinterest|pin\.it/i.test(s)?"foto":s?"enlace":"propia"}
+const inspoCols=()=>{const st=S.settings.find(s=>s.id==="inspo");const base=(st&&st.collections)||INSPO_COLS_DEFAULT;return[...new Set([...base,...S.inspo.map(x=>x.collection||x.category).filter(Boolean)])]};
+const inspoCol=x=>x.collection||x.category||"Por investigar";
+const findDupInspo=u=>{const n=normUrl(u);return n?S.inspo.find(x=>x.url&&(normUrl(x.url)===n||(x.urlHistory||[]).some(h=>normUrl(h)===n))):null};
+const histAdd=(x,what)=>{(x.history=x.history||[]).unshift({at:nowISO(),what})};
+async function inspoQuickSave(p){if(p.url){const d=findDupInspo(p.url);if(d)return{dup:d}}const now=nowISO();
+  const x={id:uid(),url:cleanUrl(p.url),urlOriginal:p.url&&cleanUrl(p.url)!==p.url?p.url:undefined,urlNorm:normUrl(p.url),platform:p.url?platformOf(p.url):"Propia",creator:p.creator||creatorOf(p.url),type:p.type||typeFromUrl(p.url),collection:p.collection||"Por investigar",
+    tags:p.tags||[],notes:p.notes||"",title:p.title||"",status:p.status||"guardada",source:p.source||"Guardado manual",savedAt:now,createdAt:now,history:[{at:now,what:"Guardada"+(p.source?" · "+p.source:"")}]};
+  if(p.file){x.thumbRef=await Store.putBlob(p.file);x.history.unshift({at:now,what:"Captura agregada"})}
+  await saveDoc("inspo",x);return{doc:x}}
+async function blobToJpeg(blob,max=1600){const bm=await createImageBitmap(blob);const sc=Math.min(1,max/Math.max(bm.width,bm.height));const c=document.createElement("canvas");c.width=Math.round(bm.width*sc);c.height=Math.round(bm.height*sc);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(bm,0,0,c.width,c.height);return await new Promise(r=>c.toBlob(r,"image/jpeg",.85))}
+/* Botón global «+ Guardar inspiración» */
+function quickSaveDlg(pre={}){let pasted=null;
+  const f=dlgOpen("Guardar inspiración",`<label>Enlace (Instagram, TikTok, Pinterest o web)<input name="url" type="url" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Pega aquí el enlace" value="${esc(pre.url||"")}" autofocus></label>
+   <p class="src" id="qs_det">Se guarda aunque no se pueda abrir el contenido.</p>
+   <div class="grid" style="grid-template-columns:1fr 1fr"><label>Colección<select name="collection">${optList(inspoCols(),pre.collection||"Por investigar")}</select></label><label>Etiquetas (coma)<input name="tags" value="${esc((pre.tags||[]).join(", "))}"></label></div>
+   <label>Notas: qué te gustó<textarea name="notes" rows="3">${esc(pre.notes||"")}</textarea></label>
+   <label>Captura de pantalla (opcional)<input name="file" type="file" accept="image/*"></label><p class="src" id="qs_paste">En computadora también puedes pegar una imagen con Ctrl/Cmd + V.</p>`,async g=>{
+    const url=fv(g,"url");const file=g.elements.file.files[0]||pasted;if(!url&&!file&&!fv(g,"notes")){toast("Pega un enlace, agrega una captura o escribe una nota");return false}
+    const r=await inspoQuickSave({url,collection:fv(g,"collection"),tags:fv(g,"tags").split(",").map(s=>s.trim()).filter(Boolean),notes:fv(g,"notes"),file});
+    if(r.dup){toast("Ya la tenías guardada desde el "+fmtDT(r.dup.savedAt||r.dup.createdAt)+": no se duplicó");S.inspId=r.dup.id;location.hash="#insp";return}
+    toast("Inspiración guardada");S.inspId=r.doc.id;if(location.hash==="#insp")route();else location.hash="#insp"},{saveLabel:"Guardar"});
+  const u=f.elements.url,det=$("#qs_det",f);const upd=()=>{const v=u.value.trim();if(!v){det.textContent="Se guarda aunque no se pueda abrir el contenido.";return}const d=findDupInspo(v);
+    det.innerHTML=d?`<b style="color:var(--danger)">Ya guardaste este enlace el ${fmtDT(d.savedAt||d.createdAt)}</b> (${esc(inspoCol(d))}). Al guardar se abrirá la ficha existente.`:`${esc(platformOf(v))}${creatorOf(v)?" · "+esc(creatorOf(v)):""} · ${esc(label(INSPO_TYPES,typeFromUrl(v)))}`};
+  u.oninput=upd;upd();f.onpaste=e=>{const it=[...(e.clipboardData||{}).items||[]].find(i=>i.type.startsWith("image/"));if(it){pasted=it.getAsFile();$("#qs_paste",f).textContent="Captura pegada ✓";e.preventDefault()}};
+  setTimeout(()=>{try{u.focus()}catch(e){}},50)}
+
+/* Ficha de inspiración */
+VIEWS.insp=main=>{const x=S.inspo.find(i=>i.id===S.inspId);if(!x){main.innerHTML=head("Inspiración","")+`<div class="empty">Elige una inspiración en la <a href="#inspiracion">biblioteca</a>.</div>`;return}
+  const st=inspSt(x);const ideas=S.ideabank.filter(i=>(i.refs||[]).some(r=>r.id===x.id));const an=x.analysis;
+  main.innerHTML=head(esc(x.title||x.creator||"Inspiración"),`${esc(x.platform||platformOf(x.url)||"")} · ${esc(label(INSPO_TYPES,x.type))} · guardada el ${fmtDT(x.savedAt||x.createdAt)}`,`<a class="btn" href="#inspiracion">← Biblioteca</a>`)+
+  `<div class="ficha"><div><div class="panel" style="padding:10px"><div class="ph" id="ix_th" style="border-radius:12px;overflow:hidden;background:var(--surface2);min-height:160px;display:flex;align-items:center;justify-content:center"><span class="noimg">Sin captura</span></div>
+     <label style="margin-top:8px">${x.thumbRef?"Reemplazar captura":"Agregar captura"}<input type="file" id="ix_file" accept="image/*"></label><p class="src">La captura es tuya: la app no descarga ni republica contenido ajeno.</p></div>
+    <section class="panel" style="margin-top:14px"><div class="eyebrow">Historial</div><ul class="log">${(x.history||[{at:x.createdAt,what:"Guardada"}]).map(h=>`<li>${fmtDT(h.at)} · ${esc(h.what)}</li>`).join("")}</ul>${(x.urlHistory||[]).length?`<p class="src">Enlaces anteriores: ${x.urlHistory.map(u=>linkA(u,u)).join(" · ")}</p>`:""}</section></div>
+   <div style="display:grid;gap:14px;align-content:start">
+    <section class="panel"><div class="stsel" style="margin-bottom:10px">${INSPO_ST.map(([k,l])=>`<button data-xst="${k}" class="${st===k?"on":""}">${l}</button>`).join("")}</div>
+     <dl class="kv"><dt>Original</dt><dd>${x.url?linkA(x.url,x.url.length>60?x.url.slice(0,60)+"…":x.url):"(sin enlace)"}</dd><dt>Plataforma</dt><dd>${esc(x.platform||platformOf(x.url)||"—")}</dd><dt>Creador</dt><dd>${esc(x.creator||"—")}</dd><dt>Colección</dt><dd>${esc(inspoCol(x))}</dd><dt>Etiquetas</dt><dd>${esc((x.tags||[]).join(", ")||"—")}</dd><dt>Origen</dt><dd>${esc(x.source||"—")}</dd></dl>
+     ${x.notes?`<p style="white-space:pre-wrap;font-size:.86rem">${esc(x.notes)}</p>`:""}
+     <div class="row"><button id="ix_edit">Editar datos</button><button id="ix_url">Cambiar enlace</button></div></section>
+    <section class="panel"><div class="row" style="justify-content:space-between"><h2>Análisis</h2><button id="ix_an" class="primary">Analizar con Claude</button></div><p class="src" id="ix_an_st">Claude no puede abrir el enlace: analiza tu captura y tus notas.</p>
+     ${an?`<dl class="kv"><dt>Hook</dt><dd>${esc(an.hook)}</dd><dt>Estructura</dt><dd>${esc(an.estructura)}</dd><dt>Técnica</dt><dd>${esc(an.tecnica)}</dd><dt>Útil para Balloon Store</dt><dd>${esc(an.utilidad)}</dd></dl>
+      <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:8px"><div><b style="font-size:.78rem">Observaciones (se ve en la captura o notas)</b><ul class="ev">${(an.observaciones||[]).map(o=>`<li>${esc(o)}</li>`).join("")||"<li>—</li>"}</ul></div><div><b style="font-size:.78rem">Suposiciones (sin comprobar)</b><ul class="ev">${(an.suposiciones||[]).map(o=>`<li>${esc(o)}</li>`).join("")||"<li>—</li>"}</ul></div></div>
+      <p class="src">Confianza: ${esc(an.confianza||"—")} · ${esc(an.basadoEn||"")} · ${fmtDT(an.at)}${(x.analyses||[]).length>1?` · ${x.analyses.length} análisis guardados`:""}${an.falta?` · Falta: ${esc(an.falta)}`:""}</p>`:`<p class="src">Todavía sin análisis.</p>`}</section>
+    <section class="panel"><div class="row" style="justify-content:space-between"><h2>Adaptar a Balloon Store</h2><button id="ix_ad" class="primary">Crear idea original</button></div><p class="src" id="ix_ad_st">Usa productos del catálogo y fotos reales de tu biblioteca. No copia textos ni diseño.</p>
+     ${ideas.length?`<ul class="ev">${ideas.map(i=>`<li><a href="#banco" data-idopen="${i.id}">${esc(i.hook||i.topic)}</a> · ${esc(label(IDEA_ST,i.status))} · ${fmtDT(i.createdAt)}</li>`).join("")}</ul>`:""}
+     <button id="ix_manual" style="margin-top:6px">Crear idea a mano</button></section></div></div>`;
+  inspoThumb(x).then(u=>{if(u)$("#ix_th",main).innerHTML=`<img src="${esc(u)}" alt="Captura" style="width:100%;display:block">`});
+  const save=async(what)=>{if(what)histAdd(x,what);await saveDoc("inspo",x);route()};
+  $("#ix_file",main).onchange=async e=>{const f=e.target.files[0];if(!f)return;const had=!!x.thumbRef;x.thumbRef=await Store.putBlob(f);await save(had?"Captura reemplazada (la anterior sigue en tu almacenamiento)":"Captura agregada")};
+  $$("[data-xst]",main).forEach(b=>b.onclick=()=>{if(b.dataset.xst===st)return;x.status=b.dataset.xst;save("Estado: "+label(INSPO_ST,x.status))});
+  $("#ix_edit",main).onclick=()=>dlgOpen("Editar inspiración",`<label>Título<input name="title" value="${esc(x.title||"")}"></label><div class="grid" style="grid-template-columns:1fr 1fr"><label>Creador<input name="creator" value="${esc(x.creator||"")}"></label><label>Tipo<select name="type">${optList(INSPO_TYPES,x.type)}</select></label><label>Colección<select name="collection">${optList(inspoCols(),inspoCol(x))}</select></label><label>Etiquetas<input name="tags" value="${esc((x.tags||[]).join(", "))}"></label></div><label>Notas<textarea name="notes" rows="4">${esc(x.notes||"")}</textarea></label>`,async g=>{
+    Object.assign(x,{title:fv(g,"title"),creator:fv(g,"creator"),type:fv(g,"type"),collection:fv(g,"collection"),tags:fv(g,"tags").split(",").map(s=>s.trim()).filter(Boolean),notes:fv(g,"notes")});await save("Datos editados")});
+  $("#ix_url",main).onclick=()=>dlgOpen("Cambiar enlace",`<p class="src">El enlace anterior queda en el historial y la ficha no se pierde.</p><label>Nuevo enlace<input name="url" type="url" value="${esc(x.url)}"></label>`,async g=>{const nu=fv(g,"url");if(nu===x.url)return;const d=findDupInspo(nu);if(d&&d.id!==x.id){toast("Ese enlace ya está en otra ficha");return false}
+    if(x.url)(x.urlHistory=x.urlHistory||[]).push(x.url);x.url=cleanUrl(nu);x.urlNorm=normUrl(nu);x.platform=platformOf(nu);await save("Enlace cambiado")});
+  $("#ix_manual",main).onclick=()=>ideaForm(null,{topic:x.title||"",refs:[{kind:"inspiracion",id:x.id,label:(x.creator||x.title||"Inspiración")+" · "+inspoCol(x),url:x.url}],why:an?an.utilidad:x.notes,format:x.type==="reel"?"reel":"carrusel"});
+  $$("[data-idopen]",main).forEach(a=>a.onclick=e=>{e.preventDefault();ideaForm(S.ideabank.find(i=>i.id===a.dataset.idopen))});
+  getSample().then(smp=>{const ba=$("#ix_an",main),bd=$("#ix_ad",main);if(!ba)return;if(!smp){[ba,bd].forEach(b=>{b.disabled=true;b.title="Disponible al abrir la app como Artifact en claude.ai"});$("#ix_an_st",main).textContent="Claude no está disponible en esta vista (ábrela como Artifact en claude.ai).";return}
+    ba.onclick=async()=>{const s=$("#ix_an_st",main);s.innerHTML=`<span class="spin"></span>Analizando…`;ba.disabled=true;
+      try{let images;if(x.thumbRef){const lim=await smp.limits().catch(()=>null);if(lim&&lim.images){const b=await Store.getBlob(x.thumbRef);if(b)images=[await blobToJpeg(b)]}}
+        const data={url:x.url,plataforma:x.platform||platformOf(x.url),creador:x.creator,tipo:label(INSPO_TYPES,x.type),coleccion:inspoCol(x),etiquetas:x.tags,notas:x.notes,titulo:x.title};
+        const r=await smp.json(`Analiza una inspiración guardada por Balloon Store (distribuidor de globos en México; público: decoradoras, tiendas de fiestas y revendedores).
+No puedes abrir el enlace. Trabaja SOLO con ${images?"la captura adjunta y ":""}los datos de abajo. Separa con cuidado:
+- "observaciones": solo lo que se ve o está escrito en la captura o en las notas.
+- "suposiciones": lo que infieres y no puedes comprobar (por ejemplo, resultados, intención o audio).
+No inventes métricas. Español de México.
+Responde SOLO JSON: {"hook":"","estructura":"","tecnica":"","utilidad":"por qué puede servir a Balloon Store","observaciones":[""],"suposiciones":[""],"confianza":"alta|media|baja","falta":"qué dato ayudaría"}
+DATOS: ${JSON.stringify(data)}`,{modelTier:"default",cache:false,...(images?{images}:{})});
+        const a={hook:String(r.hook||""),estructura:String(r.estructura||""),tecnica:String(r.tecnica||""),utilidad:String(r.utilidad||""),observaciones:(r.observaciones||[]).map(String),suposiciones:(r.suposiciones||[]).map(String),confianza:String(r.confianza||""),falta:String(r.falta||""),at:nowISO(),basadoEn:images?"captura + notas":"solo notas y enlace (sin captura)"};
+        x.analysis=a;(x.analyses=x.analyses||[]).unshift(a);if(inspSt(x)==="guardada"||inspSt(x)==="por_analizar")x.status="adaptar";await save("Analizada con Claude ("+a.basadoEn+")")}
+      catch(e){s.textContent=(AI_ERR&&AI_ERR[e&&e.code])||"Claude no respondió ("+((e&&e.code)||"error")+")";ba.disabled=false}};
+    bd.onclick=async()=>{const s=$("#ix_ad_st",main);s.innerHTML=`<span class="spin"></span>Adaptando…`;bd.disabled=true;
+      try{const cat=S.catalog.map(p=>({id:p.id,titulo:p.title,tipo:p.type||"",etiquetas:(p.tags||[]).slice(0,6)}));const fotos=S.media.filter(m=>/^image\//.test(m.mime||"")).slice(0,80).map(m=>({id:m.id,nombre:m.name,etiquetas:(m.tags||[]).slice(0,5)}));
+        const r=await smp.json(`Crea UNA idea de contenido ORIGINAL para Balloon Store inspirada en esta referencia (distribuidor de globos en México; público: decoradoras, tiendas de fiestas y revendedores).
+Reglas: no copies el texto, el hook literal ni el diseño de la referencia; toma solo la mecánica o el aprendizaje. Usa un producto del CATÁLOGO (por id) y, si encaja, fotos reales de la BIBLIOTECA (por id). Si falta una foto real, dilo en "faltan". No inventes precios, existencias ni medidas.
+Responde SOLO JSON: {"hook":"","objetivo":"educar|atraer|interactuar|vender","publico":"decoradoras|tiendas de fiestas|revendedores|clientes finales","formato":"reel|carrusel|story","producto_id":"","fotos_ids":[],"tema":"","guion":"","tomas":"","cta":"","por_que":"","diferencia":"en qué se distingue de la referencia","faltan":""}
+REFERENCIA: ${JSON.stringify({url:x.url,creador:x.creator,notas:x.notes,analisis:x.analysis||null})}
+CATÁLOGO: ${JSON.stringify(cat)}
+BIBLIOTECA: ${JSON.stringify(fotos)}`,{modelTier:"default",cache:false});
+        const pid=S.catalog.some(p=>p.id===r.producto_id)?r.producto_id:"";const mids=(r.fotos_ids||[]).filter(id=>S.media.some(m=>m.id===id));
+        const idea={id:uid(),hook:String(r.hook||""),objective:IDEA_OBJ.some(o=>o[0]===r.objetivo)?r.objetivo:"educar",audience:String(r.publico||"decoradoras"),format:TYPES.some(t=>t[0]===r.formato)?r.formato:"reel",productId:pid,mediaIds:mids,topic:String(r.tema||""),script:String(r.guion||""),shots:String(r.tomas||""),cta:String(r.cta||""),
+          why:String(r.por_que||""),evidence:x.analysis?`Análisis de la referencia (${fmtDT(x.analysis.at)}): ${x.analysis.hook}`:"",missing:[String(r.faltan||""),r.producto_id&&!pid?"El producto sugerido no está en el catálogo.":""].filter(Boolean).join(" "),notes:r.diferencia?"Diferencia con la referencia: "+r.diferencia:"",
+          refs:[{kind:"inspiracion",id:x.id,label:(x.creator||x.title||"Inspiración")+" · "+inspoCol(x),url:x.url}],status:"nueva",priority:"media",source:"Adaptación con Claude desde Inspiración",createdAt:nowISO()};
+        await saveDoc("ideabank",idea);(x.ideaIds=x.ideaIds||[]).push(idea.id);await save("Adaptada: idea “"+(idea.hook||idea.topic).slice(0,60)+"” en el banco")}
+      catch(e){s.textContent=(AI_ERR&&AI_ERR[e&&e.code])||"Claude no respondió ("+((e&&e.code)||"error")+")";bd.disabled=false}}})};
+
+/* Biblioteca de inspiración con búsqueda */
+async function inspoThumb(x){if(x.thumbRef){try{return await Store.url(x.thumbRef)}catch(e){return""}}return x.thumbUrl||""}
+function parseIgExport(json){const out=[];const seen=new Set();(function walk(n,ctx){if(!n)return;if(Array.isArray(n))return n.forEach(v=>walk(v,ctx));if(typeof n!=="object")return;
+  const title=typeof n.title==="string"?n.title:ctx;for(const[k,v]of Object.entries(n)){if(k==="href"&&typeof v==="string"&&/instagram\.com\/(p|reel|tv)\//.test(v)&&!seen.has(v)){seen.add(v);out.push({url:v,creator:title||""})}else walk(v,title)}})(json,"");return out}
+async function importInspo(list,source){let n=0,d=0;for(const u of list){const r=await inspoQuickSave({url:u.url.trim(),creator:u.creator?(u.creator.startsWith("@")?u.creator:"@"+u.creator):"",source});r.dup?d++:n++}return{n,d}}
+function colsDlg(){const cols=inspoCols();dlgOpen("Colecciones",`<p class="src">Cambia un nombre para renombrarla en todas sus fichas. Borra el texto de una fila para quitarla de la lista (las fichas conservan su colección).</p>
+  <div style="display:grid;gap:6px">${cols.map((c,i)=>`<input data-col="${i}" value="${esc(c)}">`).join("")}<input data-col="new" placeholder="Nueva colección"></div>`,async f=>{
+  const keep=[];for(const inp of $$("[data-col]",f)){const v=inp.value.trim();if(inp.dataset.col==="new"){if(v)keep.push(v);continue}const old=cols[+inp.dataset.col];if(!v)continue;keep.push(v);
+    if(v!==old)for(const x of S.inspo.filter(i=>inspoCol(i)===old)){x.collection=v;histAdd(x,`Colección renombrada: ${old} → ${v}`);await saveDoc("inspo",x)}}
+  const st=S.settings.find(s=>s.id==="inspo")||{id:"inspo"};st.collections=[...new Set(keep)];await saveDoc("settings",st);toast("Colecciones guardadas");route()})}
+VIEWS.inspiracion=main=>{const fl=S.inspoFilter=S.inspoFilter||{q:"",col:"",st:"",creator:"",tag:"",from:"",to:""};
+  const qn=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  const hay=x=>qn([x.title,x.notes,x.creator,x.url,inspoCol(x),(x.tags||[]).join(" "),x.analysis&&[x.analysis.hook,x.analysis.tecnica,x.analysis.estructura].join(" ")].join(" "));
+  const d=x=>String(x.savedAt||x.createdAt||"").slice(0,10);
+  const list=S.inspo.filter(x=>(!fl.q||hay(x).includes(qn(fl.q)))&&(!fl.col||inspoCol(x)===fl.col)&&(!fl.st?inspSt(x)!=="descartada":inspSt(x)===fl.st)&&(!fl.creator||x.creator===fl.creator)&&(!fl.tag||(x.tags||[]).includes(fl.tag))&&(!fl.from||d(x)>=fl.from)&&(!fl.to||d(x)<=fl.to)).sort((a,b)=>String(b.savedAt||b.createdAt).localeCompare(String(a.savedAt||a.createdAt)));
+  const creators=[...new Set(S.inspo.map(x=>x.creator).filter(Boolean))].sort(),tags=[...new Set(S.inspo.flatMap(x=>x.tags||[]))].sort();
+  main.innerHTML=head("Biblioteca de inspiración","Todo lo que guardas queda aquí aunque el enlace original cambie o desaparezca.",`<button id="in_cols">Colecciones</button><button id="in_imp">Importar</button><button id="in_add" class="primary">+ Guardar inspiración</button>`)+
+  `<div class="panel" style="padding:12px 14px;margin-bottom:12px"><div class="row flt"><input id="in_q" type="search" placeholder="Buscar palabra, creador, etiqueta…" value="${esc(fl.q)}" style="flex:2 1 240px"><select id="in_col"><option value="">Todas las colecciones</option>${optList(inspoCols(),fl.col)}</select><select id="in_st"><option value="">Activas (sin descartadas)</option>${optList(INSPO_ST,fl.st)}</select></div>
+   <div class="row flt" style="margin-top:8px"><select id="in_cr"><option value="">Todos los creadores</option>${optList(creators,fl.creator)}</select><select id="in_tag"><option value="">Todas las etiquetas</option>${optList(tags,fl.tag)}</select><label class="goal">Desde <input type="date" id="in_from" value="${esc(fl.from)}" style="width:auto"></label><label class="goal">Hasta <input type="date" id="in_to" value="${esc(fl.to)}" style="width:auto"></label><button id="in_clr">Limpiar</button><span class="src">${list.length} de ${S.inspo.length}</span></div></div>
+  <div class="masonry">${list.map(x=>`<article class="pin"><button class="ph" data-open-insp="${x.id}" data-th="${x.id}" style="width:100%;border:0;border-radius:0;padding:0;cursor:pointer"><span class="noimg">${esc(x.title||firstLine(x.notes).slice(0,60)||x.creator||label(INSPO_TYPES,x.type))}</span></button><div class="bd">
+   <div class="row" style="justify-content:space-between"><span class="chip">${esc(x.platform||platformOf(x.url)||"Propia")} · ${esc(label(INSPO_TYPES,x.type))}</span><span class="chip st-${inspSt(x)}">${esc(label(INSPO_ST,inspSt(x)))}</span></div>
+   <b>${esc(x.title||x.creator||"Inspiración")}</b><div class="src">${esc(x.creator||"")} · ${esc(inspoCol(x))} · ${fmtDT(x.savedAt||x.createdAt)} ${linkA(x.url,"original")}</div>
+   ${x.analysis?`<div class="src">Hook: “${esc(String(x.analysis.hook).slice(0,80))}”</div>`:""}${(x.tags||[]).length?`<div class="tags">${x.tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
+   <div class="row"><button data-open-insp="${x.id}" class="primary">Abrir ficha</button></div></div></article>`).join("")||`<div class="empty">Sin resultados.</div>`}</div>
+  <section class="panel" style="margin-top:16px"><h2>Guardar desde el iPhone</h2><p class="src">iOS no permite que una página web (ni un Artifact) aparezca en el menú Compartir. Hoy: en Instagram toca Compartir › Copiar enlace, abre Content HQ y pulsa «+ Guardar inspiración»; el campo del enlace es lo primero que aparece. Un atajo de Apple Shortcuts que abra Content HQ queda por probar en tu iPhone antes de recomendarlo.</p></section>`;
+  $$("[data-th]",main).forEach(el=>{const x=S.inspo.find(i=>i.id===el.dataset.th);inspoThumb(x).then(u=>{if(u)el.innerHTML=thumbImg(u,x.title||"")})});
+  const set=(k,v)=>{fl[k]=v;route()};
+  let qt;$("#in_q",main).oninput=e=>{clearTimeout(qt);qt=setTimeout(()=>{fl.q=e.target.value;route();const q=$("#in_q");if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}},350)};
+  $("#in_col",main).onchange=e=>set("col",e.target.value);$("#in_st",main).onchange=e=>set("st",e.target.value);$("#in_cr",main).onchange=e=>set("creator",e.target.value);$("#in_tag",main).onchange=e=>set("tag",e.target.value);
+  $("#in_from",main).onchange=e=>set("from",e.target.value);$("#in_to",main).onchange=e=>set("to",e.target.value);$("#in_clr",main).onclick=()=>{S.inspoFilter=null;route()};
+  $("#in_add",main).onclick=()=>quickSaveDlg();$("#in_cols",main).onclick=colsDlg;
+  $$("[data-open-insp]",main).forEach(b=>b.onclick=()=>{S.inspId=b.dataset.openInsp;location.hash="#insp"});
+  $("#in_imp",main).onclick=()=>dlgOpen("Importar inspiración",`<label>Enlaces (uno por línea)<textarea name="links" rows="6" placeholder="https://www.instagram.com/reel/…"></textarea></label><label>o archivo de exportación de Instagram (saved_posts.json)<input name="file" type="file" accept=".json,application/json"></label><p class="src">Los enlaces repetidos se omiten.</p>`,async f=>{
+    let urls=fv(f,"links").split(/\s+/).filter(u=>/^https?:\/\//.test(u)).map(url=>({url}));const file=f.elements.file.files[0];
+    if(file){try{urls=urls.concat(parseIgExport(JSON.parse(await file.text())))}catch(e){toast("El archivo no es un JSON válido");return false}}
+    const r=await importInspo(urls,file?"Exportación de Instagram":"Enlaces pegados");toast(`${r.n} nuevas · ${r.d} repetidas omitidas`);route()},{saveLabel:"Importar"})};
+
+/* ================= Investigador semanal con IA ================= */
+const MC_FB_POST=["FBPO02","FBPO03","FBPO05","FBPO06","FBPO07","FBPO08","FBPO09","FBPO12","FBPO13","FBPO14","FBPO23"];
+const MC_FB_REEL=["FBRE02","FBRE05","FBRE04","FBRE06","FBRE07","FBRE08","FBRE10","FBRE11","FBRE13"];
+async function mcRefreshFB(status,days=120){const b=await mcBrand();const to=today(),from=addD(to,-days);const q=m=>mcCall("getAnalyticsDataByMetrics",{brandId:b.id,from:mcD(from),to:mcD(to,true),metrics:m});
+  status&&(status.textContent="Consultando Facebook…");
+  const posts=mcRows(await q(MC_FB_POST)).map(r=>({id:r[3],date:tsISO(r[0]),caption:r[1]||"",img:r[2]||"",url:r[3],ptype:r[4]||"",comments:N(r[5])||0,linkClicks:N(r[6])||0,reach:N(r[7])||0,reactions:N(r[8])||0,shares:N(r[9])||0,clicks:N(r[10])||0,kind:"post"}));
+  const reels=mcRows(await q(MC_FB_REEL)).map(r=>({id:r[3],date:tsISO(r[0]),caption:r[1]||"",img:r[2]||"",url:r[3],actions:N(r[4])||0,likes:N(r[5])||0,views:N(r[6])||0,reach:N(r[7])||0,avgWatch:N(r[8]),kind:"reel"}));
+  const doc={id:"fb-"+to,network:"facebook",account:b.fb,brand:b.label,source:"Metricool · getAnalyticsDataByMetrics",fetchedAt:nowISO(),from,to,posts,reels,note:"Metricool devuelve alcance 0 en los Reels de Facebook de esta página; para Reels se usan reproducciones."};
+  await saveDoc("metrics",doc);return doc}
+const latestFB=()=>[...S.metrics].filter(m=>m.network==="facebook").sort((a,b)=>String(b.fetchedAt).localeCompare(String(a.fetchedAt)))[0]||null;
+const rsCfg=()=>S.settings.find(s=>s.id==="researcher")||{id:"researcher",day:1,hour:"08:00",freq:"semanal",tz:"America/Mexico_City",schedule:"no_activa"};
+const DIAS_L=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const mondayOf=s=>{const d=parseD(s);const k=(d.getDay()+6)%7;d.setDate(d.getDate()-k);return isoD(d)};
+function reportKpis(){const ig=latestSnap(),fb=latestFB();const cs=contentsOf(ig).filter(c=>c.reach>0);const t=today();
+  const in90=cs.filter(c=>String(c.date).slice(0,10)>=addD(t,-90));const reels90=in90.filter(c=>c.kind==="reel");
+  return{ig28:cs.filter(c=>String(c.date).slice(0,10)>=addD(t,-28)).length,ig90:in90.length,reelMed90:med(reels90.map(c=>c.reach)),nReels90:reels90.length,saveMed90:med(in90.map(c=>c.saves+c.shares)),
+    fbPostMed:fb?med((fb.posts||[]).map(p=>p.reach).filter(v=>v>0)):null,fbReelViewsMed:fb?med((fb.reels||[]).map(r=>r.views)):null,followers:ig&&(ig.daily||[]).length?ig.daily[ig.daily.length-1].followers:null}}
+function buildReportBase(){const ig=latestSnap(),fb=latestFB();const cs=contentsOf(ig).filter(c=>c.reach>0);const t=today();const refs=[];const notes=[];
+  // 1 · competencia (Metricool): piezas que superan su propio desempeño habitual
+  const mon=S.competitors.filter(c=>c.monitor);
+  for(const c of mon){const items=(c.metricool&&c.metricool.items)||[];if(items.length<5)continue;const m=med(items.map(p=>p.interactions||0));if(!m)continue;
+    items.filter(p=>(p.interactions||0)>=2*m).forEach(p=>refs.push({kind:"competencia",account:"@"+c.handle,url:p.url,date:p.date,format:p.kind,hook:firstLine(p.caption).slice(0,120),
+      metric:`${nf(p.interactions)} interacciones = ${nf(p.interactions/m)}× su mediana (${nf(m)}, ${items.length} piezas)`,multiple:p.interactions/m,source:`Metricool, ${fmtDT(c.metricool.fetchedAt)}`}))}
+  // 2 · observaciones manuales de cuentas monitoreadas (sin cálculo, con su fuente)
+  for(const c of mon)(c.observations||[]).filter(o=>o.url&&o.date>=addD(t,-45)).forEach(o=>refs.push({kind:"observación",account:"@"+c.handle,url:o.url,date:o.date,format:o.format,hook:o.hook,metric:o.metrics||"Sin métricas registradas",multiple:0,source:o.metricsSource||"Observación manual"}));
+  // 3 · propias que superan la mediana de la cuenta
+  const mR=med(cs.map(c=>c.reach));if(cs.length>=5&&mR)cs.filter(c=>c.reach>=2*mR).forEach(c=>refs.push({kind:"propia",account:"@"+(ig.account||"balloonstoremx"),url:c.url,date:c.date,format:fmtOf(c),hook:firstLine(c.caption).slice(0,120),
+    metric:`alcance ${nf(c.reach)} = ${nf(c.reach/mR)}× tu mediana (${nf(mR)})${credited(c)?" · contenido de terceros":""}`,multiple:c.reach/mR,source:`Metricool, ${fmtDT(ig.fetchedAt)}`}));
+  const fbR=fb?(fb.reels||[]):[];const mV=med(fbR.map(r=>r.views));if(fbR.length>=5&&mV)fbR.filter(r=>r.views>=2*mV).forEach(r=>refs.push({kind:"propia",account:"Facebook de Balloon Store",url:r.url,date:r.date,format:"Reel de Facebook",hook:firstLine(r.caption).slice(0,120),metric:`${nf(r.views)} reproducciones = ${nf(r.views/mV)}× tu mediana en Facebook (${nf(mV)})`,multiple:r.views/mV,source:`Metricool, ${fmtDT(fb.fetchedAt)}`}));
+  // 4 · inspiraciones por analizar o adaptar
+  S.inspo.filter(x=>x.url&&["por_analizar","adaptar"].includes(inspSt(x))).forEach(x=>refs.push({kind:"inspiración",account:x.creator||x.platform||"",url:x.url,date:String(x.savedAt||x.createdAt).slice(0,10),format:label(INSPO_TYPES,x.type),hook:x.analysis?x.analysis.hook:x.title||"",metric:"Sin métricas verificadas",multiple:0,source:"Tu biblioteca de inspiración"}));
+  // mezcla: externas primero, luego hasta 4 propias de Instagram y 2 de Facebook; si sobran lugares, se completan con lo que haya
+  const seen=new Set();const uniq=refs.filter(r=>{const k=normUrl(r.url);if(!k||seen.has(k))return false;seen.add(k);return true});
+  const by=k=>uniq.filter(r=>r.kind===k).sort((a,b)=>b.multiple-a.multiple);const ownIG=by("propia").filter(r=>r.account.startsWith("@")),ownFB=by("propia").filter(r=>!r.account.startsWith("@"));
+  let top=[...by("competencia"),...by("observación"),...by("inspiración").slice(0,3),...ownIG.slice(0,4),...ownFB.slice(0,2)];
+  top=[...top,...uniq.filter(r=>!top.includes(r)).sort((a,b)=>b.multiple-a.multiple)].slice(0,10);
+  if(top.length<10)notes.push(`Solo hay ${top.length} referencia(s) con enlace y evidencia.`);
+  if(!S.competitors.some(c=>c.monitor&&c.metricool))notes.push("Sin métricas de competidores: Metricool no tiene competidores configurados (o no están marcados para monitorear). Las referencias externas vienen de tus observaciones e inspiraciones, sin métricas verificadas.");
+  if(!mon.length)notes.push("No hay cuentas marcadas para monitorear.");
+  // diagnóstico y metas
+  const d=diagnose(ig);const k=reportKpis();const goals=[];
+  const perWeek=k.ig28/4;goals.push({title:`Publicar al menos ${Math.max(3,Math.ceil(perWeek))} piezas en Instagram esta semana`,baseline:`Últimas 4 semanas: ${k.ig28} pieza${k.ig28===1?"":"s"} (${nf(perWeek)} por semana)`,measure:"Conteo de Reels y publicaciones en Metricool del lunes al domingo",source:ig?`Metricool, ${fmtDT(ig.fetchedAt)}`:"Sin datos"});
+  if(k.reelMed90!=null)goals.push({title:`Alcance mediano por Reel de ${nf(Math.round(k.reelMed90*1.1))} personas o más`,baseline:`Mediana de los últimos 90 días: ${nf(k.reelMed90)} (${k.nReels90} Reels)`,measure:"Mediana del alcance de los Reels publicados esta semana",source:`Metricool, ${fmtDT(ig.fetchedAt)}`});
+  if(k.saveMed90!=null)goals.push({title:`Promedio de ${nf(Math.max(k.saveMed90+1,Math.ceil(k.saveMed90*1.25)))} guardados + compartidos por pieza`,baseline:`Mediana de los últimos 90 días: ${nf(k.saveMed90)} por pieza`,measure:"Promedio de guardados + compartidos de las piezas de la semana",source:`Metricool, ${fmtDT(ig.fetchedAt)}`});
+  const fbSum=fb?{fetchedAt:fb.fetchedAt,posts:(fb.posts||[]).length,reels:fbR.length,postReachMed:k.fbPostMed,reelViewsMed:k.fbReelViewsMed,linkClicks:(fb.posts||[]).reduce((s,p)=>s+(p.linkClicks||0),0),note:fb.note||""}:null;
+  const missing=[...d.missing];if(!fb)missing.push("Facebook: todavía no hay datos guardados.");if(!S.competitors.some(c=>c.metricool))missing.push("Competencia: Metricool no devolvió competidores; las referencias externas dependen de tus observaciones.");
+  const wed=addD(mondayOf(t),t>=addD(mondayOf(t),2)?9:2);
+  return{refs:top,refNotes:notes,bien:d.bien.map(f=>({title:f.title,detail:f.detail,conf:f.conf,evidence:f.evidence})),mejorar:[...d.mejorar,...d.debil].map(f=>({title:f.title,detail:f.detail,conf:f.conf,evidence:f.evidence})),
+    goals:goals.slice(0,3),fb:fbSum,kpis:k,missing,wednesday:wed,weekOf:addD(wed,-2),sources:{ig:ig?{fetchedAt:ig.fetchedAt,n:cs.length}:null,fb:fb?{fetchedAt:fb.fetchedAt}:null,competitors:{monitored:mon.length,withMetricool:mon.filter(c=>c.metricool).length}}}}
+function reportPrompt(base){const cat=S.catalog.map(p=>({id:p.id,titulo:p.title,tipo:p.type||""}));
+  return`Eres estratega de contenido de Balloon Store (distribuidor de globos en México: Anagram, Kaleidoscope y látex Sensacional; público: decoradoras, tiendas de fiestas y revendedores).
+Con SOLO los datos de abajo, prepara la semana del ${fmtDT(base.weekOf)}.
+Reglas: no inventes métricas ni resultados; adapta, no copies hooks ni textos de otras cuentas; usa productos del CATÁLOGO por id; español de México; cada idea cita al menos una URL de REFERENCIAS si existe.
+Responde SOLO JSON: {"ideas":[{"hook":"","objetivo":"educar|atraer|interactuar|vender","publico":"","formato":"reel|carrusel|story","producto_id":"","tema":"","guion":"","tomas":"","cta":"","por_que":"","ref_urls":[]}],"hooks":[{"texto":"","tipo":"","basado_en":""}],"plan_miercoles":{"fecha":"${base.wednesday}","duracion_min":90,"bloques":[{"nombre":"","minutos":0,"tomas":[{"desc":"","para":""}]}],"materiales":[""],"notas":""}}
+Exactamente 5 ideas y 10 hooks. El plan del miércoles graba lo necesario para las ideas en video, priorizado y realista.
+REFERENCIAS: ${JSON.stringify(base.refs.map(r=>({url:r.url,cuenta:r.account,formato:r.format,hook:r.hook,dato:r.metric})))}
+LO QUE FUNCIONA: ${JSON.stringify(base.bien.map(f=>f.title+": "+f.detail))}
+POR MEJORAR: ${JSON.stringify(base.mejorar.map(f=>f.title))}
+METAS: ${JSON.stringify(base.goals.map(g=>g.title))}
+CATÁLOGO: ${JSON.stringify(cat)}`}
+function normAI(r){const ideas=(r&&r.ideas||[]).slice(0,5).map(g=>({hook:String(g.hook||""),objective:IDEA_OBJ.some(o=>o[0]===g.objetivo)?g.objetivo:"educar",audience:String(g.publico||"decoradoras"),format:TYPES.some(t=>t[0]===g.formato)?g.formato:"reel",productId:S.catalog.some(p=>p.id===g.producto_id)?g.producto_id:"",topic:String(g.tema||""),script:String(g.guion||""),shots:String(g.tomas||""),cta:String(g.cta||""),why:String(g.por_que||""),refUrls:(g.ref_urls||[]).map(String)}));
+  const hooks=(r&&r.hooks||[]).slice(0,10).map(h=>({text:String(h.texto||h.text||h||""),type:String(h.tipo||""),basedOn:String(h.basado_en||"")}));const pm=(r&&r.plan_miercoles)||null;return{ideas,hooks,plan:pm}}
+async function runResearch(st){const errors=[];const say=t=>{if(st)st.textContent=t};
+  const mcp=await getMcp();if(!mcp)errors.push("Metricool: esta vista no puede consultarlo (ábrela como Artifact en claude.ai). Se usan los últimos datos guardados.");
+  else{try{await mcRefresh(st)}catch(e){errors.push("Instagram: "+mcErr(e)+" Se usan los últimos datos guardados.")}
+    try{await mcRefreshFB(st)}catch(e){errors.push("Facebook: "+mcErr(e))}
+    try{const r=await mcCompetitors(st);if(!r.accounts)errors.push("Competencia: Metricool no tiene competidores configurados en tu marca.")}catch(e){errors.push("Competencia: "+mcErr(e))}}
+  say("Calculando referencias, metas y diagnóstico…");const base=buildReportBase();
+  let ai=null,aiNote="";const smp=await getSample();
+  if(smp){say("Claude está preparando ideas, hooks y plan de grabación…");try{ai=normAI(await smp.json(reportPrompt(base),{modelTier:"default",cache:false}));aiNote="Ideas, hooks y plan generados por Claude solo con los datos de este informe."}catch(e){errors.push("Claude: "+((AI_ERR&&AI_ERR[e&&e.code])||"no respondió ("+((e&&e.code)||"error")+")"))}}
+  else errors.push("Claude no está disponible en esta vista: el informe no incluye ideas, hooks ni plan de grabación.");
+  const id="rep-"+nowISO().slice(0,19).replace(/[-:T]/g,"")+"-"+uid().slice(-4);const rep={id,createdAt:nowISO(),trigger:"Manual · botón «Investigar ahora»",...base,ai,aiNote,errors,approved:[]};
+  await saveDoc("reports",rep);return rep}
+function reportHTML(r,prev){const k=r.kpis||{},p=prev&&prev.kpis||{};const dl=(a,b,f=nf)=>a==null?"—":`${f(a)}${b!=null?` <span class="src">(antes ${f(b)})</span>`:""}`;
+  return`<article class="panel report" style="display:grid;gap:16px">
+  <div class="row" style="justify-content:space-between"><div><div class="eyebrow">Informe · semana del ${fmtDT(r.weekOf)}</div><h2>${fmtDT(r.createdAt)} · ${esc(r.trigger)}</h2></div></div>
+  <p class="src">Fuentes: Instagram ${r.sources.ig?`(${r.sources.ig.n} piezas, consultado ${fmtDT(r.sources.ig.fetchedAt)})`:"sin datos"} · Facebook ${r.sources.fb?`(consultado ${fmtDT(r.sources.fb.fetchedAt)})`:"sin datos"} · competencia: ${r.sources.competitors.monitored} monitoreada(s), ${r.sources.competitors.withMetricool} con datos de Metricool.</p>
+  ${(r.errors||[]).length?`<div class="err">${r.errors.map(esc).join("<br>")}</div>`:""}
+  <section><h3>Indicadores</h3><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+   <div class="stat"><b>${dl(k.ig28,p.ig28)}</b><span class="src">piezas IG en 28 días</span></div><div class="stat"><b>${dl(k.reelMed90,p.reelMed90)}</b><span class="src">alcance mediano por Reel (90 días)</span></div>
+   <div class="stat"><b>${dl(k.saveMed90,p.saveMed90)}</b><span class="src">guardados + compartidos por pieza</span></div><div class="stat"><b>${dl(k.fbPostMed,p.fbPostMed)}</b><span class="src">alcance mediano por publicación FB</span></div><div class="stat"><b>${dl(k.fbReelViewsMed,p.fbReelViewsMed)}</b><span class="src">reproducciones medianas por Reel FB</span></div></div></section>
+  <section><h3>10 publicaciones de referencia (${r.refs.length})</h3>${r.refs.length?`<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>Cuenta</th><th>Pieza</th><th>Por qué destaca</th><th></th></tr></thead><tbody>${r.refs.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.account)}<br><span class="src">${esc(x.kind)}</span></td><td>${esc(x.format||"")} · ${fmtDT(x.date)}<br>${x.hook?`“${esc(x.hook)}” `:""}${linkA(x.url,"original")}</td><td>${esc(x.metric)}<br><span class="src">${esc(x.source)}</span></td><td><button data-rinsp="${i}">A inspiración</button></td></tr>`).join("")}</tbody></table></div>`:""}${(r.refNotes||[]).map(n=>`<p class="src">${esc(n)}</p>`).join("")}</section>
+  <section><h3>5 ideas adaptadas</h3>${r.ai&&r.ai.ideas.length?`<div class="bank">${r.ai.ideas.map((g,i)=>{const done=(r.approved||[]).includes(i);const pr=catById(g.productId);return`<div class="icard"><div class="hook">${esc(g.hook)}</div><dl class="kv"><dt>Objetivo</dt><dd>${esc(label(IDEA_OBJ,g.objective))}</dd><dt>Formato</dt><dd>${esc(label(TYPES,g.format))}</dd><dt>Producto</dt><dd>${pr?esc(pr.title):"—"}</dd></dl><p style="margin:0;font-size:.8rem">${esc(g.why)}</p>${g.refUrls.length?`<div class="src">Referencias: ${g.refUrls.map(u=>linkA(u,"ver")).join(" · ")}</div>`:""}<div class="row">${done?`<span class="chip s-terminado">En el banco ✓</span>`:`<button class="primary" data-rapp="${i}">Aprobar y enviar al banco</button>`}</div></div>`}).join("")}</div><p class="src">${esc(r.aiNote||"")}</p>`:`<p class="src">No disponible en este informe.</p>`}</section>
+  <section><h3>10 hooks</h3>${r.ai&&r.ai.hooks.length?`<ol class="hooks">${r.ai.hooks.map(h=>`<li>${esc(h.text)}${h.type?` <span class="src">· ${esc(h.type)}</span>`:""}${h.basedOn?`<br><span class="src">Basado en: ${esc(h.basedOn)}</span>`:""}</li>`).join("")}</ol>`:`<p class="src">No disponible en este informe.</p>`}</section>
+  <section><h3>3 metas de la semana</h3><ol>${r.goals.map(g=>`<li><b>${esc(g.title)}</b><br><span class="src">Base: ${esc(g.baseline)} · Cómo se mide: ${esc(g.measure)} · ${esc(g.source)}</span></li>`).join("")}</ol></section>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"><section><h3>Qué estamos haciendo bien</h3><ul>${r.bien.map(f=>`<li><b>${esc(f.title)}</b> <span class="conf ${f.conf}">${f.conf}</span><br><span class="src">${esc(f.detail)}</span></li>`).join("")||"<li>Sin datos suficientes.</li>"}</ul></section>
+   <section><h3>Qué necesitamos mejorar</h3><ul>${r.mejorar.map(f=>`<li><b>${esc(f.title)}</b> <span class="conf ${f.conf}">${f.conf}</span><br><span class="src">${esc(f.detail)}</span></li>`).join("")||"<li>Sin datos suficientes.</li>"}</ul></section></div>
+  ${r.fb?`<section><h3>Facebook</h3><p class="src">${r.fb.posts} publicaciones y ${r.fb.reels} Reels en el periodo · alcance mediano por publicación ${nf(r.fb.postReachMed)} · reproducciones medianas por Reel ${nf(r.fb.reelViewsMed)} · clics en enlaces ${nf(r.fb.linkClicks)}. ${esc(r.fb.note||"")}</p></section>`:""}
+  <section><h3>Plan de grabación · miércoles ${fmtDT(r.wednesday)}</h3>${r.ai&&r.ai.plan?`<p class="src">${nf(r.ai.plan.duracion_min)} minutos · ${esc(r.ai.plan.notas||"")}</p>${(r.ai.plan.bloques||[]).map(b=>`<div class="station"><b>${esc(b.nombre)}</b>${b.minutos?` <span class="chip">${nf(b.minutos)} min</span>`:""}<ul class="ev">${(b.tomas||[]).map(t=>`<li>${esc(t.desc)}${t.para?` <span class="src">→ ${esc(t.para)}</span>`:""}</li>`).join("")}</ul></div>`).join("")}${(r.ai.plan.materiales||[]).length?`<p class="src">Materiales: ${r.ai.plan.materiales.map(esc).join(" · ")}</p>`:""}`:`<p class="src">No disponible en este informe.</p>`}</section>
+  <section><h3>Datos faltantes</h3><ul class="src">${(r.missing||[]).map(m=>`<li>${esc(m)}</li>`).join("")}</ul></section></article>`}
+VIEWS.semanal=main=>{const cfg=rsCfg();const reps=[...S.reports].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));const cur=reps.find(r=>r.id===S.repId)||reps[0];const prev=cur?reps[reps.indexOf(cur)+1]:null;
+  const auto=reps.find(r=>r.scheduled===true);
+  main.innerHTML=head("Investigador semanal","Cada informe reúne competencia, tus resultados de Instagram y Facebook, ideas, hooks, metas y el plan de grabación del miércoles.",`<button id="rs_go" class="primary">Investigar ahora</button>`)+`<p class="src" id="rs_st"></p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-bottom:16px">
+   <section class="panel"><h2>Cuentas que monitoreo</h2><div style="display:grid;gap:4px;margin-top:8px">${S.competitors.map(c=>`<label class="chk"><input type="checkbox" data-mon="${c.id}" ${c.monitor?"checked":""} style="width:auto"> @${esc(c.handle)} <span class="src">${esc(label(COMP_CATS,c.category))}${c.metricool?" · con datos de Metricool":""}</span></label>`).join("")||`<p class="src">Agrega cuentas en <a href="#competencia">Competencia</a>.</p>`}</div>
+    <p class="src">Las métricas públicas de otras cuentas solo llegan por Metricool (sección Competidores). Sin eso, el informe usa tus observaciones con su fuente.</p></section>
+   <section class="panel"><h2>Programación</h2><div class="grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:8px"><label>Día<select id="rs_day">${DIAS_L.map((d,i)=>`<option value="${i}" ${+cfg.day===i?"selected":""}>${d}</option>`).join("")}</select></label><label>Hora<input id="rs_hour" type="time" value="${esc(cfg.hour)}"></label><label>Frecuencia<select id="rs_freq">${optList([["semanal","Semanal"],["quincenal","Cada 2 semanas"],["mensual","Mensual"]],cfg.freq)}</select></label></div>
+    <div class="err" style="margin-top:10px;background:var(--yellowsoft);color:#5E4C00;border-color:#F2E08A"><b>Estado: ${cfg.schedule==="activa"?"activa":"no activada"}.</b> Esta página no puede ejecutarse sola en segundo plano. El servicio comprobado para hacerlo es una <b>tarea programada de Claude Code</b> (claude.ai/code): a la hora elegida abre una sesión en la nube, consulta Metricool con tu conector y guarda el informe aquí. Se activa solo con tu autorización.${auto?` Último informe automático: ${fmtDT(auto.createdAt)}.`:" Aún no hay informes automáticos."}</div></section></div>
+  ${cur?reportHTML(cur,prev):`<div class="empty">Todavía no hay informes. Pulsa «Investigar ahora».</div>`}
+  ${reps.length?`<section class="panel" style="margin-top:16px"><h2>Historial de informes</h2><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Fecha</th><th>Origen</th><th>Referencias</th><th>Piezas IG 28 d</th><th>Alcance mediano Reel</th><th>Ideas aprobadas</th><th></th></tr></thead><tbody>${reps.map(r=>`<tr${r===cur?' style="background:var(--focus)"':""}><td>${fmtDT(r.createdAt)}</td><td>${esc(r.trigger)}</td><td class="n">${r.refs.length}</td><td class="n">${nf(r.kpis&&r.kpis.ig28)}</td><td class="n">${nf(r.kpis&&r.kpis.reelMed90)}</td><td class="n">${(r.approved||[]).length}</td><td><button data-rep="${r.id}">Ver</button></td></tr>`).join("")}</tbody></table></div></section>`:""}`;
+  $$("[data-mon]",main).forEach(c=>c.onchange=async()=>{const x=S.competitors.find(k=>k.id===c.dataset.mon);x.monitor=c.checked;await saveDoc("competitors",x);toast(c.checked?"Se monitoreará @"+x.handle:"Ya no se monitorea @"+x.handle)});
+  const saveCfg=async()=>{const c=rsCfg();c.day=+$("#rs_day",main).value;c.hour=$("#rs_hour",main).value;c.freq=$("#rs_freq",main).value;await saveDoc("settings",c);toast("Preferencia guardada (la tarea automática no está activa)")};
+  ["rs_day","rs_hour","rs_freq"].forEach(id=>$("#"+id,main).onchange=saveCfg);
+  $$("[data-rep]",main).forEach(b=>b.onclick=()=>{S.repId=b.dataset.rep;route()});
+  $("#rs_go",main).onclick=async e=>{e.target.disabled=true;const st=$("#rs_st",main);try{const r=await runResearch(st);S.repId=r.id;toast("Informe guardado");route()}catch(err){st.textContent="No se pudo completar: "+(err.message||err.code||err)}finally{e.target.disabled=false}};
+  if(!cur)return;
+  $$("[data-rinsp]",main).forEach(b=>b.onclick=async()=>{const x=cur.refs[+b.dataset.rinsp];const r=await inspoQuickSave({url:x.url,creator:x.account.startsWith("@")?x.account:"",collection:"Por investigar",notes:`${x.hook?"Hook: "+x.hook+"\n":""}Dato: ${x.metric} (${x.source})`,status:"por_analizar",source:"Investigador semanal "+fmtDT(cur.createdAt)});toast(r.dup?"Ya estaba en Inspiración":"Guardada en Inspiración")});
+  $$("[data-rapp]",main).forEach(b=>b.onclick=async()=>{const i=+b.dataset.rapp;const g=cur.ai.ideas[i];
+    await saveDoc("ideabank",{id:uid(),hook:g.hook,objective:g.objective,audience:g.audience,format:g.format,productId:g.productId,topic:g.topic,script:g.script,shots:g.shots,cta:g.cta,why:g.why,evidence:`Informe semanal del ${fmtDT(cur.createdAt)}`,missing:"",refs:g.refUrls.map(u=>({kind:"referencia",label:"Referencia del informe semanal",url:u})),status:"aprobada",priority:"media",approvedAt:nowISO(),source:"Investigador semanal",reportId:cur.id,createdAt:nowISO()});
+    cur.approved=[...(cur.approved||[]),i];await saveDoc("reports",cur);toast("Idea aprobada y enviada al banco");route()})};
+
 /* ================= Boot ================= */
 (async()=>{
-  try{await Store.init();const d=await Store.load();S.items=d.items.map(x=>newItem(x));S.media=d.media;S.campaigns=d.campaigns||[];S.series=d.series||[];S.catalog=d.catalog||[];S.weeks=d.weeks||[];S.requests=d.requests||[];S.competitors=d.competitors||[];S.inspo=d.inspo||[];S.ideabank=d.ideabank||[];S.metrics=d.metrics||[];S.learnings=d.learnings||[];S.plans=d.plans||[];
+  try{await Store.init();const d=await Store.load();S.items=d.items.map(x=>newItem(x));S.media=d.media;S.campaigns=d.campaigns||[];S.series=d.series||[];S.catalog=d.catalog||[];S.weeks=d.weeks||[];S.requests=d.requests||[];S.competitors=d.competitors||[];S.inspo=d.inspo||[];S.ideabank=d.ideabank||[];S.metrics=d.metrics||[];S.learnings=d.learnings||[];S.plans=d.plans||[];S.settings=d.settings||[];S.reports=d.reports||[];
     $("#storageInfo").innerHTML=Store.mode==="cloud"?'<span class="lg">Guardado en </span>la nube de Claude':'<span class="lg">Guardado en </span>este navegador';}
   catch(e){$("#view").innerHTML=`<div class="err">${esc(e.message||e)}</div>`;return}
-  route();
+  route();$("#qsave").onclick=()=>quickSaveDlg();
 })();
 </script>

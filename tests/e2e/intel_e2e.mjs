@@ -13,6 +13,20 @@ const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++
 const errs = [];
 const b = await chromium.launch();
 const ctx = await b.newContext({ viewport: { width: 1360, height: 900 }, acceptDownloads: true });
+// Simulador de la capacidad «sample» (Claude) del runtime de claude.ai: devuelve respuestas fijas y registra los prompts.
+await ctx.addInitScript(() => {
+  window.__prompts = [];
+  const smp = async () => ({ text: "Resumen de prueba" });
+  smp.limits = async () => ({ images: true });
+  smp.json = async (prompt, opts) => {
+    window.__prompts.push({ prompt, images: !!(opts && opts.images && opts.images.length) });
+    if (prompt.startsWith("Analiza una inspiración")) return { hook: "Mira cómo queda", estructura: "Resultado, proceso, cierre", tecnica: "Time-lapse", utilidad: "Enseña montaje", observaciones: ["Se ve una mesa decorada"], suposiciones: ["Probablemente usa música en tendencia"], confianza: "media", falta: "Métricas" };
+    if (prompt.startsWith("Crea UNA idea")) return { hook: "Tu mesa en 3 pasos", objetivo: "educar", publico: "decoradoras", formato: "reel", producto_id: "no-existe", fotos_ids: [], tema: "Montaje", guion: "1. Resultado 2. Pasos", tomas: "Mesa vacía; mesa terminada", cta: "Guárdalo", por_que: "Tutorial útil", diferencia: "Usa nuestro producto", faltan: "Foto de mesa real" };
+    if (prompt.includes("prepara la semana")) return { ideas: Array.from({ length: 5 }, (_, i) => ({ hook: "Idea semanal " + (i + 1), objetivo: "atraer", publico: "decoradoras", formato: "reel", producto_id: "", tema: "Tema", guion: "Guion", tomas: "Tomas", cta: "CTA", por_que: "Por qué", ref_urls: [] })), hooks: Array.from({ length: 10 }, (_, i) => ({ texto: "Hook " + (i + 1), tipo: "Pregunta", basado_en: "Referencia" })), plan_miercoles: { fecha: "", duracion_min: 90, bloques: [{ nombre: "Mesa", minutos: 30, tomas: [{ desc: "Toma 1", para: "Idea 1" }] }], materiales: ["Tripié"], notas: "Prueba" } };
+    return {};
+  };
+  window.claude = { use: async n => (n === "sample" ? smp : null) };
+});
 const page = await ctx.newPage();
 page.on("pageerror", e => errs.push(e.message));
 await page.goto(BASE + "#respaldo"); await page.waitForSelector("#bk_in", { state: "attached" });
@@ -36,12 +50,37 @@ await page.goto(BASE + "#competencia"); await page.waitForTimeout(400);
 await page.click("#cp_add"); await page.fill("input[name=handle]", "@cuenta.prueba"); await page.fill("input[name=fol]", "1200"); await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(400);
 await page.locator("[data-cobs]").first().click(); await page.fill("input[name=url]", "https://www.instagram.com/reel/PRUEBA/"); await page.fill("input[name=hook]", "Mira esto"); await page.fill("textarea[name=adapt]", "Mostrar el resultado primero"); await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(400);
 ok(/Mira esto/.test(await page.locator("main").innerText()), "Competencia: observación con hook y enlace");
-// inspiración con captura → idea
-await page.goto(BASE + "#inspiracion"); await page.waitForTimeout(400);
-await page.click("#in_add"); await page.fill("input[name=url]", "https://www.instagram.com/reel/INSP/"); await page.fill("input[name=title]", "Referencia de mesa"); await page.setInputFiles("input[name=file]", path.join(FIX, "photo.png"));
-await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(800);
-ok(await page.locator(".pin img").count() >= 1, "Inspiración con miniatura propia");
-await page.locator(".pin", { hasText: "Referencia de mesa" }).locator("[data-iidea]").click(); await page.waitForTimeout(300);
+// Guardar inspiración: botón global, captura, sin duplicados, analizar, adaptar, búsqueda
+await page.goto(BASE + "#hoy"); await page.waitForTimeout(400);
+ok(await page.locator("#qsave").isVisible(), "Botón «+ Guardar inspiración» visible en el dashboard");
+await page.click("#qsave"); await page.fill("input[name=url]", "https://www.instagram.com/decomesas/reel/INSP/?igsh=abc123");
+ok(/Instagram · @decomesas · Reel/.test(await page.locator("#qs_det").innerText()), "Detecta plataforma, creador y tipo");
+await page.selectOption("select[name=collection]", "Decoraciones"); await page.fill("input[name=tags]", "mesa, montaje"); await page.fill("textarea[name=notes]", "Referencia de mesa");
+await page.setInputFiles("input[name=file]", path.join(FIX, "photo.png"));
+await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(1000);
+ok(page.url().endsWith("#insp") && await page.locator("#ix_th img").count() === 1, "Guardada al instante con captura propia");
+const n0 = await page.evaluate(() => S.inspo.length);
+await page.click("#qsave"); await page.fill("input[name=url]", "https://instagram.com/reel/INSP?utm_source=ig_web_copy_link");
+ok(/Ya guardaste este enlace/.test(await page.locator("#qs_det").innerText()), "Avisa de enlace duplicado antes de guardar");
+await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(600);
+ok(await page.evaluate(() => S.inspo.length) === n0, "No crea duplicados");
+await page.click("#ix_an"); await page.waitForTimeout(1200);
+const ixt = await page.locator("main").innerText();
+ok(/Observaciones/.test(ixt) && /Se ve una mesa decorada/.test(ixt) && /Suposiciones/.test(ixt) && /música en tendencia/.test(ixt), "Analizar con Claude separa observaciones y suposiciones");
+ok(await page.evaluate(() => window.__prompts.some(p => p.prompt.startsWith("Analiza") && p.images)), "El análisis envía la captura");
+await page.click("#ix_ad"); await page.waitForTimeout(1200);
+const ad = await page.evaluate(() => S.ideabank.find(i => i.hook === "Tu mesa en 3 pasos"));
+ok(ad && ad.status === "nueva" && ad.productId === "" && /no está en el catálogo/.test(ad.missing) && ad.refs[0].url.includes("INSP"), "Adaptar crea idea original en el banco, sin producto inventado");
+await page.goto(BASE + "#inspiracion"); await page.waitForTimeout(500);
+await page.fill("#in_q", "montaje"); await page.waitForTimeout(900);
+ok(await page.locator(".pin").count() === 1, "Búsqueda por palabra/etiqueta");
+await page.click("#in_clr"); await page.waitForTimeout(400); await page.selectOption("#in_cr", "@decomesas"); await page.waitForTimeout(400);
+ok(await page.locator(".pin").count() === 1, "Filtro por creador");
+await page.goto(BASE + "#guardar?u=" + encodeURIComponent("https://www.tiktok.com/@globos/video/123")); await page.waitForTimeout(800);
+ok(/TikTok · @globos/.test(await page.locator("#qs_det").innerText()), "Enlace directo #guardar?u= abre el formulario prellenado");
+await page.keyboard.press("Escape");
+await page.evaluate(() => { S.inspId = S.inspo.find(x => /INSP/.test(x.url)).id; location.hash = "#insp" }); await page.waitForTimeout(600);
+await page.click("#ix_manual"); await page.waitForTimeout(300);
 await page.fill("input[name=hook]", "Hook de prueba"); await page.selectOption("select[name=format]", "carrusel");
 const pid = await page.locator("select[name=productId] option").nth(1).getAttribute("value"); await page.selectOption("select[name=productId]", pid);
 await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(600);
@@ -50,7 +89,7 @@ await page.locator(".icard", { hasText: "Hook de prueba" }).locator("[data-bpost
 await page.evaluate(() => { const d = new Date(); document.querySelector("input[name=date]").value = isoD(new Date(d.getFullYear(), d.getMonth(), 10)) });
 await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(2500);
 ok(page.url().endsWith("#ficha") && await page.locator(".strip .sl").count() === 3, "Ficha con 3 diapositivas");
-const refOk = await page.locator("main a[href='https://www.instagram.com/reel/INSP/']").count();
+const refOk = await page.locator("main a[href='https://www.instagram.com/decomesas/reel/INSP/']").count();
 ok(refOk >= 1, "Ficha muestra la referencia original");
 // calendario: arrastrar
 await page.goto(BASE + "#calendario"); await page.waitForTimeout(1500);
@@ -88,6 +127,23 @@ const saved = await page.evaluate(() => { const i = S.items.find(x => x.ideaId);
 ok(saved.st === "aprobada" && saved.text === "Texto editado" && saved.font === "Bebas Neue" && saved.size === 90, "Persistencia: diseño editado y aprobado tras recargar");
 // el editor dibuja lo mismo que exporta: compara la vista final con el JPG descargado
 fs.writeFileSync(path.join(OUT, "saved.json"), JSON.stringify(saved));
+// Investigador semanal: monitorear, investigar ahora (sin Metricool en esta vista), aprobar idea, historial
+await page.goto(BASE + "#semanal"); await page.waitForTimeout(600);
+await page.locator("[data-mon]").first().check(); await page.waitForTimeout(300);
+await page.selectOption("#rs_day", "1"); await page.fill("#rs_hour", "08:30"); await page.locator("#rs_hour").dispatchEvent("change"); await page.waitForTimeout(300);
+await page.click("#rs_go"); await page.waitForTimeout(2500);
+const rt = await page.locator("main").innerText();
+ok(/esta vista no puede consultarlo/.test(rt), "Informe: dice claramente que Metricool no estuvo disponible");
+ok(/10 publicaciones de referencia/.test(rt) && /Solo hay \d+ referencia/.test(rt), "Informe: referencias con aviso cuando faltan datos (no las inventa)");
+ok(await page.locator("[data-rapp]").count() === 5 && await page.locator(".hooks li").count() === 10, "Informe: 5 ideas y 10 hooks");
+ok(/3 metas de la semana/.test(rt) && /Base: /.test(rt) && /Plan de grabación · miércoles/.test(rt), "Informe: metas con línea base y plan del miércoles");
+ok(/no activada/.test(rt), "Programación: estado no activada, sin simular ejecuciones");
+await page.locator("[data-rapp]").first().click(); await page.waitForTimeout(600);
+ok(await page.evaluate(() => S.ideabank.some(i => i.source === "Investigador semanal" && i.status === "aprobada")), "Idea del informe aprobada y enviada al banco");
+await page.click("#rs_go"); await page.waitForTimeout(2500); await page.reload(); await page.waitForTimeout(1500);
+await page.goto(BASE + "#semanal"); await page.waitForTimeout(800);
+ok(await page.locator("[data-rep]").count() === 2, "Historial: dos informes guardados tras recargar");
+ok(await page.evaluate(() => S.settings.find(s => s.id === "researcher").hour) === "08:30", "Preferencia de horario guardada");
 // iPhone: agenda y cambio de fecha
 const ph = await b.newContext({ ...devices["iPhone 13"] }); const pp = await ph.newPage(); pp.on("pageerror", e => errs.push("iphone: " + e.message));
 await pp.goto(BASE + "#respaldo"); await pp.waitForSelector("#bk_in", { state: "attached" }); await pp.setInputFiles("#bk_in", path.join(FIX, "seed.json")); await pp.waitForTimeout(800);

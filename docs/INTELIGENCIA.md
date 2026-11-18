@@ -61,3 +61,30 @@ Métricas verificadas en la marca Balloon Store el 18 de noviembre de 2026:
   - En el navegador, WebCodecs más un muxer MP4 de npm, servido por jsDelivr, permitiría unir clips, recortarlos, añadir textos y portada, y exportar MP4 sin servicio externo. Es viable en Chrome o Edge y en Safari reciente. En iPhone puede ser lento para 1080×1920. Mezclar el audio original es posible y la música con licencia queda fuera.
   - Un servicio de renderizado en la nube cuesta y requiere autorización.
   - Efectos avanzados, audio en tendencia y subtítulos automáticos seguirían en CapCut, que no tiene API pública de edición.
+
+## Guardar inspiración
+
+- **Botón «+ Guardar inspiración»** en la barra superior de todas las pantallas, también en el teléfono. Al pegar un enlace la ficha se guarda al instante, aunque el contenido externo no se pueda abrir.
+- **Datos que guarda:** enlace limpio (sin `igsh`, `utm_*` y parámetros similares), enlace original, plataforma (Instagram, TikTok, Pinterest, YouTube, Facebook o web), creador detectado en el enlace cuando aparece, tipo, fecha de guardado, colección, etiquetas, notas y una captura opcional. En computadora la captura también se puede pegar con Ctrl o Cmd + V.
+- **Duplicados:** el enlace se normaliza (por ejemplo, `instagram.com/usuario/reel/ID` y `instagram.com/reel/ID` cuentan como el mismo). Si ya existe, la app avisa antes de guardar y abre la ficha existente. Esto incluye enlaces anteriores de una ficha.
+- **Colecciones editables:** Reels, Tutoriales, Decoraciones, Globos metálicos, Látex, Navidad, Año Nuevo, Hooks, Diseños y Por investigar. Si renombras una colección, cambian todas sus fichas. Si la quitas de la lista, las fichas conservan su valor.
+- **Estados:** Guardada, Por analizar, Adaptar, En producción, Utilizada y Descartada. Los estados anteriores se leen con su equivalente nuevo sin reescribir datos.
+- **Analizar con Claude:** Claude no puede abrir enlaces, así que analiza la captura y las notas. Distingue observaciones (lo que se ve o está escrito) de suposiciones. Cada análisis se guarda con su fecha.
+- **Adaptar a Balloon Store:** crea una idea original con un producto del catálogo y fotos de la biblioteca. Si Claude sugiere un producto que no está en el catálogo, la idea lo marca como dato faltante. La idea entra al banco como «Nueva».
+- **Búsqueda:** por palabra (título, notas, creador, enlace, etiquetas y análisis), creador, colección, etiqueta, estado y rango de fechas.
+- **Historial:** cada ficha registra guardado, estados, análisis, adaptaciones y cambios de enlace. No hay botón de borrar: «Descartada» oculta la ficha sin eliminarla. Las fichas viven en la base de datos de la app y no dependen de que el enlace siga existiendo.
+- **iPhone:** iOS no permite que una página web o un Artifact aparezca en el menú Compartir (Web Share Target no está disponible en Safari). La ruta disponible es Copiar enlace, abrir Content HQ y pulsar «+ Guardar inspiración». Existe un enlace directo `#guardar?u=<enlace>` para un atajo de Apple Shortcuts, pero no está comprobado que claude.ai entregue ese `#` al Artifact.
+
+## Investigador semanal (`#semanal`)
+
+- **Cuentas a monitorear:** se marcan en la lista de Competencia. Las métricas públicas de otras cuentas solo llegan desde Metricool › Competidores. Sin eso, se usan tus observaciones con su fuente.
+- **«Investigar ahora»:** consulta Metricool en solo lectura (Instagram, Facebook y competidores), calcula referencias, metas y diagnóstico, y pide a Claude 5 ideas, 10 hooks y el plan de grabación del miércoles. Cualquier fuente que falle aparece en rojo en el informe.
+- **Referencias:** se eligen piezas que superan al menos 2 veces la mediana de su propia cuenta (con 5 piezas o más), además de observaciones e inspiraciones. Si faltan, el informe lo dice y no rellena.
+- **Metas:** salen de tus datos, cada una con su línea base y forma de medirla:
+  - constancia (piezas en 28 días);
+  - alcance mediano por Reel en 90 días × 1.1;
+  - guardados y compartidos por pieza.
+- **Facebook:** Metricool devuelve alcance 0 en los Reels de esta página, así que para Reels se usan reproducciones.
+- **Historial:** cada informe queda guardado en `reports` y se compara con el anterior. Las ideas se aprueban y se envían al banco una por una.
+- **Programación:** día, hora y frecuencia se guardan, pero **no se ejecutan solos**. Un Artifact no corre en segundo plano. El servicio alojado disponible es una **tarea programada de Claude Code** (claude.ai/code): a la hora indicada abre una sesión en la nube con el conector de Metricool y guarda el informe en esta app. No se activa sin autorización expresa.
+- **Prueba de esa ruta:** la sesión del 18 nov 2026 hizo esa ruta a mano: consultó Metricool y escribió el informe en la base de datos de la app.

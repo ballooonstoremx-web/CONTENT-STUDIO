@@ -41,11 +41,19 @@ def synthetic_seed():
 
 class IntelStructureTests(unittest.TestCase):
     def test_views_and_collections_exist(self):
-        for v in ["intel", "analisis", "diagnostico", "competencia", "inspiracion", "banco", "calendario", "ficha", "disenar"]:
+        for v in ["intel", "semanal", "analisis", "diagnostico", "competencia", "inspiracion", "insp", "banco", "calendario", "ficha", "disenar"]:
             self.assertIn(f"VIEWS.{v}=", APP, v)
-        for c in ["competitors", "inspo", "ideabank", "metrics", "learnings", "plans"]:
+        for c in ["competitors", "inspo", "ideabank", "metrics", "learnings", "plans", "settings", "reports"]:
             self.assertIn(f'"{c}"', APP.split("const COLS=")[1].split(";")[0], c)
-        self.assertIn('indexedDB.open("bs-content-hq",4)', APP)
+        self.assertIn('indexedDB.open("bs-content-hq",5)', APP)
+
+    def test_legacy_inspiration_states_are_mapped_not_rewritten(self):
+        for old, new in [("guardar", "guardada"), ("investigar", "por_analizar"), ("producir", "en_produccion"), ("descartar", "descartada")]:
+            self.assertIn(f"{old}:\"{new}\"", APP)
+
+    def test_no_simulated_schedule(self):
+        self.assertIn("Esta página no puede ejecutarse sola en segundo plano", APP)
+        self.assertNotIn("setInterval(runResearch", APP)
 
     def test_metricool_is_read_only(self):
         tools = set(__import__("re").findall(r'mcCall\("([A-Za-z]+)"', APP))

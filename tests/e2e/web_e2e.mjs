@@ -211,7 +211,7 @@ async function run(mode) {
   await dateInput.fill(iso);
   await dateInput.dispatchEvent("change");
   await page.waitForTimeout(400);
-  ok(P + "calendar shows item on today", (await page.$$(".day.today .ev")).length >= 1);
+  ok(P + "calendar shows item on today", (await page.$$(".vday.today .vpost")).length >= 1);
 
   // Status change through editor
   await page.goto(BASE + "#panel");
@@ -511,8 +511,8 @@ async function run(mode) {
   await page.check(`#shoot [data-shot='${firstShot}']`);
   await page.waitForTimeout(300);
   ok(P + "plan de grabación: checklist for pending Reels", (await page.textContent("#shoot_count")).startsWith("1/"));
-  await page.goto(BASE + "#calendario"); await page.waitForSelector(".cal");
-  const evs = await page.$$eval(".cal .ev", e => e.map(x => x.textContent + "|" + x.className));
+  await page.goto(BASE + "#calendario"); await page.waitForSelector(".vcal");
+  const evs = await page.$$eval(".vcal .vpost", e => e.map(x => x.title + "|" + x.className));
   ok(P + "calendar: approved pieces scheduled on their dates, pending one marked", evs.filter(x => x.includes(start)).length >= 3 && evs.some(x => x.includes(" pend")), String(evs.length));
   await page.goto(BASE + "#panel"); await page.waitForSelector(".kanban");
   const doneCol = await page.$$eval(".kanban .col:nth-child(4) .card .t", e => e.map(x => x.textContent));

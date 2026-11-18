@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Inter:wght@400..800&family=Bebas+Neue&family=Poppins:wght@400;500;600;700;800&family=Pacifico&display=swap">
 <style>
 /* Layout: warm editorial "motherboard" — beige desk, white cards, serif headlines, sans for every number and control.
    Light is the default design; dark only when the viewer explicitly sets data-theme="dark". */
@@ -283,6 +283,112 @@ table.cmp{min-width:720px}
   .countdown{width:100%}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ===== Inteligencia de marketing, inspiración, banco de ideas, calendario visual y editor ===== */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.tabs button{border-radius:999px;font-size:.74rem;padding:6px 12px}
+.tabs button.on{background:var(--ink);color:var(--inkfg);border-color:var(--ink)}
+.src{font-size:.72rem;color:var(--muted);line-height:1.4}
+.src a{color:inherit}
+.conf{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--line2)}
+.conf.alta{background:var(--greensoft);color:#2D6A1C;border-color:#C6EBB2}
+.conf.media{background:var(--yellowsoft);color:#5E4C00;border-color:#F2E08A}
+.conf.baja{background:var(--accentsoft);color:#9A1F3A;border-color:#F6C0CC}
+:root[data-theme="dark"] .conf{color:var(--fg)}
+.finding{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--surface);display:grid;gap:8px}
+.finding h3{font-family:var(--serif);font-size:1.15rem;line-height:1.2}
+.finding.bien{border-left:4px solid var(--green)}.finding.mejorar{border-left:4px solid var(--yellow)}.finding.debil{border-left:4px solid var(--pink)}
+.ev{font-size:.8rem;margin:0;padding-left:18px;display:grid;gap:3px}
+.ev a{color:var(--fg)}
+.masonry{columns:4 220px;column-gap:14px}
+.pin{break-inside:avoid;margin:0 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);display:block}
+.pin .ph{background:var(--surface2);min-height:90px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.75rem;text-align:center;padding:0}
+.pin .ph img{width:100%;height:auto;display:block}
+.pin .ph .noimg{padding:28px 14px;font-family:var(--serif);font-size:1.05rem;color:var(--fg)}
+.pin .bd{padding:10px 12px 12px;display:grid;gap:6px}
+.pin .bd b{font-size:.88rem;line-height:1.25}
+.pin .tags{display:flex;flex-wrap:wrap;gap:4px}
+.pin .tags span{font-size:.62rem;background:var(--surface2);border-radius:999px;padding:2px 7px;color:var(--muted)}
+.st-guardar{background:var(--surface2)}.st-investigar{background:var(--bluesoft);color:#0E4F70}.st-adaptar{background:var(--yellowsoft);color:#5E4C00}.st-producir{background:var(--greensoft);color:#2D6A1C}.st-descartar{background:var(--accentsoft);color:#9A1F3A;text-decoration:line-through}
+.stsel{display:flex;flex-wrap:wrap;gap:4px}
+.stsel button{font-size:.62rem;padding:3px 8px;border-radius:999px;min-height:0}
+.stsel button.on{background:var(--ink);color:var(--inkfg);border-color:var(--ink)}
+.comp{display:grid;gap:10px}
+.comp .acct{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.obs{border-top:1px dashed var(--line2);padding-top:10px;display:grid;gap:4px;font-size:.84rem}
+.bank{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.icard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;align-content:start}
+.icard .hook{font-family:var(--serif);font-size:1.15rem;line-height:1.2}
+.icard.sel{outline:2px solid var(--pink);outline-offset:1px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.8rem}
+.kv dt{color:var(--muted);font-weight:700}
+.kv dd{margin:0}
+.pri-alta{color:var(--danger);font-weight:800}.pri-media{color:#8A6D00;font-weight:800}.pri-baja{color:var(--muted);font-weight:800}
+.tbl{width:100%;border-collapse:collapse;font-size:.8rem}
+.tbl th,.tbl td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:120px 1fr 64px;gap:8px;align-items:center;font-size:.78rem}
+.bar i{display:block;height:10px;border-radius:6px;background:var(--blue);min-width:2px}
+.bar i.pk{background:var(--pink)}
+/* calendario visual */
+.vcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.vcal .dow{font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:2px 4px}
+.vday{background:var(--surface);border:1px solid var(--line);border-radius:12px;min-height:118px;padding:6px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.vday.other{opacity:.45}.vday.today{border-color:var(--pink);box-shadow:inset 0 0 0 1px var(--pink)}
+.vday.over{background:var(--focus);border-color:var(--focusline)}
+.vday .n{font-size:.72rem;font-weight:800}
+.vpost{position:relative;display:block;border-radius:8px;overflow:hidden;border:1px solid var(--line2);background:var(--surface2);cursor:grab;padding:0;min-height:0;width:100%}
+.vpost img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+.vpost .lbl{position:absolute;left:4px;top:4px;font-size:.55rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.92);color:#122D50;border-radius:5px;padding:1px 5px}
+.vpost .dot{position:absolute;right:5px;top:5px;width:10px;height:10px;border-radius:50%;border:2px solid #fff}
+.dot.aprobada{background:var(--green)}.dot.pendiente{background:var(--yellow)}.dot.cambios{background:var(--pink)}.dot.publicada{background:var(--blue)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.74rem;align-items:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.iggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;max-width:520px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:3px;overflow:hidden}
+.iggrid .cell{position:relative;aspect-ratio:4/5;background:var(--surface2);overflow:hidden;border:0;padding:0;border-radius:0;min-height:0}
+.iggrid .cell img{width:100%;height:100%;object-fit:cover;display:block}
+.iggrid .cell .lbl{position:absolute;left:4px;bottom:4px;font-size:.55rem;font-weight:800;background:rgba(255,255,255,.92);color:#122D50;border-radius:5px;padding:1px 5px}
+.iggrid .cell.pub{opacity:.82}
+/* ficha */
+.ficha{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:20px;align-items:start}
+.ficha .prev canvas{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);background:var(--surface2);display:block}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:8px 2px}
+.strip .sl{flex:none;width:84px;display:grid;gap:4px;justify-items:center}
+.strip .sl img{width:84px;border-radius:8px;border:2px solid transparent;cursor:pointer}
+.strip .sl.on img{border-color:var(--pink)}
+.strip .sl .row{gap:2px}
+.strip .sl button{padding:2px 7px;font-size:.7rem;min-height:0}
+.log{font-size:.76rem;color:var(--muted);display:grid;gap:3px;margin:0;padding-left:16px}
+/* editor */
+.ed{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.stage-wrap{background:var(--surface3);border-radius:16px;padding:16px;display:flex;justify-content:center}
+.stage{position:relative;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 18px 40px -20px rgba(18,45,80,.5)}
+.stage canvas{display:block;width:100%;height:100%}
+.lbox{position:absolute;border:1px dashed transparent;cursor:move}
+.lbox:hover{border-color:rgba(84,193,250,.8)}
+.lbox.sel{border:2px solid var(--blue)}
+.lbox .hd{position:absolute;right:-9px;bottom:-9px;width:18px;height:18px;border-radius:50%;background:var(--blue);border:2px solid #fff;cursor:nwse-resize;display:none}
+.lbox.sel .hd{display:block}
+.props{display:grid;gap:10px}
+.props label{display:grid;gap:4px;font-size:.74rem;font-weight:700}
+.props .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.layers{display:grid;gap:4px}
+.layers button{text-align:left;font-size:.76rem;justify-content:flex-start}
+.layers button.on{background:var(--ink);color:var(--inkfg)}
+.finalgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.finalgrid img{width:100%;border-radius:10px;border:1px solid var(--line)}
+@media (max-width:860px){.ficha,.ed{grid-template-columns:1fr}.vday{min-height:84px;padding:4px}.vcal{gap:3px}.vpost .lbl{display:none}.bar{grid-template-columns:90px 1fr 54px}}
+.goal{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600}
+.goal input{width:64px;padding:6px 8px}
+.noimg{display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:.72rem;line-height:1.3;color:var(--muted);text-decoration:none;width:100%;height:100%;min-height:60px;box-sizing:border-box}
+a.cell,a.cell:hover{text-decoration:none}
+.agenda-day{display:grid;gap:6px;margin-bottom:14px}
+.agenda-day h3{font-family:var(--serif);font-size:1.1rem;text-transform:capitalize}
+.agenda-day input[type=date]{margin-top:6px;max-width:190px}
+.props input[type=color]{height:40px;padding:4px;cursor:pointer;min-width:0}
+.props label.row{display:flex}
+.flt select{width:auto;flex:0 1 280px;min-width:0}
 </style>
 
 <div class="app">
@@ -294,6 +400,13 @@ table.cmp{min-width:720px}
       </div>
       <nav class="rail" id="rail" aria-label="Secciones">
         <a href="#hoy" data-r="hoy">Hoy</a>
+        <span class="grp"><span class="sec">Investigar</span>
+        <a href="#intel" data-r="intel" title="Centro de inteligencia">Inteligencia</a>
+        <a href="#analisis" data-r="analisis" title="Mis resultados en Metricool">Resultados IG</a>
+        <a href="#diagnostico" data-r="diagnostico" title="Qué estoy haciendo bien / Qué debo mejorar">Diagnóstico</a>
+        <a href="#competencia" data-r="competencia">Competencia</a>
+        <a href="#inspiracion" data-r="inspiracion">Inspiración</a>
+        <a href="#banco" data-r="banco" title="Banco de ideas y hooks">Banco de ideas</a></span>
         <span class="grp"><span class="sec">Planear</span>
         <a href="#estudio" data-r="estudio" title="Estudio semanal">Semana</a>
         <a href="#ideas" data-r="ideas">Ideas</a>
@@ -342,9 +455,9 @@ const hasClaude=()=>!!(window.claude&&typeof window.claude.use==="function");
 function withTimeout(p,ms){return Promise.race([p,new Promise(r=>setTimeout(()=>r(null),ms))])}
 
 /* ================= Storage: claude.ai db+assets when hosted, IndexedDB otherwise ================= */
-const COLS=["items","media","campaigns","series","catalog","weeks","requests"];
+const COLS=["items","media","campaigns","series","catalog","weeks","requests","competitors","inspo","ideabank","metrics","learnings","plans"];
 const IDB={db:null,
-  open(){return new Promise((res,rej)=>{const r=indexedDB.open("bs-content-hq",3);r.onupgradeneeded=()=>{const d=r.result;["items","media","blobs","campaigns","series","catalog","weeks","requests"].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n)})};r.onsuccess=()=>{this.db=r.result;res(this)};r.onerror=()=>rej(r.error)})},
+  open(){return new Promise((res,rej)=>{const r=indexedDB.open("bs-content-hq",4);r.onupgradeneeded=()=>{const d=r.result;["items","media","blobs","campaigns","series","catalog","weeks","requests","competitors","inspo","ideabank","metrics","learnings","plans"].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n)})};r.onsuccess=()=>{this.db=r.result;res(this)};r.onerror=()=>rej(r.error)})},
   tx(store,mode,fn){return new Promise((res,rej)=>{const t=this.db.transaction(store,mode);const s=t.objectStore(store);const out=fn(s);t.oncomplete=()=>res(out&&out.result!==undefined?out.result:undefined);t.onerror=()=>rej(t.error)})},
   all(store){return new Promise((res,rej)=>{const t=this.db.transaction(store,"readonly");const r=t.objectStore(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})},
   get(store,key){return new Promise((res,rej)=>{const r=this.db.transaction(store,"readonly").objectStore(store).get(key);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
@@ -436,7 +549,7 @@ async function makeZip(files){ // files: [{name, data: Blob|string}]
 }
 
 /* ================= State ================= */
-const S={items:[],media:[],campaigns:[],series:[],catalog:[],weeks:[],requests:[],curCamp:null,week:null,studioStep:1,seriesFilter:"",resPeriod:"todo",cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
+const S={items:[],media:[],campaigns:[],series:[],catalog:[],weeks:[],requests:[],competitors:[],inspo:[],ideabank:[],metrics:[],learnings:[],plans:[],curCamp:null,week:null,studioStep:1,seriesFilter:"",resPeriod:"todo",cur:{carrusel:null,reel:null,copy:null},calMonth:null,libFilter:"",slideIdx:0,ideas:[]};
 const item=id=>S.items.find(i=>i.id===id);
 const mediaById=id=>S.media.find(m=>m.id===id);
 function newItem(p={}){return Object.assign({id:uid(),type:"reel",title:"Contenido sin título",status:"idea",date:"",pillar:"",occasion:"",line:"",audience:"decoradoras",hook:"",script:"",caption:"",cta:"",notes:"",slides:[],shots:[],metrics:{},campaignId:"",seriesId:"",ep:0,filmChecks:{},frames:[],storyMedia:"",objective:"",productId:"",pending:[],captionFb:"",weekId:"",example:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()},p)}
@@ -599,7 +712,7 @@ const pngToJpeg=async blob=>{const bm=await createImageBitmap(blob);const c=docu
 
 /* ================= Router & views ================= */
 const VIEWS={};
-function route(){const r=(location.hash||"#hoy").slice(1);const v=VIEWS[r]?r:"hoy";$$("nav.rail a").forEach(a=>{const on=a.dataset.r===v;a.classList.toggle("on",on);if(on){a.setAttribute("aria-current","page");try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}else a.removeAttribute("aria-current")});window.scrollTo(0,0);
+function route(){const r=(location.hash||"#hoy").slice(1);const v=VIEWS[r]?r:"hoy";const navR=v==="ficha"||v==="disenar"?"calendario":v;$$("nav.rail a").forEach(a=>{const on=a.dataset.r===navR;a.classList.toggle("on",on);if(on){a.setAttribute("aria-current","page");try{a.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}}else a.removeAttribute("aria-current")});window.scrollTo(0,0);
   const main=$("#view");main.innerHTML="";VIEWS[v](main);main.focus?.()}
 window.addEventListener("hashchange",route);
 function head(t,p,actions=""){return`<div class="head"><div><h1>${t}</h1>${p?`<p>${p}</p>`:""}</div><div class="row">${actions}</div></div>`}
@@ -983,12 +1096,12 @@ VIEWS.respaldo=main=>{
   $$("[data-pk]",main).forEach(b=>b.onclick=async()=>{const it=item(b.dataset.pk);b.disabled=true;try{let z;
     if(it.type==="carrusel"&&it.slides.length)z=await buildCarouselZip(it);else if(it.type==="reel"&&it.shots.length)z=await buildReelZip(it);else if(it.type==="story"&&it.frames&&it.frames.length)z=await buildStoryZip(it);else z=await makeZip([{name:"contenido.txt",data:textPack(it)}]);
     await saveFile(slug(it.title)+".zip",z)}catch(e){toast(e.message)}finally{b.disabled=false}});
-  const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,campaigns:S.campaigns,series:S.series,weeks:S.weeks,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
+  const data=()=>JSON.stringify({app:"balloon-store-content-hq",version:1,exportedAt:new Date().toISOString(),items:S.items,campaigns:S.campaigns,series:S.series,weeks:S.weeks,competitors:S.competitors,inspo:S.inspo,ideabank:S.ideabank,metrics:S.metrics,learnings:S.learnings,plans:S.plans,media:S.media.map(m=>({...m,ref:undefined,file:"media/"+m.id+"_"+m.name}))},null,2);
   $("#bk_json",main).onclick=()=>saveFile("content-hq-respaldo-"+today()+".json",new Blob([data()],{type:"application/json"}));
   $("#bk_zip",main).onclick=async e=>{e.target.disabled=true;try{const files=[{name:"respaldo.json",data:data()}];for(const m of S.media){const b=await Store.getBlob(m.ref).catch(()=>null);if(b)files.push({name:"media/"+m.id+"_"+m.name,data:b})}
     await saveFile("content-hq-respaldo-"+today()+".zip",await makeZip(files))}finally{e.target.disabled=false}};
   $("#bk_in",main).onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(j.app!=="balloon-store-content-hq"||!Array.isArray(j.items))throw new Error("El archivo no es un respaldo de Content HQ");
-    for(const [col,key] of [["campaigns","campaigns"],["series","series"],["weeks","weeks"]])for(const raw of (Array.isArray(j[key])?j[key]:[])){if(!raw||typeof raw.id!=="string")continue;const ex=S[key].findIndex(x=>x.id===raw.id);if(ex>=0)S[key][ex]=raw;else S[key].push(raw);await Store.save(col,raw)}
+    for(const [col,key] of [["campaigns","campaigns"],["series","series"],["weeks","weeks"],["competitors","competitors"],["inspo","inspo"],["ideabank","ideabank"],["metrics","metrics"],["learnings","learnings"],["plans","plans"]])for(const raw of (Array.isArray(j[key])?j[key]:[])){if(!raw||typeof raw.id!=="string")continue;const ex=S[key].findIndex(x=>x.id===raw.id);if(ex>=0)S[key][ex]=raw;else S[key].push(raw);await Store.save(col,raw)}
     let n=0;for(const raw of j.items){if(!raw||typeof raw.id!=="string")continue;const it=newItem(raw);const ex=S.items.findIndex(x=>x.id===it.id);if(ex>=0)S.items[ex]=it;else S.items.push(it);await touch(it,true);n++}
     toast(n+" contenido(s) restaurado(s). Los archivos de la biblioteca se vuelven a subir manualmente.");route()}catch(err){toast(err.message)}};
 };
@@ -1728,9 +1841,629 @@ function shootPlanHTML(doc){const sp=doc.shootPlan||autoShootPlan(doc);if(!sp.st
      ${(st.shots||[]).map(s=>`<label class="shot-ck${ck[s.id]?" done":""}"><input type="checkbox" data-shot="${esc(s.id)}" ${ck[s.id]?"checked":""}><span><b>${esc(s.id)}</b> ${esc(s.desc)}${s.dur?` <span class="chip">${esc(String(s.dur))} s</span>`:""}${s.reelTitle?`<small>Reel: ${esc(s.reelTitle)}</small>`:""}${s.how?`<small>${esc(s.how)}</small>`:""}</span></label>`).join("")}</div>`).join("")}
    ${(sp.after||[]).length?`<div class="station"><h3>Después de grabar</h3><ol class="shoot-list">${sp.after.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>`:""}</section>`}
 
+/* ================= FASE 1 · Centro de inteligencia de marketing ================= */
+const MC_SERVER="Metricool Social Media Management";
+const COMP_CATS=[["distribuidores","Distribuidores y tiendas de globos"],["decoradoras","Decoradoras y creadoras de contenido"],["marcas","Marcas de fiestas e inspiración visual"]];
+const INSPO_CATS=["Navidad","Año Nuevo","Cumpleaños","Baby shower","Globos metálicos","Látex","Tutoriales","Montaje","Técnicas","Tendencias","Hooks","Planeación y herramientas","Otra"];
+const INSPO_TYPES=[["reel","Reel"],["foto","Fotografía"],["carrusel","Carrusel"],["enlace","Enlace"],["captura","Captura"],["propia","Idea propia"]];
+const INSPO_ST=[["guardar","Guardar"],["investigar","Investigar"],["adaptar","Adaptar"],["producir","Producir"],["descartar","Descartar"]];
+const IDEA_ST=[["nueva","Nueva"],["guardada","Guardada"],["aprobada","Aprobada"],["produccion","En producción"],["descartada","Descartada"]];
+const IDEA_OBJ=[["educar","Educar"],["atraer","Atraer"],["interactuar","Interactuar"],["vender","Vender"]];
+const PRI=[["alta","Alta"],["media","Media"],["baja","Baja"]];
+const nowISO=()=>new Date().toISOString();
+const fmtDT=s=>{if(!s)return"";const d=new Date(s);return isNaN(d)?String(s):d.getDate()+" "+MES[d.getMonth()]+" "+d.getFullYear()};
+const nf=n=>n==null||isNaN(n)?"—":Number(n).toLocaleString("es-MX",{maximumFractionDigits:1});
+const pct=n=>n==null||isNaN(n)?"—":Number(n).toLocaleString("es-MX",{maximumFractionDigits:1})+" %";
+const linkA=(u,t)=>u?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t||u)}</a>`:"";
+const optList=(arr,v)=>arr.map(a=>{const[k,l]=Array.isArray(a)?a:[a,a];return`<option value="${esc(k)}" ${k===v?"selected":""}>${esc(l)}</option>`}).join("");
+async function saveDoc(col,doc){doc.updatedAt=nowISO();const arr=S[col];const i=arr.findIndex(x=>x.id===doc.id);if(i<0)arr.push(doc);else arr[i]=doc;try{await Store.save(col,doc)}catch(e){toast("No se guardó: "+(e.message||e.code||e));throw e}return doc}
+async function delDoc(col,id){S[col]=S[col].filter(x=>x.id!==id);await Store.remove(col,id)}
+/* Diálogo reutilizable (usa el mismo <dialog> del editor) */
+function dlgOpen(title,html,onSave,{saveLabel="Guardar",wide=false}={}){const dlg=$("#editor"),f=$("#editorForm");dlg.style.width=wide?"min(980px,96vw)":"";
+  f.innerHTML=`<h2>${esc(title)}</h2>${html}<div class="row" style="justify-content:flex-end"><button type="button" data-x>Cancelar</button>${onSave?`<button class="primary" type="submit">${esc(saveLabel)}</button>`:""}</div>`;
+  $("[data-x]",f).onclick=()=>dlg.close();
+  f.onsubmit=async e=>{e.preventDefault();if(!onSave)return dlg.close();try{const r=await onSave(f);if(r!==false)dlg.close()}catch(err){toast(err.message||String(err))}};
+  dlg.showModal();return f}
+const fv=(f,n)=>{const el=f.elements[n];return el?String(el.value||"").trim():""};
+
+/* ---------- Metricool (solo lectura, desde el conector del usuario) ---------- */
+function mcParse(res){let p=res&&res.payload!==undefined?res.payload:res;
+  if(typeof p==="string"){try{p=JSON.parse(p)}catch(e){return null}}
+  if(p&&Array.isArray(p.content)){const t=p.content.find(c=>c&&c.type==="text");if(t){try{p=JSON.parse(t.text)}catch(e){return null}}}
+  if(p&&p.structuredContent)p=p.structuredContent;return p}
+const mcRows=res=>{const p=mcParse(res);return p&&Array.isArray(p.rows)?p.rows:[]};
+async function mcCall(tool,input){const mcp=await getMcp();if(!mcp)throw{code:"no_mcp"};return await mcp.callTool(MC_SERVER,tool,input)}
+const MC_ERR={no_mcp:"Esta vista no puede consultar Metricool. Ábrela como Artifact en claude.ai.",server_not_connected:"Metricool no está conectado en tu cuenta de claude.ai (Configuración › Conectores).",not_in_manifest:"Esta versión de la app no tiene permiso para Metricool.",not_granted:"No diste permiso para consultar Metricool. Puedes darlo desde el menú de permisos del Artifact.",blocked_by_policy:"Tu organización no permite esta consulta a Metricool.",no_brand:"Metricool no devolvió ninguna marca."};
+const mcErr=e=>MC_ERR[e&&e.code]||("No se pudo consultar Metricool ("+((e&&(e.code||e.message))||"error")+").");
+async function mcBrand(){if(S.mcBrand)return S.mcBrand;const p=mcParse(await mcCall("getBrandSettings",{}));const list=(p&&p.data)||[];
+  const b=list.find(x=>x.networksData&&x.networksData.instagramData)||list[0];if(!b)throw{code:"no_brand"};
+  S.mcBrand={id:String(b.id),tz:b.timezone||"America/Mexico_City",ig:(b.networksData||{}).instagramData||"",fb:(b.networksData||{}).facebookData||"",label:(b.label||"").trim()};return S.mcBrand}
+const mcD=(d,end)=>`${d}T${end?"23:59:59":"00:00:00"}-06:00`;
+const tsISO=s=>{s=String(s||"");return s.length>=12?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}T${s.slice(8,10)}:${s.slice(10,12)}`:s.length===8?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:s};
+const N=v=>{if(v==null||v==="")return null;const n=parseFloat(v);return isNaN(n)?null:n};
+const MC_REEL=["IGRE02","IGRE03","IGRE05","IGRE06","IGRE07","IGRE09","IGRE10","IGRE11","IGRE12","IGRE21","IGRE23","IGRE24","IGRE28","IGRE30"];
+const MC_POST=["IGPO02","IGPO03","IGPO05","IGPO06","IGPO07","IGPO08","IGPO12","IGPO13","IGPO14","IGPO15","IGPO27","IGPO28","IGPO29"];
+const MC_EVO=["IGEV01","IGEV43","IGEV44","IGEV42","IGEV06"];
+const mapReel=r=>({id:r[3],date:tsISO(r[0]),caption:r[1]||"",img:r[2]||"",url:r[3],comments:N(r[4])||0,interactions:N(r[5])||0,likes:N(r[6])||0,reach:N(r[7])||0,saves:N(r[8])||0,shares:N(r[9])||0,views:N(r[10])||0,avgWatch:N(r[11]),viewRate:N(r[12]),skipRate:N(r[13]),kind:"reel"});
+const mapPost=r=>({id:r[3],date:tsISO(r[0]),caption:r[1]||"",img:r[2]||"",url:r[3],ptype:r[4]||"",comments:N(r[5])||0,interactions:N(r[6])||0,likes:N(r[7])||0,reach:N(r[8])||0,saves:N(r[9])||0,shares:N(r[10])||0,views:N(r[11])||0,follows:N(r[12])||0,kind:"post"});
+async function mcRefresh(status,days=365){const b=await mcBrand();const to=today(),from=addD(to,-days);const q=m=>mcCall("getAnalyticsDataByMetrics",{brandId:b.id,from:mcD(from),to:mcD(to,true),metrics:m});
+  status&&(status.textContent="Consultando Reels…");const reels=mcRows(await q(MC_REEL)).map(mapReel);
+  status&&(status.textContent="Consultando publicaciones…");const posts=mcRows(await q(MC_POST)).map(mapPost);
+  status&&(status.textContent="Consultando evolución de la cuenta…");let daily=[];try{daily=mcRows(await q(MC_EVO)).map(r=>({date:tsISO(r[r.length-1]),followers:N(r[0]),gained:N(r[1]),lost:N(r[2]),engaged:N(r[3]),reach:N(r[4])})).sort((a,b)=>a.date.localeCompare(b.date))}catch(e){}
+  let links=null;try{const lr=mcRows(await q(["IGAC04","IGAC12"]));links=lr.length?lr:null}catch(e){}
+  const doc={id:"ig-"+to,network:"instagram",account:b.ig,brand:b.label,source:"Metricool · getAnalyticsDataByMetrics",fetchedAt:nowISO(),from,to,reels,posts,daily,links,note:"Datos orgánicos de Instagram. La app no guarda credenciales."};
+  await saveDoc("metrics",doc);return doc}
+async function mcCompetitors(status,days=90){const b=await mcBrand();const to=today(),from=addD(to,-days);const q=m=>mcCall("getAnalyticsDataByMetrics",{brandId:b.id,from:mcD(from),to:mcD(to,true),metrics:m});
+  status&&(status.textContent="Consultando competidores en Metricool…");
+  const acc=mcRows(await q(["IGCO02","IGCO03","IGCO07","IGCO08","IGCO12","IGCO09","IGCO06","IGCO10"]));
+  if(!acc.length)return{accounts:0};
+  const posts=mcRows(await q(["IGCP01","IGCP04","IGCP05","IGCP07","IGCP08","IGCP09","IGCP10","IGCP11"]));
+  const reels=mcRows(await q(["IGCR01","IGCR03","IGCR04","IGCR05","IGCR07","IGCR08","IGCR09","IGCR10"]));
+  let n=0;for(const r of acc){const h=String(r[0]||"").replace(/^@/,"");if(!h)continue;
+    let c=S.competitors.find(x=>(x.handle||"").toLowerCase()===h.toLowerCase());
+    if(!c)c={id:uid(),handle:h,name:r[1]||h,platform:"instagram",category:"distribuidores",url:"https://instagram.com/"+h,notes:"",observations:[],createdAt:nowISO()};
+    const mine=rows=>rows.filter(x=>String(x[0]||"").toLowerCase().includes(h.toLowerCase()));
+    c.metricool={fetchedAt:nowISO(),from,to,followers:N(r[2]),posts:N(r[3]),reels:N(r[4]),avgLikes:N(r[5]),comments:N(r[6]),engagement:N(r[7]),source:"Metricool · competidores",
+      topPosts:mine(posts).map(x=>({caption:x[1]||"",date:tsISO(x[2]),likes:N(x[3]),comments:N(x[4]),interactions:N(x[5]),engagement:N(x[6]),url:x[7],kind:"Publicación"})).sort((a,b)=>(b.interactions||0)-(a.interactions||0)).slice(0,6),
+      topReels:mine(reels).map(x=>({caption:x[1]||"",url:x[2],date:tsISO(x[3]),likes:N(x[4]),comments:N(x[5]),interactions:N(x[6]),engagement:N(x[7]),kind:"Reel"})).sort((a,b)=>(b.interactions||0)-(a.interactions||0)).slice(0,6)};
+    await saveDoc("competitors",c);n++}
+  return{accounts:n}}
+
+/* ---------- Análisis de mi contenido ---------- */
+const latestSnap=()=>[...S.metrics].filter(m=>m.network==="instagram").sort((a,b)=>String(b.fetchedAt).localeCompare(String(a.fetchedAt)))[0]||null;
+const fmtOf=c=>c.kind==="reel"?"Reel":/CAROUSEL/.test(c.ptype||"")?"Carrusel":"Foto";
+function contentsOf(sn){return sn?[...(sn.reels||[]),...(sn.posts||[])].map(c=>({...c,format:fmtOf(c)})).sort((a,b)=>String(b.date).localeCompare(String(a.date))):[]}
+const iRate=c=>c.reach>0?c.interactions/c.reach*100:null;
+const svRate=c=>c.reach>0?(c.saves+c.shares)/c.reach*100:null;
+const med=a=>{const v=a.filter(x=>x!=null&&!isNaN(x)).sort((x,y)=>x-y);if(!v.length)return null;const m=Math.floor(v.length/2);return v.length%2?v[m]:(v[m-1]+v[m])/2};
+const avgOf=a=>{const v=a.filter(x=>x!=null&&!isNaN(x));return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
+const firstLine=t=>String(t||"").split("\n").map(s=>s.replace(/\*\*/g,"").trim()).find(Boolean)||"";
+const confOf=n=>n>=10?"alta":n>=4?"media":"baja";
+const CONF_L={alta:"Confianza alta",media:"Confianza media",baja:"Confianza baja"};
+const THEMES=[["Tutorial o técnica",/aprend|tutorial|c[oó]mo (hacer|armar|inflar)|paso a paso|\btips?\b|garland|guirnalda|t[eé]cnica|personalizad/i],
+  ["Temporada",/halloween|navid|muertos|mes rosa|octubre rosa|valent[ií]n|madres|fiestas patrias|a[nñ]o nuevo/i],
+  ["Novedad de producto",/nuevos? (modelos?|colores)|llegaron|spoiler|lo nuevo|nuevo modelo|supershape/i],
+  ["Inspiración de decoración",/decoraci[oó]n|\bidea\b|arreglo|bouquet|cortina|pastel/i],
+  ["Detrás de cámaras",/pedido|cajas|unboxing|acomp[aá][nñ]ame|empac/i],
+  ["Promoción o precio",/promoci[oó]n|precio|oferta|descuento/i],
+  ["Calidad o comparación",/calidad|no todos|realmente importa|diferencia/i]];
+const themesOf=c=>{const t=c.caption||"";const h=THEMES.filter(([,re])=>re.test(t)).map(([k])=>k);return h.length?h:["Sin clasificar"]};
+function hookType(c){const h=firstLine(c.caption).replace(/^[^\p{L}¿¡]+/u,"");if(!h)return"Sin texto";
+  if(/^pov/i.test(h))return"POV";if(/^coment[ae]/i.test(h))return"Pide comentar";if(/[¿?]/.test(h))return"Pregunta";
+  if(/^(si |cuando )/i.test(h))return"Condicional (Si…)";if(/spoiler|nuevo|nuevos|llegaron|lleg[oó]|promoci/i.test(h))return"Anuncio";
+  if(/^(no todos|no todo|hay globos)/i.test(h))return"Contraste";return"Afirmación"}
+const credited=c=>/cr[eé]dito:?\s*@|via @|📸\s*@/i.test(c.caption||"");
+const BUCKETS=[["Madrugada (0–6 h)",0,6],["Mañana (6–12 h)",6,12],["Tarde (12–18 h)",12,18],["Noche (18–24 h)",18,24]];
+const hourOf=c=>{const m=String(c.date).match(/T(\d{2})/);return m?+m[1]:null};
+const dowOf=c=>new Date(String(c.date).slice(0,10)+"T12:00:00").getDay();
+function groupStats(cs,keyFn){const g={};cs.forEach(c=>{const ks=[].concat(keyFn(c));ks.forEach(k=>{if(k==null)return;(g[k]=g[k]||[]).push(c)})});
+  return Object.entries(g).map(([k,v])=>({key:k,n:v.length,reach:med(v.map(x=>x.reach)),rate:med(v.map(iRate)),save:med(v.map(svRate)),viewRate:med(v.map(x=>x.viewRate)),skip:med(v.map(x=>x.skipRate)),items:v})).sort((a,b)=>(b.reach||0)-(a.reach||0))}
+function periodCompare(cs,days){const end=today(),start=addD(end,-days+1),pEnd=addD(start,-1),pStart=addD(pEnd,-days+1);
+  const inR=(c,a,b)=>{const d=String(c.date).slice(0,10);return d>=a&&d<=b};const cur=cs.filter(c=>inR(c,start,end)),prev=cs.filter(c=>inR(c,pStart,pEnd));
+  const f=a=>({n:a.length,reach:a.reduce((s,c)=>s+c.reach,0),medReach:med(a.map(c=>c.reach)),rate:med(a.map(iRate)),saves:a.reduce((s,c)=>s+c.saves+c.shares,0),reels:a.filter(c=>c.kind==="reel").length});
+  return{start,end,pStart,pEnd,cur:f(cur),prev:f(prev)}}
+const evid=(c,extra="")=>({text:`${fmtOf(c)} del ${fmtDT(c.date)} · “${firstLine(c.caption).slice(0,70)||"sin texto"}” · alcance ${nf(c.reach)}, interacción ${pct(iRate(c))}${extra}`,url:c.url});
+
+/* Diagnóstico basado solo en datos (sin cifras inventadas) */
+function diagnose(sn){const out={bien:[],mejorar:[],debil:[],actions:[],missing:[],n:0,period:null};if(!sn)return out;
+  const cs=contentsOf(sn).filter(c=>c.reach>0);out.n=cs.length;if(!cs.length)return out;
+  const reels=cs.filter(c=>c.kind==="reel"),feed=cs.filter(c=>c.kind!=="reel");
+  const dates=cs.map(c=>String(c.date).slice(0,10)).sort();out.period={from:dates[0],to:dates[dates.length-1]};
+  // 1 · formatos
+  if(reels.length>=3&&feed.length>=3){const mR=med(reels.map(c=>c.reach)),mF=med(feed.map(c=>c.reach)),rR=med(reels.map(iRate)),rF=med(feed.map(iRate));
+    const f={title:mR>mF?"Los Reels te dan más alcance que las publicaciones fijas":"Tus publicaciones fijas alcanzan tanto como tus Reels",
+      detail:`Alcance mediano por Reel: ${nf(mR)} personas (${reels.length} Reels). Por foto o carrusel: ${nf(mF)} (${feed.length} publicaciones). Interacción mediana: Reels ${pct(rR)}, feed ${pct(rF)}.`,
+      evidence:[],conf:confOf(Math.min(reels.length,feed.length)),missing:"Metricool no reporta en el mismo conjunto el alcance de Stories por pieza."};(mR>=mF*1.2?out.bien:out.mejorar).push(f)}
+  // 2 · top alcance
+  const top=[...cs].sort((a,b)=>b.reach-a.reach).slice(0,3);const third=top.filter(credited);
+  out.bien.push({title:"Tus tres contenidos con más alcance",detail:`Mediana de la cuenta: ${nf(med(cs.map(c=>c.reach)))} personas por contenido. Estos tres la superan con claridad.${third.length?` Ojo: ${third.length} de ellos usa contenido de otra cuenta (dice “Crédito: @…”); su alcance no se puede atribuir a una producción propia.`:""}`,
+    evidence:top.map(c=>evid(c,credited(c)?" · contenido de terceros":"")),conf:"alta",missing:""});
+  // 3 · guardados y compartidos
+  const sv=cs.filter(c=>c.reach>=150).sort((a,b)=>svRate(b)-svRate(a)).slice(0,3);
+  if(sv.length&&svRate(sv[0])>0)out.bien.push({title:"Lo que tu audiencia guarda y comparte",detail:`Guardados + compartidos por cada 100 personas alcanzadas. Mediana de la cuenta: ${pct(med(cs.map(svRate)))}. Temas de estos contenidos: ${[...new Set(sv.flatMap(themesOf))].join(", ")}.`,
+    evidence:sv.map(c=>evid(c,` · guardados+compartidos ${pct(svRate(c))}`)),conf:confOf(cs.filter(c=>c.reach>=150).length),missing:""});
+  // 4 · temas
+  const th=groupStats(cs,themesOf).filter(g=>g.n>=3&&g.key!=="Sin clasificar");const base=med(cs.map(c=>c.reach));
+  if(th.length>=2){const best=th[0],worst=th[th.length-1];
+    out.bien.push({title:`El tema que más atención atrae: ${best.key}`,detail:`Alcance mediano ${nf(best.reach)} vs ${nf(base)} de toda la cuenta; interacción mediana ${pct(best.rate)} (${best.n} contenidos). El tema se detecta por palabras del copy.`,evidence:[...best.items].sort((a,b)=>b.reach-a.reach).slice(0,3).map(c=>evid(c)),conf:confOf(best.n),missing:"Clasificación automática por texto: revisa que cada pieza esté bien asignada."});
+    if(worst.reach<base)out.mejorar.push({title:`Tema con menor alcance: ${worst.key}`,detail:`Alcance mediano ${nf(worst.reach)} vs ${nf(base)} de la cuenta (${worst.n} contenidos). No significa que no venda: Metricool no conecta publicaciones con ventas.`,evidence:[...worst.items].sort((a,b)=>a.reach-b.reach).slice(0,2).map(c=>evid(c)),conf:confOf(worst.n),missing:"Ventas o mensajes atribuibles a cada pieza."});
+    out._bestTheme=best.key}
+  // 5 · hooks (retención a 3 s)
+  const hk=groupStats(reels,hookType).filter(g=>g.n>=3&&g.viewRate!=null).sort((a,b)=>b.viewRate-a.viewRate);
+  if(hk.length>=2){const b=hk[0],w=hk[hk.length-1];
+    out.bien.push({title:`Hook que más retiene: ${b.key}`,detail:`En los Reels que empiezan con “${b.key}”, ${pct(b.viewRate)} de las reproducciones superaron los 3 segundos (mediana de ${b.n} Reels). Con “${w.key}”: ${pct(w.viewRate)} (${w.n} Reels).`,evidence:[...b.items].sort((x,y)=>(y.viewRate||0)-(x.viewRate||0)).slice(0,3).map(c=>evid(c,` · retención a 3 s ${pct(c.viewRate)}`)),conf:confOf(Math.min(b.n,w.n)),missing:"La primera línea del copy se usa como aproximación del hook; el texto en pantalla del video no está en Metricool."});
+    if(confOf(Math.min(b.n,w.n))!=="baja")out._bestHook=b.key}
+  // 6 · se deslizan pronto
+  const skip=med(reels.map(c=>c.skipRate));
+  if(skip!=null&&skip>50){const best=[...reels].filter(c=>c.skipRate!=null).sort((a,b)=>a.skipRate-b.skipRate)[0];
+    out.debil.push({title:"La mayoría desliza antes de ver tu Reel",detail:`Tasa de salto mediana: ${pct(skip)} de quienes vieron el Reel lo pasaron en los primeros segundos (${reels.length} Reels). Tu mejor caso: ${pct(best.skipRate)}.`,evidence:[evid(best,` · salto ${pct(best.skipRate)}`)],conf:confOf(reels.length),missing:""});out._skip=skip}
+  // 7 · pedir comentarios
+  const ask=cs.filter(c=>/coment[ae]/i.test(c.caption||""));
+  if(ask.length>=3){const avgC=avgOf(ask.map(c=>c.comments));if(avgC<2)out.debil.push({title:"Pedir “Comenta CATÁLOGO” casi no genera comentarios",detail:`${ask.length} contenidos piden comentar; promedio de ${nf(avgC)} comentarios por pieza. No hay forma de verificar desde Metricool cuántos mensajes directos llegaron.`,evidence:ask.slice(0,3).map(c=>evid(c,` · ${nf(c.comments)} comentarios`)),conf:confOf(ask.length),missing:"Mensajes directos y ventas por publicación."});out._askWeak=avgC<2}
+  // 8 · constancia
+  const last=dates[dates.length-1];const gap=Math.round((parseD(today())-parseD(last))/864e5);
+  const last90=cs.filter(c=>String(c.date).slice(0,10)>=addD(today(),-90)).length;
+  if(gap>7)out.debil.push({title:`Llevas ${gap} días sin publicar en Instagram`,detail:`Última publicación registrada: ${fmtDT(last)}. En los últimos 90 días hubo ${last90} contenidos (${nf(last90/13)} por semana).`,evidence:[],conf:"alta",missing:"Si publicaste desde otra herramienta y Metricool no lo registró, actualiza los datos."});
+  // 9 · días y horarios
+  const bk=groupStats(cs,c=>{const h=hourOf(c);const b=BUCKETS.find(([,a,z])=>h>=a&&h<z);return b?b[0]:null}).filter(g=>g.n>=3);
+  if(bk.length>=2)out.mejorar.push({title:`Horario con más alcance: ${bk[0].key}`,detail:bk.map(g=>`${g.key}: ${nf(g.reach)} de alcance mediano (${g.n})`).join(" · ")+". Hora de publicación según Metricool (Ciudad de México).",evidence:[],conf:confOf(bk[bk.length-1].n),missing:"Pocas piezas por franja: tómalo como tendencia, no como regla."});
+  // datos faltantes
+  if(!sn.links)out.missing.push("Clics en el enlace del perfil: Metricool no devolvió datos de toques en enlaces para este periodo.");
+  out.missing.push("Mensajes directos y ventas por publicación: Metricool no los relaciona con cada pieza; no se afirma que una publicación haya generado ventas.");
+  out.missing.push("Facebook: este diagnóstico usa solo Instagram.");
+  if(!S.competitors.some(c=>c.metricool))out.missing.push("Competencia: todavía no hay competidores con métricas de Metricool para comparar.");
+  // 3 acciones
+  const A=[];
+  if(out._bestTheme||out._bestHook)A.push({title:`Produce 2 Reels de “${out._bestTheme||"tu mejor tema"}”${out._bestHook?` que empiecen con un hook tipo “${out._bestHook}”`:""}`,why:"Combina el tema con más alcance y el arranque que más retiene en tus propios datos.",metric:"Meta: superar el alcance mediano de tus Reels ("+nf(med(reels.map(c=>c.reach)))+") y la retención a 3 s mediana ("+pct(med(reels.map(c=>c.viewRate)))+")."});
+  if(out._skip!=null)A.push({title:"Rehaz los primeros 2 segundos: muestra el resultado terminado antes que el producto",why:`La tasa de salto mediana es ${pct(out._skip)}.`,metric:"Meta: bajar la tasa de salto por debajo de "+pct(Math.max(35,out._skip-10))+"."});
+  if(gap>7)A.push({title:"Vuelve a publicar esta semana: 3 piezas aprobadas en el calendario",why:`Hay ${gap} días sin contenido nuevo.`,metric:"Meta: 3 publicaciones en 7 días."});
+  if(out._askWeak&&A.length<3)A.push({title:"Cambia “Comenta CATÁLOGO” por un llamado a guardar o a escribir por WhatsApp",why:"Las invitaciones a comentar casi no generan comentarios en tus datos.",metric:"Meta: más guardados por pieza que la mediana actual ("+pct(med(cs.map(svRate)))+")."});
+  if(A.length<3)A.push({title:"Repite el formato de tu pieza más guardada con otro producto real",why:"Lo guardado indica utilidad para decoradoras.",metric:"Meta: guardados + compartidos sobre la mediana."});
+  out.actions=A.slice(0,3);return out}
+
+/* ---------- Vistas de inteligencia ---------- */
+function snapLine(sn){return sn?`<p class="src">Fuente: ${esc(sn.source)} · cuenta @${esc(sn.account||"")} · consultado el ${fmtDT(sn.fetchedAt)} · periodo ${fmtDT(sn.from)} – ${fmtDT(sn.to)}</p>`:`<p class="src">Todavía no hay datos de Metricool guardados.</p>`}
+function mcButton(main,id,onDone){getMcp().then(m=>{const b=$("#"+id,main);if(!b)return;if(!m){b.disabled=true;b.title="Disponible al abrir la app como Artifact en claude.ai";return}
+  b.onclick=async()=>{const st=$("#"+id+"_st",main);b.disabled=true;try{await onDone(st)}catch(e){st.textContent=mcErr(e)}finally{b.disabled=false}}})}
+const thumbImg=(u,alt,fb)=>{const t=esc(String(fb||"Sin miniatura").slice(0,80));return u?`<img src="${esc(u)}" alt="${esc(alt||"")}" loading="lazy" referrerpolicy="no-referrer" data-fb="${t}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'noimg',textContent:this.dataset.fb}))">`:`<span class="noimg">${t}</span>`};
+
+VIEWS.intel=main=>{const sn=latestSnap();const d=diagnose(sn);
+  const insp=S.inspo.filter(x=>x.status!=="descartar").length,ideas=S.ideabank.filter(x=>x.status!=="descartada").length,appr=S.ideabank.filter(x=>x.status==="aprobada").length;
+  main.innerHTML=head("Centro de inteligencia","Investiga, aprende y decide antes de crear. Todo dato muestra su fuente y su fecha.",`<button id="mc_go" class="primary">Actualizar desde Metricool</button>`)+
+  `<p class="src" id="mc_go_st"></p>${snapLine(sn)}
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:14px 0">
+   <a class="kpi" href="#analisis"><b style="font-size:1.6rem">${nf(d.n)}</b>contenidos analizados</a>
+   <a class="kpi" href="#competencia"><b style="font-size:1.6rem">${S.competitors.length}</b>cuentas de competencia</a>
+   <a class="kpi" href="#inspiracion"><b style="font-size:1.6rem">${insp}</b>inspiraciones activas</a>
+   <a class="kpi" href="#banco"><b style="font-size:1.6rem">${ideas}</b>ideas (${appr} aprobadas)</a>
+   <a class="kpi" href="#calendario"><b style="font-size:1.6rem">${S.items.filter(i=>i.date&&i.date.slice(0,7)===today().slice(0,7)).length}</b>piezas en el calendario del mes</a></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+   <section class="panel"><div class="eyebrow">Paso 1</div><h2>Analiza tus resultados</h2><p>Formatos, temas, hooks y horarios con datos de Metricool.</p><a class="btn" href="#analisis">Ver mis resultados</a> <a class="btn" href="#diagnostico">Qué hago bien / qué mejorar</a></section>
+   <section class="panel"><div class="eyebrow">Paso 2</div><h2>Investiga y guarda inspiración</h2><p>Competencia por categoría y un tablero con tus referencias.</p><a class="btn" href="#competencia">Competencia</a> <a class="btn" href="#inspiracion">Inspiración</a></section>
+   <section class="panel"><div class="eyebrow">Paso 3</div><h2>Decide qué producir</h2><p>Ideas con hook, evidencia y datos faltantes. Tú eliges cuáles pasan al calendario.</p><a class="btn" href="#banco">Banco de ideas</a> <a class="btn" href="#calendario">Calendario</a></section></div>
+  ${d.actions.length?`<section class="panel" style="margin-top:16px"><div class="eyebrow">Prioridades sugeridas por tus datos</div><ol>${d.actions.map(a=>`<li><b>${esc(a.title)}</b><br><span class="src">${esc(a.why)} ${esc(a.metric)}</span></li>`).join("")}</ol><a href="#diagnostico">Ver evidencia completa →</a></section>`:""}
+  ${S.learnings.length?`<section class="panel" style="margin-top:16px"><div class="eyebrow">Memoria: decisiones y aprendizajes</div><ul class="log" style="color:var(--fg);font-size:.84rem">${[...S.learnings].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,8).map(l=>`<li><b>${esc(l.text)}</b> <span class="src">· ${esc(l.kind)} · ${esc(l.source||"")} · ${fmtDT(l.createdAt)}</span></li>`).join("")}</ul></section>`:""}`;
+  mcButton(main,"mc_go",async st=>{const r=await mcRefresh(st);st.textContent=`Listo: ${r.reels.length} Reels y ${r.posts.length} publicaciones guardadas (${fmtDT(r.fetchedAt)}).`;setTimeout(route,900)})};
+
+/* --- Mis resultados --- */
+VIEWS.analisis=main=>{const sn=latestSnap();const cs=contentsOf(sn).filter(c=>c.reach>0);S.anDays=S.anDays||45;
+  if(!cs.length){main.innerHTML=head("Mis resultados","Análisis de tu Instagram con datos de Metricool.",`<button id="mc_an" class="primary">Traer datos de Metricool</button>`)+`<p class="src" id="mc_an_st"></p><div class="empty">Sin datos todavía.</div>`;mcButton(main,"mc_an",async st=>{await mcRefresh(st);route()});return}
+  const pc=periodCompare(cs,S.anDays);const delta=(a,b)=>b?((a-b)/b*100):null;
+  const tbl=(rows,cols)=>`<div style="overflow-x:auto"><table class="tbl"><thead><tr>${cols.map(c=>`<th>${c[0]}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td class="${c[2]||""}">${c[1](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const gcols=[["Grupo",g=>esc(g.key)],["Piezas",g=>g.n,"n"],["Alcance mediano",g=>nf(g.reach),"n"],["Interacción mediana",g=>pct(g.rate),"n"],["Guardados+compartidos",g=>pct(g.save),"n"],["Confianza",g=>`<span class="conf ${confOf(g.n)}">${confOf(g.n)}</span>`]];
+  const reels=cs.filter(c=>c.kind==="reel");
+  const topR=[...cs].sort((a,b)=>b.reach-a.reach).slice(0,10);
+  main.innerHTML=head("Mis resultados","Instagram de Balloon Store. Las cifras vienen de Metricool; los cálculos se explican al final.",`<button id="mc_an">Actualizar desde Metricool</button>`)+`<p class="src" id="mc_an_st"></p>${snapLine(sn)}
+  <section class="panel" style="margin-top:12px"><div class="row" style="justify-content:space-between"><h2>Periodos equivalentes</h2><label class="row">Ventana <select id="an_days">${[30,45,60,90].map(n=>`<option ${n===S.anDays?"selected":""} value="${n}">${n} días</option>`).join("")}</select></label></div>
+   ${tbl([["Periodo actual",pc.start,pc.end,pc.cur],["Periodo anterior",pc.pStart,pc.pEnd,pc.prev]],[["",r=>`<b>${r[0]}</b><br><span class="src">${fmtDT(r[1])} – ${fmtDT(r[2])}</span>`],["Piezas",r=>r[3].n,"n"],["Reels",r=>r[3].reels,"n"],["Alcance sumado",r=>nf(r[3].reach),"n"],["Alcance mediano",r=>nf(r[3].medReach),"n"],["Interacción mediana",r=>pct(r[3].rate),"n"],["Guardados+compartidos",r=>nf(r[3].saves),"n"]])}
+   <p class="src">Cambio de alcance sumado: ${pct(delta(pc.cur.reach,pc.prev.reach))}. Compara solo piezas publicadas dentro de cada ventana; si una ventana tiene pocas piezas, la diferencia no es concluyente.</p></section>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));margin-top:16px">
+   <section class="panel"><h2>Por formato</h2>${tbl(groupStats(cs,c=>c.format),gcols)}</section>
+   <section class="panel"><h2>Por tema</h2>${tbl(groupStats(cs,themesOf),gcols)}<p class="src">Tema detectado por palabras del copy; una pieza puede contar en dos temas.</p></section>
+   <section class="panel"><h2>Hooks de Reels</h2>${tbl(groupStats(reels,hookType).sort((a,b)=>(b.viewRate||0)-(a.viewRate||0)),[["Tipo de hook",g=>esc(g.key)],["Reels",g=>g.n,"n"],["Retención a 3 s",g=>pct(g.viewRate),"n"],["Salto",g=>pct(g.skip),"n"],["Alcance mediano",g=>nf(g.reach),"n"]])}<p class="src">Hook = primera línea del copy. Retención a 3 s = porcentaje de reproducciones de más de 3 segundos (Metricool, “reelsViewRate”).</p></section>
+   <section class="panel"><h2>Días y horarios</h2>${tbl(groupStats(cs,c=>{const h=hourOf(c);const b=BUCKETS.find(([,a,z])=>h>=a&&h<z);return b?b[0]:null}),gcols)}${tbl(groupStats(cs,c=>DIAS[dowOf(c)]),gcols)}</section></div>
+  <section class="panel" style="margin-top:16px"><h2>Contenidos con más alcance</h2>${tbl(topR,[["",c=>`<div style="width:56px">${thumbImg(c.img,"")}</div>`],["Contenido",c=>`<b>${esc(firstLine(c.caption).slice(0,90)||"(sin texto)")}</b><br><span class="src">${fmtOf(c)} · ${fmtDT(c.date)} · ${linkA(c.url,"ver original")}${credited(c)?" · contenido de terceros":""}</span>`],["Alcance",c=>nf(c.reach),"n"],["Interacción",c=>pct(iRate(c)),"n"],["Guardados",c=>nf(c.saves),"n"],["Compartidos",c=>nf(c.shares),"n"],["Comentarios",c=>nf(c.comments),"n"],["Retención 3 s",c=>pct(c.viewRate),"n"],["",c=>`<button data-toidea="${esc(c.id)}">Idea</button>`]])}</section>
+  <section class="panel" style="margin-top:16px"><h2>Cómo se calcula cada indicador</h2><ul class="src" style="font-size:.82rem">
+   <li><b>Alcance</b>: personas únicas que vieron la pieza (orgánico), dato de Metricool.</li>
+   <li><b>Interacción</b> = (me gusta + comentarios + guardados + compartidos) ÷ alcance × 100.</li>
+   <li><b>Guardados+compartidos</b> = (guardados + compartidos) ÷ alcance × 100: indica utilidad y recomendación.</li>
+   <li><b>Retención a 3 s</b> y <b>salto</b>: porcentajes que Metricool reporta por Reel.</li>
+   <li>Se usa la <b>mediana</b> (no el promedio) para que un solo Reel viral no distorsione el grupo.</li>
+   <li><b>Confianza</b>: alta con 10 piezas o más, media con 4 a 9, baja con menos de 4.</li>
+   <li><b>Clics y mensajes</b>: ${sn.links?"Metricool devolvió toques en enlaces del perfil.":"Metricool no devolvió toques en enlaces del perfil para este periodo; los mensajes directos no están disponibles por publicación."}</li></ul></section>`;
+  $("#an_days",main).onchange=e=>{S.anDays=+e.target.value;route()};
+  $$("[data-toidea]",main).forEach(b=>b.onclick=()=>{const c=cs.find(x=>x.id===b.dataset.toidea);ideaForm(null,{hook:firstLine(c.caption),refs:[{kind:"propio",label:`Mi ${fmtOf(c)} del ${fmtDT(c.date)}`,url:c.url}],evidence:evid(c).text,why:"Basada en una pieza propia con buen resultado.",format:c.kind==="reel"?"reel":"carrusel"})});
+  mcButton(main,"mc_an",async st=>{await mcRefresh(st);route()})};
+
+/* --- Diagnóstico --- */
+VIEWS.diagnostico=main=>{const sn=latestSnap();const d=diagnose(sn);
+  const card=(f,kind,i)=>`<article class="finding ${kind}"><div class="row" style="justify-content:space-between"><h3>${esc(f.title)}</h3><span class="conf ${f.conf}">${CONF_L[f.conf]}</span></div><p style="margin:0">${esc(f.detail)}</p>
+   ${f.evidence.length?`<ul class="ev">${f.evidence.map(e=>`<li>${esc(e.text)} ${linkA(e.url,"ver")}</li>`).join("")}</ul>`:""}${f.missing?`<p class="src">Falta: ${esc(f.missing)}</p>`:""}
+   <div class="row"><button data-learn="${kind}:${i}">Guardar como aprendizaje</button><button data-fidea="${kind}:${i}">Convertir en idea</button></div></article>`;
+  const sec=(t,arr,kind,empty)=>`<section style="margin-top:16px"><h2 style="margin-bottom:10px">${t}</h2><div class="grid">${arr.length?arr.map((f,i)=>card(f,kind,i)).join(""):`<p class="src">${empty}</p>`}</div></section>`;
+  main.innerHTML=head("Qué estoy haciendo bien / Qué debo mejorar","Hallazgos calculados con tus datos reales. Cada uno muestra su evidencia, su nivel de confianza y lo que falta saber.",`<button id="dg_ai">Redactar resumen con Claude</button>`)+snapLine(sn)+
+  (d.period?`<p class="src">Contenidos con alcance: ${d.n} · del ${fmtDT(d.period.from)} al ${fmtDT(d.period.to)}.</p>`:"")+
+  `<div id="dg_ai_out"></div>`+
+  sec("Lo que estás haciendo bien",d.bien,"bien","Sin datos suficientes.")+sec("Oportunidades",d.mejorar,"mejorar","Sin oportunidades detectadas con los datos actuales.")+sec("Puntos débiles",d.debil,"debil","No se detectaron puntos débiles con los datos actuales.")+
+  `<section class="panel" style="margin-top:18px"><div class="eyebrow">Para la siguiente semana</div><h2>Tres acciones prioritarias</h2><ol>${d.actions.map((a,i)=>`<li style="margin-bottom:8px"><b>${esc(a.title)}</b><br><span class="src">Por qué: ${esc(a.why)} ${esc(a.metric)}</span><br><button data-aidea="${i}" style="margin-top:4px">Convertir en idea</button></li>`).join("")}</ol></section>
+  <section class="panel" style="margin-top:16px"><h2>Datos faltantes</h2><ul>${d.missing.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></section>`;
+  const pickF=k=>{const[kind,i]=k.split(":");return d[kind][+i]};
+  $$("[data-learn]",main).forEach(b=>b.onclick=async()=>{const f=pickF(b.dataset.learn);await saveDoc("learnings",{id:uid(),kind:"aprendizaje",text:f.title,detail:f.detail,evidence:f.evidence,source:`Diagnóstico con datos de Metricool (${fmtDT(sn&&sn.fetchedAt)})`,createdAt:nowISO()});toast("Aprendizaje guardado en la memoria")});
+  $$("[data-fidea]",main).forEach(b=>b.onclick=()=>{const f=pickF(b.dataset.fidea);ideaForm(null,{hook:"",why:f.title+". "+f.detail,evidence:f.evidence.map(e=>e.text).join("\n"),refs:f.evidence.map(e=>({kind:"propio",label:e.text.slice(0,60),url:e.url})),missing:f.missing})});
+  $$("[data-aidea]",main).forEach(b=>b.onclick=()=>{const a=d.actions[+b.dataset.aidea];ideaForm(null,{hook:"",topic:a.title,why:a.why,evidence:a.metric})});
+  getSample().then(smp=>{const b=$("#dg_ai",main);if(!b)return;if(!smp){b.disabled=true;b.title="Disponible como Artifact en claude.ai";return}
+    b.onclick=async()=>{const out=$("#dg_ai_out",main);out.innerHTML=`<p><span class="spin"></span>Claude está redactando con tus datos…</p>`;
+      const data={hallazgos_bien:d.bien.map(f=>({titulo:f.title,detalle:f.detail,confianza:f.conf})),oportunidades:d.mejorar.map(f=>({titulo:f.title,detalle:f.detail,confianza:f.conf})),debilidades:d.debil.map(f=>({titulo:f.title,detalle:f.detail,confianza:f.conf})),acciones:d.actions,faltantes:d.missing};
+      try{const r=await smp(`Eres analista de redes sociales de Balloon Store (distribuidor de globos en México; público: decoradoras, tiendas de fiestas y revendedores). Redacta en español de México un resumen de 120 a 180 palabras para la dueña, con tono claro y práctico. Usa SOLO las cifras del JSON; no inventes métricas, ventas ni causas. Si la confianza es baja, dilo. Termina con las tres acciones en una lista corta.\n\nJSON:\n${JSON.stringify(data)}`,{modelTier:"default",cache:false});
+        out.innerHTML=`<section class="panel" style="margin-top:12px"><div class="eyebrow">Redacción de Claude con los datos de esta página</div><p style="white-space:pre-wrap">${esc(r.text)}</p></section>`}
+      catch(e){out.innerHTML=`<p class="err">${esc((AI_ERR&&AI_ERR[e&&e.code])||"Claude no respondió ("+((e&&e.code)||"error")+").")}</p>`}}})};
+
+/* --- Competencia --- */
+function compForm(c){const isNew=!c;c=c||{id:uid(),handle:"",name:"",platform:"instagram",category:S.compTab||"distribuidores",url:"",notes:"",observations:[],createdAt:nowISO()};
+  dlgOpen(isNew?"Agregar cuenta":"Editar cuenta",`<div class="grid" style="grid-template-columns:1fr 1fr">
+   <label>Usuario o nombre<input name="handle" required value="${esc(c.handle)}" placeholder="@cuenta"></label><label>Red<select name="platform">${optList([["instagram","Instagram"],["facebook","Facebook"]],c.platform)}</select></label>
+   <label>Categoría<select name="category">${optList(COMP_CATS,c.category)}</select></label><label>Enlace al perfil<input name="url" type="url" value="${esc(c.url)}" placeholder="https://instagram.com/…"></label>
+   <label>Seguidores (si los ves)<input name="fol" inputmode="numeric" value="${esc(c.manual&&c.manual.followers!=null?c.manual.followers:"")}"></label><label>Publicaciones totales<input name="posts" inputmode="numeric" value="${esc(c.manual&&c.manual.posts!=null?c.manual.posts:"")}"></label>
+   <label>Fuente de esas cifras<input name="msrc" value="${esc(c.manual&&c.manual.source||"Perfil público visto por mí")}"></label><label>Fecha de consulta<input name="mdate" type="date" value="${esc(c.manual&&c.manual.date||today())}"></label></div>
+   <label>Notas: estilo, temas, por qué la sigo<textarea name="notes" rows="3">${esc(c.notes)}</textarea></label>`,async f=>{
+    const h=fv(f,"handle").replace(/^@/,"");c.handle=h;c.name=c.name||h;c.platform=fv(f,"platform");c.category=fv(f,"category");c.url=fv(f,"url")||(c.platform==="instagram"?"https://instagram.com/"+h:"");c.notes=fv(f,"notes");
+    const fo=fv(f,"fol"),po=fv(f,"posts");if(fo||po)c.manual={followers:fo?+fo.replace(/\D/g,""):null,posts:po?+po.replace(/\D/g,""):null,source:fv(f,"msrc"),date:fv(f,"mdate")};
+    await saveDoc("competitors",c);toast("Cuenta guardada");route()})}
+function obsForm(c,o){const isNew=!o;o=o||{id:uid(),date:today(),url:"",format:"reel",theme:"",hook:"",style:"",metrics:"",metricsSource:"Vista pública del post",adapt:"",createdAt:nowISO()};
+  dlgOpen("Observación de @"+c.handle,`<div class="grid" style="grid-template-columns:1fr 1fr">
+   <label>Enlace original<input name="url" type="url" value="${esc(o.url)}" placeholder="https://www.instagram.com/reel/…"></label><label>Fecha de la observación<input name="date" type="date" value="${esc(o.date)}"></label>
+   <label>Formato<select name="format">${optList([["reel","Reel"],["carrusel","Carrusel"],["foto","Foto"],["story","Story"]],o.format)}</select></label><label>Tema<input name="theme" value="${esc(o.theme)}"></label></div>
+   <label>Hook observado (primeras palabras o texto en pantalla)<input name="hook" value="${esc(o.hook)}"></label>
+   <label>Estilo visual<input name="style" value="${esc(o.style)}" placeholder="Fondo, luz, ritmo, tipografía…"></label>
+   <div class="grid" style="grid-template-columns:1fr 1fr"><label>Métricas públicas tal como aparecen<input name="metrics" value="${esc(o.metrics)}" placeholder="Ej. 1,240 me gusta · 35 comentarios"></label><label>Fuente de las métricas<input name="msrc" value="${esc(o.metricsSource)}"></label></div>
+   <label>Qué podríamos adaptar a Balloon Store (sin copiar)<textarea name="adapt" rows="3">${esc(o.adapt)}</textarea></label>`,async f=>{
+    Object.assign(o,{url:fv(f,"url"),date:fv(f,"date"),format:fv(f,"format"),theme:fv(f,"theme"),hook:fv(f,"hook"),style:fv(f,"style"),metrics:fv(f,"metrics"),metricsSource:fv(f,"msrc"),adapt:fv(f,"adapt")});
+    c.observations=c.observations||[];if(isNew)c.observations.unshift(o);await saveDoc("competitors",c);toast("Observación guardada");route()})}
+VIEWS.competencia=main=>{S.compTab=S.compTab||"distribuidores";const list=S.competitors.filter(c=>c.category===S.compTab);
+  const mc=c=>c.metricool?`<div class="src">Metricool (${fmtDT(c.metricool.fetchedAt)}, ${fmtDT(c.metricool.from)}–${fmtDT(c.metricool.to)}): ${nf(c.metricool.followers)} seguidores · ${nf(c.metricool.posts)} publicaciones y ${nf(c.metricool.reels)} Reels en el periodo · engagement ${nf(c.metricool.engagement)} por cada 1,000 seguidores</div>`:"";
+  const man=c=>c.manual?`<div class="src">${c.manual.followers!=null?nf(c.manual.followers)+" seguidores":""}${c.manual.posts!=null?" · "+nf(c.manual.posts)+" publicaciones":""} · fuente: ${esc(c.manual.source)} · ${fmtDT(c.manual.date)}</div>`:"";
+  const tops=c=>c.metricool&&(c.metricool.topReels.length||c.metricool.topPosts.length)?`<details><summary>Destacadas según Metricool</summary><ul class="ev">${[...c.metricool.topReels,...c.metricool.topPosts].sort((a,b)=>(b.interactions||0)-(a.interactions||0)).slice(0,6).map(p=>`<li>${esc(p.kind)} · ${fmtDT(p.date)} · ${nf(p.interactions)} interacciones · “${esc(firstLine(p.caption).slice(0,70))}” ${linkA(p.url,"ver")}</li>`).join("")}</ul></details>`:"";
+  main.innerHTML=head("Competencia","Cuentas para estudiar, con observaciones fechadas y enlace original. Las métricas solo se muestran cuando tienen fuente.",`<button id="cp_mc">Importar desde Metricool</button><button id="cp_add" class="primary">Agregar cuenta</button>`)+
+  `<p class="src" id="cp_mc_st"></p><div class="tabs">${COMP_CATS.map(([k,l])=>`<button data-tab="${k}" class="${k===S.compTab?"on":""}">${esc(l)} (${S.competitors.filter(c=>c.category===k).length})</button>`).join("")}</div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(340px,1fr))">${list.map(c=>`<section class="panel comp"><div class="acct"><div><h3 style="font-family:var(--serif);font-size:1.25rem">@${esc(c.handle)}</h3><div class="src">${esc(c.platform==="facebook"?"Facebook":"Instagram")} · ${linkA(c.url,"abrir perfil")}${c.status?` · ${esc(c.status)}`:""}</div></div><div class="row"><button data-cedit="${c.id}">Editar</button><button data-cobs="${c.id}" class="primary">+ Observación</button></div></div>
+   ${mc(c)}${man(c)}${c.notes?`<p style="margin:0;font-size:.86rem">${esc(c.notes)}</p>`:""}${c.sourceNote?`<p class="src">Origen: ${esc(c.sourceNote)}</p>`:""}${tops(c)}
+   ${(c.observations||[]).map(o=>`<div class="obs"><div class="row" style="justify-content:space-between"><b>${esc(label([["reel","Reel"],["carrusel","Carrusel"],["foto","Foto"],["story","Story"]],o.format))}${o.theme?" · "+esc(o.theme):""}</b><span class="src">${fmtDT(o.date)} ${linkA(o.url,"original")}</span></div>
+     ${o.hook?`<div>Hook: “${esc(o.hook)}”</div>`:""}${o.style?`<div class="src">Estilo: ${esc(o.style)}</div>`:""}${o.metrics?`<div class="src">Métricas públicas: ${esc(o.metrics)} · ${esc(o.metricsSource||"")}</div>`:""}${o.adapt?`<div>Adaptar: ${esc(o.adapt)}</div>`:""}
+     <div class="row"><button data-oedit="${c.id}:${o.id}">Editar</button><button data-oinsp="${c.id}:${o.id}">A inspiración</button><button data-oidea="${c.id}:${o.id}">Convertir en idea</button></div></div>`).join("")}
+   </section>`).join("")||`<div class="empty">Sin cuentas en esta categoría. Agrega una o impórtalas desde Metricool.</div>`}</div>
+  <section class="panel" style="margin-top:16px"><h2>Cómo obtener métricas verificables</h2><p class="src">El conector de Metricool lee competidores, pero solo los que das de alta en Metricool (sección Competidores, Instagram y Facebook). Agrégalos ahí y pulsa “Importar desde Metricool”: se guardan seguidores, publicaciones, Reels y las piezas con más interacción, con fecha y periodo. Sin Metricool, captura a mano lo que ves en el perfil e indica la fuente y la fecha. No se calculan ventas.</p></section>`;
+  $$("[data-tab]",main).forEach(b=>b.onclick=()=>{S.compTab=b.dataset.tab;route()});
+  $("#cp_add",main).onclick=()=>compForm(null);
+  $$("[data-cedit]",main).forEach(b=>b.onclick=()=>compForm(S.competitors.find(c=>c.id===b.dataset.cedit)));
+  $$("[data-cobs]",main).forEach(b=>b.onclick=()=>obsForm(S.competitors.find(c=>c.id===b.dataset.cobs)));
+  const co=k=>{const[ci,oi]=k.split(":");const c=S.competitors.find(x=>x.id===ci);return[c,(c.observations||[]).find(o=>o.id===oi)]};
+  $$("[data-oedit]",main).forEach(b=>b.onclick=()=>{const[c,o]=co(b.dataset.oedit);obsForm(c,o)});
+  $$("[data-oinsp]",main).forEach(b=>b.onclick=async()=>{const[c,o]=co(b.dataset.oinsp);await saveDoc("inspo",{id:uid(),type:o.format==="reel"?"reel":o.format==="carrusel"?"carrusel":"foto",url:o.url,creator:"@"+c.handle,category:"Otra",tags:[o.theme].filter(Boolean),notes:[o.hook&&"Hook: "+o.hook,o.style&&"Estilo: "+o.style,o.adapt&&"Adaptar: "+o.adapt].filter(Boolean).join("\n"),status:"investigar",source:`Observación de competencia (${fmtDT(o.date)})`,createdAt:nowISO()});toast("Guardada en Inspiración")});
+  $$("[data-oidea]",main).forEach(b=>b.onclick=()=>{const[c,o]=co(b.dataset.oidea);ideaForm(null,{hook:"",topic:o.theme,format:o.format==="reel"?"reel":"carrusel",refs:[{kind:"competencia",label:`@${c.handle} · ${fmtDT(o.date)}`,url:o.url}],why:o.adapt,evidence:o.metrics?`Métricas públicas: ${o.metrics} (${o.metricsSource}, ${fmtDT(o.date)})`:""})});
+  mcButton(main,"cp_mc",async st=>{const r=await mcCompetitors(st);st.textContent=r.accounts?`${r.accounts} cuenta(s) actualizadas desde Metricool.`:"Metricool no tiene competidores configurados en tu marca. Agrégalos en Metricool › Competidores y vuelve a intentarlo.";if(r.accounts)setTimeout(route,800)})};
+
+/* --- Inspiración --- */
+async function inspoThumb(x){if(x.thumbRef){try{return await Store.url(x.thumbRef)}catch(e){return""}}return x.thumbUrl||""}
+function inspoForm(x){const isNew=!x;x=x||{id:uid(),type:"reel",url:"",creator:"",category:"Otra",tags:[],notes:"",status:"guardar",createdAt:nowISO()};
+  dlgOpen(isNew?"Guardar inspiración":"Editar inspiración",`<div class="grid" style="grid-template-columns:1fr 1fr">
+   <label>Tipo<select name="type">${optList(INSPO_TYPES,x.type)}</select></label><label>Estado<select name="status">${optList(INSPO_ST,x.status)}</select></label>
+   <label>Enlace original<input name="url" type="url" value="${esc(x.url)}" placeholder="https://www.instagram.com/reel/…"></label><label>Creador<input name="creator" value="${esc(x.creator)}" placeholder="@cuenta"></label>
+   <label>Categoría<select name="category">${optList(INSPO_CATS,x.category)}</select></label><label>Etiquetas (separadas por coma)<input name="tags" value="${esc((x.tags||[]).join(", "))}"></label></div>
+   <label>Título corto<input name="title" value="${esc(x.title||"")}"></label>
+   <label>Notas: qué te gustó, hook, estilo<textarea name="notes" rows="4">${esc(x.notes)}</textarea></label>
+   <label>Miniatura: sube tu captura de pantalla<input name="file" type="file" accept="image/*"></label>
+   <p class="src">Instagram no permite leer miniaturas de publicaciones ajenas sin autorización; por eso la miniatura es tu propia captura. ${x.thumbRef?"Ya tiene miniatura.":""}</p>`,async f=>{
+    const file=f.elements.file.files[0];if(file){x.thumbRef=await Store.putBlob(file)}
+    Object.assign(x,{type:fv(f,"type"),status:fv(f,"status"),url:fv(f,"url"),creator:fv(f,"creator"),category:fv(f,"category"),tags:fv(f,"tags").split(",").map(s=>s.trim()).filter(Boolean),title:fv(f,"title"),notes:fv(f,"notes")});
+    if(!x.url&&!x.notes&&!x.thumbRef&&!x.title){toast("Agrega al menos un enlace, una nota o una captura");return false}
+    await saveDoc("inspo",x);toast("Inspiración guardada");route()})}
+function parseIgExport(json){const out=[];const seen=new Set();(function walk(n,ctx){if(!n)return;if(Array.isArray(n))return n.forEach(v=>walk(v,ctx));if(typeof n!=="object")return;
+  const title=typeof n.title==="string"?n.title:ctx;for(const[k,v]of Object.entries(n)){if(k==="href"&&typeof v==="string"&&/instagram\.com\/(p|reel|tv)\//.test(v)&&!seen.has(v)){seen.add(v);out.push({url:v,creator:title||"",ts:(n.timestamp||0)})}else walk(v,title)}})(json,"");return out}
+async function importInspo(urls,source){let n=0;for(const u of urls){const url=u.url.trim();if(!url||S.inspo.some(x=>x.url===url))continue;
+  await saveDoc("inspo",{id:uid(),type:/\/reel\//.test(url)?"reel":"enlace",url,creator:u.creator?(u.creator.startsWith("@")?u.creator:"@"+u.creator):"",category:"Otra",tags:[],notes:"",status:"guardar",source,createdAt:nowISO()});n++}return n}
+VIEWS.inspiracion=main=>{const fl=S.inspoFilter||{cat:"",st:""};S.inspoFilter=fl;
+  const list=S.inspo.filter(x=>(!fl.cat||x.category===fl.cat)&&(!fl.st?x.status!=="descartar":x.status===fl.st)).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  main.innerHTML=head("Biblioteca de inspiración","Reels, fotos, carruseles, enlaces, capturas e ideas propias. Marca cada una como Guardar, Investigar, Adaptar, Producir o Descartar.",`<button id="in_imp">Importar enlaces o exportación</button><button id="in_add" class="primary">Guardar inspiración</button>`)+
+  `<div class="row flt" style="margin-bottom:12px"><select id="in_cat" aria-label="Categoría"><option value="">Todas las categorías</option>${optList(INSPO_CATS,fl.cat)}</select><select id="in_st" aria-label="Estado"><option value="">Activas (sin descartadas)</option>${optList(INSPO_ST,fl.st)}</select><span class="src">${list.length} de ${S.inspo.length}</span></div>
+  <div class="masonry">${list.map(x=>`<article class="pin"><div class="ph" data-th="${x.id}"><span class="noimg">${esc(x.title||firstLine(x.notes).slice(0,60)||label(INSPO_TYPES,x.type))}</span></div><div class="bd">
+   <div class="row" style="justify-content:space-between"><span class="chip">${esc(label(INSPO_TYPES,x.type))}</span><span class="chip st-${x.status}">${esc(label(INSPO_ST,x.status))}</span></div>
+   <b>${esc(x.title||x.creator||"Inspiración")}</b><div class="src">${esc(x.creator||"")} · ${esc(x.category)} · ${fmtDT(x.createdAt)} ${linkA(x.url,"original")}</div>
+   ${x.notes?`<p style="margin:0;font-size:.8rem;white-space:pre-wrap">${esc(x.notes.slice(0,240))}${x.notes.length>240?"…":""}</p>`:""}${x.source?`<div class="src">Origen: ${esc(x.source)}</div>`:""}
+   ${(x.tags||[]).length?`<div class="tags">${x.tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
+   <div class="stsel">${INSPO_ST.map(([k,l])=>`<button data-ist="${x.id}:${k}" class="${x.status===k?"on":""}">${l}</button>`).join("")}</div>
+   <div class="row"><button data-iedit="${x.id}">Editar</button><button data-iidea="${x.id}" class="primary">Convertir en idea</button></div></div></article>`).join("")||`<div class="empty">Sin inspiraciones con este filtro.</div>`}</div>
+  <section class="panel" style="margin-top:16px"><h2>Sobre tus guardados de Instagram</h2><p class="src">No existe un acceso autorizado para leer tus publicaciones guardadas desde esta app, así que no hay sincronización automática. Puedes pegar enlaces (uno por línea) o subir el archivo <b>saved_posts.json</b> de la exportación de datos de Instagram (Configuración › Centro de cuentas › Tu información › Descargar tu información, formato JSON).</p></section>`;
+  $$("[data-th]",main).forEach(el=>{const x=S.inspo.find(i=>i.id===el.dataset.th);inspoThumb(x).then(u=>{if(u)el.innerHTML=thumbImg(u,x.title||"")})});
+  $("#in_cat",main).onchange=e=>{fl.cat=e.target.value;route()};$("#in_st",main).onchange=e=>{fl.st=e.target.value;route()};
+  $("#in_add",main).onclick=()=>inspoForm(null);
+  $$("[data-iedit]",main).forEach(b=>b.onclick=()=>inspoForm(S.inspo.find(x=>x.id===b.dataset.iedit)));
+  $$("[data-ist]",main).forEach(b=>b.onclick=async()=>{const[id,st]=b.dataset.ist.split(":");const x=S.inspo.find(i=>i.id===id);x.status=st;await saveDoc("inspo",x);route()});
+  $$("[data-iidea]",main).forEach(b=>b.onclick=()=>{const x=S.inspo.find(i=>i.id===b.dataset.iidea);ideaForm(null,{topic:x.title||"",refs:[{kind:"inspiracion",id:x.id,label:(x.creator||x.title||"Inspiración")+" · "+x.category,url:x.url}],why:x.notes,format:x.type==="reel"?"reel":"carrusel"})});
+  $("#in_imp",main).onclick=()=>dlgOpen("Importar inspiración",`<label>Enlaces (uno por línea)<textarea name="links" rows="6" placeholder="https://www.instagram.com/reel/…"></textarea></label><label>o archivo de exportación de Instagram (saved_posts.json)<input name="file" type="file" accept=".json,application/json"></label>`,async f=>{
+    let urls=fv(f,"links").split(/\s+/).filter(u=>/^https?:\/\//.test(u)).map(url=>({url}));const file=f.elements.file.files[0];
+    if(file){try{urls=urls.concat(parseIgExport(JSON.parse(await file.text())))}catch(e){toast("El archivo no es un JSON válido");return false}}
+    const n=await importInspo(urls,file?"Exportación de Instagram":"Enlaces pegados");toast(`${n} inspiración(es) nuevas`);route()},{saveLabel:"Importar"})};
+
+/* ---------- Banco inteligente de ideas y hooks ---------- */
+const AUDS=[["decoradoras","Decoradoras"],["tiendas de fiestas","Tiendas de fiestas"],["revendedores","Revendedores"],["clientes finales","Clientes finales"]];
+const refHTML=r=>`<li>${esc(r.label||r.kind)} ${linkA(r.url,"original")}</li>`;
+function ideaForm(x,preset={}){const isNew=!x;x=x||Object.assign({id:uid(),hook:"",objective:"educar",audience:"decoradoras",productId:"",topic:"",format:"reel",refs:[],why:"",evidence:"",missing:"",script:"",shots:"",cta:"",status:"guardada",priority:"media",notes:"",createdAt:nowISO(),source:"manual"},preset);
+  const cats=[...S.catalog].sort((a,b)=>a.title.localeCompare(b.title));
+  dlgOpen(isNew?"Nueva idea":"Editar idea",`<label>Hook (primera frase o texto en pantalla)<input name="hook" value="${esc(x.hook)}" required></label>
+   <div class="grid" style="grid-template-columns:1fr 1fr 1fr"><label>Objetivo<select name="objective">${optList(IDEA_OBJ,x.objective)}</select></label><label>Público<select name="audience">${optList(AUDS,x.audience)}</select></label><label>Formato<select name="format">${optList(TYPES,x.format)}</select></label>
+   <label>Producto real<select name="productId"><option value="">— Sin producto —</option>${cats.map(p=>`<option value="${esc(p.id)}" ${p.id===x.productId?"selected":""}>${esc(p.title)}</option>`).join("")}</select></label><label>Tema<input name="topic" value="${esc(x.topic)}"></label><label>Prioridad<select name="priority">${optList(PRI,x.priority)}</select></label></div>
+   <label>Guion propuesto<textarea name="script" rows="4">${esc(x.script)}</textarea></label>
+   <div class="grid" style="grid-template-columns:1fr 1fr"><label>Tomas o fotos necesarias<textarea name="shots" rows="3">${esc(x.shots)}</textarea></label><label>CTA<textarea name="cta" rows="3">${esc(x.cta)}</textarea></label>
+   <label>Por qué puede funcionar con nuestro público<textarea name="why" rows="3">${esc(x.why)}</textarea></label><label>Datos que la respaldan<textarea name="evidence" rows="3">${esc(x.evidence)}</textarea></label></div>
+   <label>Datos que faltan por confirmar<input name="missing" value="${esc(x.missing)}"></label>
+   ${(x.refs||[]).length?`<div><b style="font-size:.8rem">Referencias</b><ul class="ev">${x.refs.map(refHTML).join("")}</ul></div>`:""}
+   <label>Agregar enlace de referencia<input name="refurl" type="url" placeholder="https://…"></label>
+   <label>Estado<select name="status">${optList(IDEA_ST,x.status)}</select></label>`,async f=>{
+    ["hook","objective","audience","format","productId","topic","priority","script","shots","cta","why","evidence","missing","status"].forEach(k=>x[k]=fv(f,k));
+    const ru=fv(f,"refurl");if(ru)x.refs=[...(x.refs||[]),{kind:"enlace",label:"Referencia",url:ru}];
+    await saveDoc("ideabank",x);toast("Idea guardada");if((location.hash||"")==="#banco")route();else location.hash="#banco"},{wide:true})}
+function ideaPrompt(srcs,n,format,prod){const cat=S.catalog.map(p=>({id:p.id,titulo:p.title,tipo:p.type||"",url:p.url||""}));
+  return`Eres estratega de contenido de Balloon Store (distribuidor de globos en México: Anagram, Kaleidoscope y látex Sensacional; público: decoradoras, tiendas de fiestas y revendedores; sitio balloonstoreco.com).
+Propón exactamente ${n} ideas de contenido ADAPTADAS a Balloon Store a partir de las FUENTES. Reglas:
+- No copies hooks, textos ni diseños de otras cuentas: adapta la mecánica o el aprendizaje.
+- Usa solo productos del CATÁLOGO (por id). No inventes precios, existencias, medidas ni promociones.
+- Cada idea debe citar los ids de las fuentes que la originan y explicar con datos de esas fuentes por qué puede funcionar. Si no hay datos, dilo en "faltan".
+- Formato preferido: ${format||"el que mejor convenga (reel, carrusel o story)"}.${prod?`\n- Producto principal: ${prod}.`:""}
+- Español de México, tono cercano y profesional.
+Responde SOLO un JSON: {"ideas":[{"hook":"","objetivo":"educar|atraer|interactuar|vender","publico":"decoradoras|tiendas de fiestas|revendedores|clientes finales","formato":"reel|carrusel|story","producto_id":"","tema":"","guion":"","tomas":"","cta":"","por_que":"","datos":"","faltan":"","fuentes":["id"]}]}
+
+FUENTES:
+${JSON.stringify(srcs)}
+
+CATÁLOGO:
+${JSON.stringify(cat)}`}
+function ideaSources(){const d=diagnose(latestSnap());const out=[];
+  [...d.bien,...d.mejorar,...d.debil].forEach((f,i)=>out.push({id:"dx"+i,tipo:"hallazgo de mis métricas",titulo:f.title,detalle:f.detail,confianza:f.conf,label:f.title,url:(f.evidence[0]||{}).url||""}));
+  S.inspo.filter(x=>["investigar","adaptar","producir"].includes(x.status)).forEach(x=>out.push({id:"in_"+x.id,tipo:"inspiración guardada",titulo:x.title||"",creador:x.creator,categoria:x.category,notas:x.notes,label:(x.creator||x.title||"Inspiración")+" · "+x.category,url:x.url,ref:{kind:"inspiracion",id:x.id}}));
+  S.competitors.forEach(c=>(c.observations||[]).forEach(o=>out.push({id:"ob_"+o.id,tipo:"observación de competencia",cuenta:"@"+c.handle,hook:o.hook,tema:o.theme,estilo:o.style,metricas:o.metrics,adaptar:o.adapt,label:`@${c.handle} · ${fmtDT(o.date)}`,url:o.url})));
+  return out}
+function genIdeasDlg(){const srcs=ideaSources();
+  if(!srcs.length){toast("Primero guarda inspiraciones, observaciones o datos de Metricool");return}
+  dlgOpen("Generar ideas con evidencia",`<p class="src">Claude solo usa las fuentes que marques. Las ideas se guardan como “Nueva”: nada pasa al calendario sin que lo apruebes.</p>
+   <div style="max-height:300px;overflow:auto;display:grid;gap:4px">${srcs.map(s=>`<label class="row" style="font-weight:400;font-size:.82rem;align-items:flex-start"><input type="checkbox" name="src" value="${esc(s.id)}" ${s.id.startsWith("dx")&&+s.id.slice(2)<3?"checked":""} style="width:auto"> <span><b>${esc(s.tipo)}</b>: ${esc(s.label)}</span></label>`).join("")}</div>
+   <div class="grid" style="grid-template-columns:1fr 1fr 1fr"><label>Cuántas ideas<select name="n">${[1,2,3,4,5].map(n=>`<option ${n===3?"selected":""}>${n}</option>`).join("")}</select></label><label>Formato<select name="format"><option value="">Cualquiera</option>${optList(TYPES,"")}</select></label>
+   <label>Producto<select name="prod"><option value="">Que Claude elija del catálogo</option>${S.catalog.map(p=>`<option value="${esc(p.title)}">${esc(p.title)}</option>`).join("")}</select></label></div><p class="src" id="gi_st"></p>`,async f=>{
+    const ids=[...f.querySelectorAll('[name="src"]:checked')].map(i=>i.value);if(!ids.length){toast("Marca al menos una fuente");return false}
+    const chosen=srcs.filter(s=>ids.includes(s.id)).map(({label,ref,...s})=>s);const smp=await getSample();if(!smp){toast("Claude no está disponible en esta vista");return false}
+    const st=$("#gi_st",f);st.innerHTML=`<span class="spin"></span>Generando…`;
+    try{const data=await smp.json(ideaPrompt(chosen,+fv(f,"n"),fv(f,"format"),fv(f,"prod")),{modelTier:"default",cache:false});const arr=(data&&data.ideas)||[];let n=0;
+      for(const g of arr.slice(0,5)){const refs=(g.fuentes||[]).map(id=>srcs.find(s=>s.id===id)).filter(Boolean).map(s=>s.ref?{...s.ref,label:s.label,url:s.url}:{kind:s.id.startsWith("dx")?"propio":"competencia",label:s.label,url:s.url});
+        const pid=S.catalog.some(p=>p.id===g.producto_id)?g.producto_id:"";
+        await saveDoc("ideabank",{id:uid(),hook:String(g.hook||""),objective:IDEA_OBJ.some(o=>o[0]===g.objetivo)?g.objetivo:"educar",audience:String(g.publico||"decoradoras"),format:TYPES.some(t=>t[0]===g.formato)?g.formato:"reel",productId:pid,topic:String(g.tema||""),script:String(g.guion||""),shots:String(g.tomas||""),cta:String(g.cta||""),why:String(g.por_que||""),evidence:String(g.datos||""),missing:[String(g.faltan||""),g.producto_id&&!pid?"El producto sugerido no está en el catálogo.":""].filter(Boolean).join(" "),refs,status:"nueva",priority:"media",source:"Claude con fuentes elegidas",createdAt:nowISO()});n++}
+      toast(`${n} idea(s) nuevas para revisar`);route()}catch(e){st.textContent=(AI_ERR&&AI_ERR[e&&e.code])||"Claude no respondió ("+((e&&e.code)||"error")+")";return false}},{saveLabel:"Generar",wide:true})}
+async function ideaToPost(x){dlgOpen("Llevar al calendario",`<p>Se creará una publicación en <b>borrador</b> con el hook, guion, CTA, referencias y evidencia de esta idea.</p>
+   <div class="grid" style="grid-template-columns:1fr 1fr"><label>Formato<select name="type">${optList(TYPES,x.format||"carrusel")}</select></label><label>Fecha<input name="date" type="date" value="${esc(addD(today(),1))}"></label></div>`,async f=>{
+    const type=fv(f,"type");const prod=catById(x.productId);
+    const it=newItem({type,title:x.hook||x.topic||"Idea",status:"borrador",date:fv(f,"date"),hook:x.hook,script:x.script,cta:x.cta,caption:[x.hook,x.cta].filter(Boolean).join("\n\n"),objective:x.objective,audience:x.audience,productId:x.productId||"",
+      ideaId:x.id,why:x.why,evidence:x.evidence,missingData:x.missing,refs:x.refs||[],pubStatus:"pendiente",log:[{at:nowISO(),what:"Creada desde el banco de ideas"}],notes:x.shots?"Tomas: "+x.shots:""});
+    if(type==="carrusel"||type==="story")it.design=await starterDesign(it,prod);
+    await addItem(it);x.status="produccion";x.itemId=it.id;await saveDoc("ideabank",x);S.fichaId=it.id;location.hash="#ficha"},{saveLabel:"Crear publicación"})}
+VIEWS.banco=main=>{const fl=S.bankFilter||{st:"",obj:""};S.bankFilter=fl;S.bankSel=S.bankSel||new Set();
+  const list=S.ideabank.filter(x=>(!fl.st?x.status!=="descartada":x.status===fl.st)&&(!fl.obj||x.objective===fl.obj)).sort((a,b)=>({alta:0,media:1,baja:2}[a.priority]-{alta:0,media:1,baja:2}[b.priority])||String(b.createdAt).localeCompare(String(a.createdAt)));
+  main.innerHTML=head("Banco de ideas y hooks","Elige qué merece producirse. Cada idea guarda su origen, la evidencia y los datos que faltan.",`<button id="bk_comb" ${S.bankSel.size<2?"disabled":""}>Combinar (${S.bankSel.size})</button><button id="bk_ai">Generar con evidencia</button><button id="bk_add" class="primary">Nueva idea</button>`)+
+  `<div class="row flt" style="margin-bottom:12px"><select id="bk_st"><option value="">Activas</option>${optList(IDEA_ST,fl.st)}</select><select id="bk_obj"><option value="">Todos los objetivos</option>${optList(IDEA_OBJ,fl.obj)}</select><span class="src">${list.length} idea(s)</span></div>
+  <div class="bank">${list.map(x=>{const p=catById(x.productId);return`<article class="icard ${S.bankSel.has(x.id)?"sel":""}"><div class="row" style="justify-content:space-between"><label class="row" style="font-size:.7rem;font-weight:700"><input type="checkbox" data-bsel="${x.id}" ${S.bankSel.has(x.id)?"checked":""} style="width:auto"> Elegir</label><span class="chip">${esc(label(IDEA_ST,x.status))}</span></div>
+   <div class="hook">${esc(x.hook||x.topic||"(sin hook)")}</div>
+   <dl class="kv"><dt>Objetivo</dt><dd>${esc(label(IDEA_OBJ,x.objective))}</dd><dt>Público</dt><dd>${esc(x.audience)}</dd><dt>Formato</dt><dd>${esc(label(TYPES,x.format))}</dd><dt>Producto</dt><dd>${p?esc(p.title):"—"}</dd><dt>Prioridad</dt><dd class="pri-${x.priority}">${esc(label(PRI,x.priority))}</dd></dl>
+   ${x.why?`<p style="margin:0;font-size:.8rem"><b>Por qué:</b> ${esc(x.why.slice(0,220))}</p>`:""}${x.evidence?`<p class="src" style="margin:0"><b>Datos:</b> ${esc(x.evidence.slice(0,220))}</p>`:""}${x.missing?`<p class="src" style="margin:0"><b>Falta confirmar:</b> ${esc(x.missing)}</p>`:""}
+   ${(x.refs||[]).length?`<ul class="ev">${x.refs.slice(0,3).map(refHTML).join("")}</ul>`:""}<div class="src">${esc(x.source||"")} · ${fmtDT(x.createdAt)}</div>
+   <div class="row"><button data-bed="${x.id}">Editar</button>${x.status!=="aprobada"&&x.status!=="produccion"?`<button data-bap="${x.id}">Aprobar</button>`:""}${x.status==="aprobada"?`<button class="primary" data-bpost="${x.id}">Al calendario</button>`:""}${x.itemId&&item(x.itemId)?`<button data-bopen="${x.itemId}">Ver publicación</button>`:""}${x.status!=="descartada"?`<button data-bdis="${x.id}">Descartar</button>`:`<button data-brest="${x.id}">Recuperar</button>`}</div></article>`}).join("")||`<div class="empty">Sin ideas todavía. Crea una a mano, conviértela desde Inspiración o Competencia, o genera con evidencia.</div>`}</div>`;
+  $("#bk_st",main).onchange=e=>{fl.st=e.target.value;route()};$("#bk_obj",main).onchange=e=>{fl.obj=e.target.value;route()};
+  $("#bk_add",main).onclick=()=>ideaForm(null);$("#bk_ai",main).onclick=genIdeasDlg;
+  const X=id=>S.ideabank.find(x=>x.id===id);
+  $$("[data-bsel]",main).forEach(c=>c.onchange=()=>{c.checked?S.bankSel.add(c.dataset.bsel):S.bankSel.delete(c.dataset.bsel);route()});
+  $$("[data-bed]",main).forEach(b=>b.onclick=()=>ideaForm(X(b.dataset.bed)));
+  $$("[data-bap]",main).forEach(b=>b.onclick=async()=>{const x=X(b.dataset.bap);x.status="aprobada";x.approvedAt=nowISO();await saveDoc("ideabank",x);await saveDoc("learnings",{id:uid(),kind:"decisión",text:`Idea aprobada: ${x.hook||x.topic}`,source:"Banco de ideas",createdAt:nowISO()});toast("Idea aprobada");route()});
+  $$("[data-bdis]",main).forEach(b=>b.onclick=async()=>{const x=X(b.dataset.bdis);x.status="descartada";await saveDoc("ideabank",x);route()});
+  $$("[data-brest]",main).forEach(b=>b.onclick=async()=>{const x=X(b.dataset.brest);x.status="guardada";await saveDoc("ideabank",x);route()});
+  $$("[data-bpost]",main).forEach(b=>b.onclick=()=>ideaToPost(X(b.dataset.bpost)));
+  $$("[data-bopen]",main).forEach(b=>b.onclick=()=>{S.fichaId=b.dataset.bopen;location.hash="#ficha"});
+  $("#bk_comb",main).onclick=async()=>{const xs=[...S.bankSel].map(X).filter(Boolean);if(xs.length<2)return;
+    const m={id:uid(),hook:xs.map(x=>x.hook).filter(Boolean).join(" / "),objective:xs[0].objective,audience:xs[0].audience,format:xs[0].format,productId:xs.find(x=>x.productId)?.productId||"",topic:[...new Set(xs.map(x=>x.topic).filter(Boolean))].join(" + "),
+      script:xs.map(x=>x.script).filter(Boolean).join("\n\n— — —\n\n"),shots:xs.map(x=>x.shots).filter(Boolean).join("\n"),cta:xs[0].cta,why:xs.map(x=>x.why).filter(Boolean).join("\n"),evidence:xs.map(x=>x.evidence).filter(Boolean).join("\n"),missing:xs.map(x=>x.missing).filter(Boolean).join(" "),
+      refs:xs.flatMap(x=>x.refs||[]),status:"guardada",priority:"media",source:"Combinación de "+xs.length+" ideas",combinedFrom:xs.map(x=>x.id),createdAt:nowISO()};
+    await saveDoc("ideabank",m);S.bankSel.clear();ideaForm(m)}};
+
+/* ================= Diseño editable (capas) · el mismo motor dibuja la vista previa y la exportación ================= */
+const DFONTS=[["Fraunces","Fraunces · serif editorial"],["Inter","Inter · sans"],["Bebas Neue","Bebas Neue · condensada"],["Poppins","Poppins · redonda"],["Pacifico","Pacifico · manuscrita"]];
+const DSW=["#122D50","#F7F2E9","#FFFFFF","#EA4566","#54C1FA","#FFD400","#7ED957","#FF8A00","#1B1B1B","#FDE6EB"];
+const dsize=t=>t==="story"?{w:1080,h:1920}:{w:1080,h:1350};
+const rr=(ctx,x,y,w,h,r)=>{ctx.beginPath();if(ctx.roundRect&&r)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h)};
+async function loadFont(L){try{await document.fonts.load(`${L.italic?"italic ":""}${L.weight||700} 60px '${L.font||"Inter"}'`)}catch(e){}}
+async function renderDesign(canvas,design,si,{scale=1}={}){const sl=design.slides[si];const W=design.w,H=design.h;
+  canvas.width=Math.max(1,Math.round(W*scale));canvas.height=Math.max(1,Math.round(H*scale));const ctx=canvas.getContext("2d");ctx.setTransform(scale,0,0,scale,0,0);
+  ctx.fillStyle=sl.bg||"#F7F2E9";ctx.fillRect(0,0,W,H);
+  if(sl.bgMedia){const img=await loadMediaImage(mediaById(sl.bgMedia));if(img)cover(ctx,img,0,0,W,H)}
+  const bounds=[];
+  for(const L of sl.layers){if(L.hidden){bounds.push(null);continue}ctx.save();ctx.globalAlpha=L.opacity==null?1:L.opacity;
+    if(L.type==="rect"){ctx.fillStyle=L.color||"#FFFFFF";rr(ctx,L.x,L.y,L.w,L.h,L.radius||0);ctx.fill();bounds.push({x:L.x,y:L.y,w:L.w,h:L.h})}
+    else if(L.type==="image"){const m=mediaById(L.mediaId);const img=m?await loadMediaImage(m):null;rr(ctx,L.x,L.y,L.w,L.h,L.radius||0);ctx.clip();
+      if(img){if(L.fit==="contain"){ctx.fillStyle=L.bgColor||"#FFFFFF";ctx.fillRect(L.x,L.y,L.w,L.h);contain(ctx,trimWhite(img),L.x,L.y,L.w,L.h)}else cover(ctx,img,L.x,L.y,L.w,L.h)}
+      else{ctx.fillStyle="#E8DFCF";ctx.fillRect(L.x,L.y,L.w,L.h);ctx.fillStyle="#5F6B7A";ctx.font="600 34px 'Inter'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Elige una foto real",L.x+L.w/2,L.y+L.h/2)}
+      bounds.push({x:L.x,y:L.y,w:L.w,h:L.h})}
+    else{await loadFont(L);const sz=L.size||60;ctx.font=`${L.italic?"italic ":""}${L.weight||700} ${sz}px '${L.font||"Inter"}'`;
+      const txt=L.upper?String(L.text||"").toUpperCase():String(L.text||"");const lines=txt.split("\n").flatMap(p=>p.trim()?wrap(ctx,p,L.w):[""]);const lh=sz*(L.lh||1.15);const h=Math.max(lh,lines.length*lh);
+      if(L.bgColor){ctx.fillStyle=L.bgColor;rr(ctx,L.x-24,L.y-16,L.w+48,h+32,L.radius||18);ctx.fill()}
+      ctx.fillStyle=L.color||"#122D50";ctx.textBaseline="top";ctx.textAlign=L.align||"left";const ax=L.align==="center"?L.x+L.w/2:L.align==="right"?L.x+L.w:L.x;
+      lines.forEach((ln,i)=>ctx.fillText(ln,ax,L.y+i*lh+(lh-sz)/2));bounds.push({x:L.x,y:L.y,w:L.w,h})}
+    ctx.restore()}
+  return bounds}
+const T=(text,x,y,w,o={})=>({id:uid(),type:"text",text,x,y,w,font:"Inter",size:44,weight:600,color:"#122D50",align:"left",lh:1.2,...o});
+async function starterDesign(it,prod){const{w,h}=dsize(it.type);let mid="";if(prod){try{const m=await ensureCatalogMedia(prod);mid=m?m.id:""}catch(e){}}
+  if(!mid&&it.productId){const m=S.media.find(x=>x.catalogId===it.productId);mid=m?m.id:""}
+  if(it.type==="story")return{w,h,slides:[{bg:"#122D50",layers:[{id:uid(),type:"image",mediaId:mid,x:90,y:300,w:900,h:900,fit:"contain",radius:40,bgColor:"#FFFFFF"},T(it.hook||it.title,90,1290,900,{font:"Fraunces",size:78,weight:700,color:"#FFFFFF",align:"center",lh:1.08}),T("balloonstoreco.com",90,1700,900,{size:36,color:"#FFD400",align:"center",weight:700})]}]};
+  const body=String(it.script||"").split("\n").map(s=>s.replace(/^[-•\d.)\s]+/,"").trim()).filter(Boolean).slice(0,4).join("\n")||"Escribe aquí el contenido de esta diapositiva.";
+  return{w,h,slides:[
+    {bg:"#122D50",layers:[{id:uid(),type:"image",mediaId:mid,x:90,y:90,w:900,h:760,fit:"contain",radius:36,bgColor:"#FFFFFF"},T("BALLOON STORE",90,905,900,{size:30,weight:800,color:"#FFD400"}),T(it.hook||it.title,90,960,900,{font:"Fraunces",size:76,weight:700,color:"#FFFFFF",lh:1.06})]},
+    {bg:"#F7F2E9",layers:[T("Lo que necesitas saber",90,120,900,{font:"Fraunces",size:70,weight:700,lh:1.05}),{id:uid(),type:"rect",x:90,y:300,w:140,h:10,color:"#EA4566",radius:5},T(body,90,360,900,{size:46,weight:500,lh:1.35})]},
+    {bg:"#EA4566",layers:[T(it.cta||"Encuéntralo en balloonstoreco.com",90,420,900,{font:"Fraunces",size:84,weight:700,color:"#FFFFFF",align:"center",lh:1.06}),T("balloonstoreco.com",90,1080,900,{size:40,weight:800,color:"#FFFFFF",align:"center"})]}]}}
+function designFromSlides(it){const{w,h}=dsize(it.type);return{w,h,slides:(it.slides||[]).map(s=>{const L=[];
+  if(s.mediaId)L.push({id:uid(),type:"image",mediaId:s.mediaId,x:90,y:90,w:900,h:700,fit:s.template==="producto"?"contain":"cover",radius:32,bgColor:"#FFFFFF"});
+  L.push(T(s.headline||"",90,s.mediaId?840:200,900,{font:"Fraunces",size:72,weight:700,lh:1.06,color:s.template==="portada"?"#FFFFFF":"#122D50"}));
+  if(s.body)L.push(T(s.body,90,s.mediaId?1040:520,900,{size:44,weight:500,lh:1.3,color:s.template==="portada"?"#FFFFFF":"#122D50"}));
+  return{bg:s.template==="portada"?"#122D50":s.template==="cta"?"#EA4566":"#F7F2E9",layers:L}})}}
+async function designBlobs(it,type="image/jpeg"){const c=document.createElement("canvas");const out=[];for(let i=0;i<it.design.slides.length;i++){await renderDesign(c,it.design,i,{scale:1});const png=await canvasBlob(c);out.push(type==="image/png"?png:await pngToJpeg(png))}return out}
+
+/* Miniaturas para calendario y cuadrícula */
+const THUMBS=new Map();
+async function thumbOf(it){const k=it.id+"|"+it.updatedAt;if(THUMBS.has(k))return THUMBS.get(k);const p=(async()=>{const c=document.createElement("canvas");
+  try{if(it.design&&it.design.slides.length){await renderDesign(c,it.design,0,{scale:.3})}
+    else if(it.type==="carrusel"&&(it.slides||[]).length){const f=document.createElement("canvas");await renderSlide(f,it.slides[0],{W:1080,H:1350,index:1,total:it.slides.length});c.width=324;c.height=405;c.getContext("2d").drawImage(f,0,0,324,405)}
+    else if(it.type==="story"&&(it.frames||[]).length){const f=document.createElement("canvas");await renderStoryFrame(f,it,0,true);c.width=324;c.height=576;c.getContext("2d").drawImage(f,0,0,324,576)}
+    else if(it.type==="reel"){const f=document.createElement("canvas");await renderReelCover(f,it);c.width=324;c.height=576;c.getContext("2d").drawImage(f,0,0,324,576)}
+    else throw 0}
+  catch(e){c.width=324;c.height=405;const x=c.getContext("2d");x.fillStyle=it.type==="reel"?"#EA4566":it.type==="story"?"#FFD400":"#122D50";x.fillRect(0,0,324,405);x.fillStyle=it.type==="story"?"#122D50":"#FFFFFF";x.font="700 26px 'Fraunces', serif";wrap(x,it.title||"",280).slice(0,6).forEach((l,i)=>x.fillText(l,22,60+i*32))}
+  return c.toDataURL("image/jpeg",.8)})();THUMBS.set(k,p);return p}
+const pubSt=it=>it.publishedUrl?"publicada":it.pubStatus==="cambios"?"cambios":(it.pubStatus==="aprobada"||it.status==="terminado")?"aprobada":"pendiente";
+const PUBST_L={aprobada:"Aprobada",pendiente:"Pendiente",cambios:"Cambios solicitados",publicada:"Publicada"};
+function logIt(it,what){(it.log=it.log||[]).unshift({at:nowISO(),what})}
+
+/* ---------- Calendario mensual visual ---------- */
+VIEWS.calendario=main=>{const base=S.calMonth||new Date();const y=base.getFullYear(),mo=base.getMonth();const ym=`${y}-${String(mo+1).padStart(2,"0")}`;S.calType=S.calType||"";S.calMode=S.calMode||"mes";
+  const first=new Date(y,mo,1);const start=new Date(y,mo,1-((first.getDay()+6)%7));const days=[];for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d)}
+  const vis=i=>!S.calType||i.type===S.calType;const inMonth=S.items.filter(i=>i.date&&i.date.slice(0,7)===ym&&vis(i));
+  const cnt=k=>inMonth.filter(i=>pubSt(i)===k).length;const plan=S.plans.find(p=>p.id==="plan-"+ym)||{id:"plan-"+ym,goals:{reel:0,carrusel:0,story:0}};
+  const goalHTML=TYPES.map(([k,l])=>{const n=S.items.filter(i=>i.date&&i.date.slice(0,7)===ym&&i.type===k).length;return`<span class="goal">${l}: <b>${n}</b> de <input type="number" min="0" max="60" data-goal="${k}" value="${plan.goals[k]||0}" aria-label="Meta de ${l}"></span>`}).join("");
+  const narrow=window.innerWidth<700;
+  const approvedIdeas=S.ideabank.filter(x=>x.status==="aprobada");const unsched=S.items.filter(i=>!i.date&&vis(i));
+  main.innerHTML=head(`${MESL[mo][0].toUpperCase()+MESL[mo].slice(1)} ${y}`,"Arrastra una publicación a otro día (en computadora) o tócala para abrir su ficha y cambiar la fecha.",`<button id="prev" aria-label="Mes anterior">←</button><button id="tod">Hoy</button><button id="next" aria-label="Mes siguiente">→</button>`)+
+  `<div class="row" style="justify-content:space-between;margin-bottom:10px"><div class="tabs" style="margin:0">${[["","Todo"],...TYPES].map(([k,l])=>`<button data-ct="${k}" class="${S.calType===k?"on":""}">${l}</button>`).join("")}</div>
+   <div class="tabs" style="margin:0"><button data-cm="mes" class="${S.calMode==="mes"?"on":""}">Mes</button><button data-cm="grid" class="${S.calMode==="grid"?"on":""}">Cuadrícula de Instagram</button></div></div>
+  <div class="legend" style="margin-bottom:10px">${["aprobada","pendiente","cambios","publicada"].map(k=>`<span><i class="dot ${k}" style="position:static;display:inline-block;border:0"></i>${PUBST_L[k]}: <b>${cnt(k)}</b></span>`).join("")}</div>
+  <div class="panel" style="margin-bottom:12px;padding:12px 16px"><div class="row" style="justify-content:space-between"><b>Meta del mes (tú decides cuántas)</b><div class="row">${goalHTML}</div></div></div>
+  <div id="cal_body"></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:14px">
+   <section class="panel"><h2>Ideas aprobadas (${approvedIdeas.length})</h2><div class="list" style="margin-top:8px;display:grid;gap:6px">${approvedIdeas.map(x=>`<div class="idea"><div><b>${esc(x.hook||x.topic)}</b><div class="src">${esc(label(TYPES,x.format))} · ${esc(label(IDEA_OBJ,x.objective))}</div></div><button data-ipost="${x.id}" class="primary">Al calendario</button></div>`).join("")||`<p class="src">Aprueba ideas en el <a href="#banco">Banco de ideas</a>.</p>`}</div></section>
+   <section class="panel"><h2>Sin fecha (${unsched.length})</h2><div style="display:grid;gap:6px;margin-top:8px">${unsched.slice(0,30).map(i=>`<div class="idea"><button class="vpost" data-fi="${i.id}" draggable="true" style="width:46px;flex:none"><img data-th="${i.id}" alt=""></button><div style="flex:1;min-width:0"><b>${esc(i.title)}</b><div class="src">${esc(label(TYPES,i.type))} · ${PUBST_L[pubSt(i)]}</div></div><input type="date" data-date="${i.id}" aria-label="Fecha" style="max-width:150px"></div>`).join("")||`<p class="src">Todo tiene fecha.</p>`}</div></section></div>`;
+  const body=$("#cal_body",main);
+  if(S.calMode==="grid"){const sn=latestSnap();const planned=inMonth.filter(i=>i.type!=="story").sort((a,b)=>b.date.localeCompare(a.date));
+    const pub=contentsOf(sn).slice(0,12);
+    body.innerHTML=`<p class="src" style="text-align:center">Así se vería tu perfil: primero lo planeado de este mes (más reciente arriba a la izquierda) y después lo ya publicado según Metricool. Las Stories no aparecen en la cuadrícula.</p>
+     <div class="iggrid">${planned.map(i=>`<button class="cell" data-fi="${i.id}" title="${esc(i.title)}"><img data-th="${i.id}" alt="${esc(i.title)}"><span class="lbl">${esc(fmtShort(i.date))} · ${PUBST_L[pubSt(i)]}</span></button>`).join("")}${pub.map(c=>`<a class="cell pub" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${thumbImg(c.img,"",firstLine(c.caption)||fmtOf(c))}<span class="lbl">Publicado ${esc(fmtDT(c.date))}</span></a>`).join("")}</div>`}
+  else if(narrow){const ds=[...new Set(inMonth.map(i=>i.date))].sort();
+    body.innerHTML=`<p class="src">En el teléfono, el mes se muestra como agenda. Cambia la fecha con el selector de cada publicación.</p>${ds.map(d=>`<div class="agenda-day"><h3>${esc(DIAS[parseD(d).getDay()])} ${parseD(d).getDate()}</h3>${S.items.filter(i=>i.date===d&&vis(i)).map(i=>`<div class="idea"><button class="vpost" data-fi="${i.id}" style="width:56px;flex:none"><img data-th="${i.id}" alt=""><span class="dot ${pubSt(i)}"></span></button><div style="flex:1;min-width:0"><b>${esc(i.title)}</b><div class="src">${esc(label(TYPES,i.type))} · ${PUBST_L[pubSt(i)]}</div><input type="date" data-date="${i.id}" value="${esc(i.date)}" aria-label="Cambiar fecha de ${esc(i.title)}"></div></div>`).join("")}</div>`).join("")||`<div class="empty">Sin publicaciones este mes.</div>`}`}
+  else body.innerHTML=`<div style="overflow-x:auto"><div class="vcal" style="min-width:640px">${["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d=>`<div class="dow">${d}</div>`).join("")}
+   ${days.map(d=>{const k=isoD(d);const its=S.items.filter(i=>i.date===k&&vis(i));return`<div class="vday ${d.getMonth()!==mo?"other":""} ${k===today()?"today":""}" data-day="${k}"><span class="n">${d.getDate()}</span>${its.map(i=>`<button class="vpost${(i.pending||[]).length?" pend":""}" data-fi="${i.id}" draggable="true" title="${esc(i.title)} · ${PUBST_L[pubSt(i)]}${(i.pending||[]).length?" · Pendiente de material":""}"><img data-th="${i.id}" alt="${esc(i.title)}"><span class="lbl">${esc(label(TYPES,i.type))}</span><span class="dot ${pubSt(i)}"></span></button>`).join("")}</div>`}).join("")}</div></div>`;
+  $$("img[data-th]",main).forEach(im=>{const it=item(im.dataset.th);if(it)thumbOf(it).then(u=>{im.src=u})});
+  $$("[data-fi]",main).forEach(b=>{b.onclick=()=>{S.fichaId=b.dataset.fi;location.hash="#ficha"};b.ondragstart=e=>{e.dataTransfer.setData("text/plain",b.dataset.fi);e.dataTransfer.effectAllowed="move"}});
+  $$("[data-day]",main).forEach(c=>{c.ondragover=e=>{e.preventDefault();c.classList.add("over")};c.ondragleave=()=>c.classList.remove("over");
+    c.ondrop=async e=>{e.preventDefault();c.classList.remove("over");const it=item(e.dataTransfer.getData("text/plain"));if(!it||it.date===c.dataset.day)return;logIt(it,`Fecha cambiada de ${it.date||"sin fecha"} a ${c.dataset.day}`);it.date=c.dataset.day;await touch(it,true);toast("Movida al "+fmtShort(it.date));route()}});
+  $$("[data-date]",main).forEach(inp=>inp.onchange=async()=>{const it=item(inp.dataset.date);logIt(it,"Fecha asignada: "+inp.value);it.date=inp.value;await touch(it,true);toast("Fecha asignada");route()});
+  $$("[data-ct]",main).forEach(b=>b.onclick=()=>{S.calType=b.dataset.ct;route()});$$("[data-cm]",main).forEach(b=>b.onclick=()=>{S.calMode=b.dataset.cm;route()});
+  $$("[data-goal]",main).forEach(inp=>inp.onchange=async()=>{plan.goals[inp.dataset.goal]=Math.max(0,+inp.value||0);await saveDoc("plans",plan);toast("Meta del mes guardada")});
+  $$("[data-ipost]",main).forEach(b=>b.onclick=()=>ideaToPost(S.ideabank.find(x=>x.id===b.dataset.ipost)));
+  $("#prev",main).onclick=()=>{S.calMonth=new Date(y,mo-1,1);route()};$("#next",main).onclick=()=>{S.calMonth=new Date(y,mo+1,1);route()};$("#tod",main).onclick=()=>{S.calMonth=null;route()}};
+
+/* ---------- Ficha completa de publicación ---------- */
+VIEWS.ficha=main=>{const it=item(S.fichaId);if(!it){main.innerHTML=head("Publicación","")+`<div class="empty">Elige una publicación en el <a href="#calendario">calendario</a>.</div>`;return}
+  const idea=it.ideaId?S.ideabank.find(x=>x.id===it.ideaId):null;const refs=it.refs||(idea&&idea.refs)||[];const why=it.why||(idea&&idea.why)||"";const ev=it.evidence||(idea&&idea.evidence)||"";const miss=it.missingData||(idea&&idea.missing)||"";
+  const isDesign=!!(it.design&&it.design.slides.length);const nSl=isDesign?it.design.slides.length:(it.slides||[]).length;S.fSlide=Math.min(S.fSlide||0,Math.max(0,nSl-1));
+  const st=pubSt(it);const cats=[...S.catalog].sort((a,b)=>a.title.localeCompare(b.title));
+  main.innerHTML=head(esc(it.title),`${esc(label(TYPES,it.type))} · <span class="chip"><i class="dot ${st}" style="position:static;display:inline-block;width:9px;height:9px;border:0"></i> ${PUBST_L[st]}</span>${it.changeRequest&&st==="cambios"?` · Cambios: ${esc(it.changeRequest)}`:""}`,`<a class="btn" href="#calendario">← Calendario</a>`)+
+  `<div class="ficha"><div class="prev"><canvas id="f_cv" aria-label="Vista previa"></canvas>
+    ${nSl>1?`<div class="strip" id="f_strip">${Array.from({length:nSl},(_,i)=>`<div class="sl ${i===S.fSlide?"on":""}" draggable="true" data-sl="${i}"><img data-sli="${i}" alt="Diapositiva ${i+1}"><div class="row"><button data-mv="${i}:-1" aria-label="Mover a la izquierda">←</button><button data-mv="${i}:1" aria-label="Mover a la derecha">→</button></div></div>`).join("")}</div>`:""}
+    <div class="row" style="margin-top:10px">${it.type==="reel"?`<a class="btn" href="#reel" id="f_reel">Abrir editor de Reel</a>`:`<button id="f_design" class="primary">${isDesign?"Editar diseño":"Crear diseño editable"}</button>`}${isDesign?`<button id="f_final">Vista final</button><button id="f_dl">Descargar JPG</button>`:""}</div>
+    ${it.type==="reel"?`<p class="src">Edición de video: hoy se planean guion, tomas y portada. El video final se arma en CapCut (Fase 2 evaluará la exportación MP4 dentro de la app).</p>`:""}
+    <section class="panel" style="margin-top:14px"><div class="eyebrow">Por qué existe esta publicación</div>
+     ${refs.length?`<b style="font-size:.82rem">Referencia original</b><ul class="ev">${refs.map(refHTML).join("")}</ul>`:`<p class="src">Sin referencia registrada.</p>`}
+     ${why?`<p style="font-size:.86rem"><b>Por qué se eligió:</b> ${esc(why)}</p>`:""}${ev?`<p style="font-size:.86rem;white-space:pre-wrap"><b>Datos que la respaldan:</b> ${esc(ev)}</p>`:`<p class="src">Sin métricas previas asociadas.</p>`}${miss?`<p class="src"><b>Falta confirmar:</b> ${esc(miss)}</p>`:""}</section>
+    ${(it.log||[]).length?`<section class="panel" style="margin-top:14px"><div class="eyebrow">Historial</div><ul class="log">${it.log.slice(0,12).map(l=>`<li>${fmtDT(l.at)} · ${esc(l.what)}</li>`).join("")}</ul></section>`:""}</div>
+   <form class="panel" id="f_form" style="display:grid;gap:10px">
+    <div class="grid" style="grid-template-columns:1fr 1fr"><label>Fecha<input type="date" name="date" value="${esc(it.date||"")}"></label><label>Producto real<select name="productId"><option value="">— Sin producto —</option>${cats.map(p=>`<option value="${esc(p.id)}" ${p.id===it.productId?"selected":""}>${esc(p.title)}</option>`).join("")}</select></label></div>
+    <label>Título interno<input name="title" value="${esc(it.title)}"></label>
+    <label>Hook<input name="hook" value="${esc(it.hook)}"></label>
+    <label>${it.type==="reel"?"Guion":"Guion o estructura"}<textarea name="script" rows="5">${esc(it.script)}</textarea></label>
+    <label>Copy de Instagram<textarea name="caption" rows="5">${esc(it.caption)}</textarea></label>
+    <label>Copy de Facebook<textarea name="captionFb" rows="3">${esc(it.captionFb||"")}</textarea></label>
+    <label>CTA<input name="cta" value="${esc(it.cta)}"></label>
+    <div class="row"><button type="submit" class="primary">Guardar</button><button type="button" id="f_chg">Solicitar cambios</button><button type="button" id="f_ok">Aprobar</button><button type="button" id="f_pub">${it.publishedUrl?"Publicada ✓":"Marcar como publicada"}</button></div>
+    <p class="src">Aprobar no publica ni programa nada. Metricool se usa solo cuando tú lo autorizas.</p></form></div>`;
+  const cv=$("#f_cv",main);const draw=async()=>{if(isDesign)await renderDesign(cv,it.design,S.fSlide,{scale:.6});else if(it.type==="carrusel"&&nSl)await renderSlide(cv,it.slides[S.fSlide],{W:1080,H:1350,index:S.fSlide+1,total:nSl});else if(it.type==="story"&&(it.frames||[]).length)await renderStoryFrame(cv,it,0,true);else if(it.type==="reel")await renderReelCover(cv,it);else{cv.width=1080;cv.height=1350;const x=cv.getContext("2d");x.fillStyle="#EFE7D9";x.fillRect(0,0,1080,1350);x.fillStyle="#5F6B7A";x.font="600 44px Inter";x.fillText("Sin diseño todavía",300,675)}};draw();
+  $$("[data-sli]",main).forEach(im=>{const i=+im.dataset.sli;const c=document.createElement("canvas");(isDesign?renderDesign(c,it.design,i,{scale:.15}):renderSlide(c,it.slides[i],{W:1080,H:1350,index:i+1,total:nSl})).then(()=>{im.src=c.toDataURL("image/jpeg",.7)});im.onclick=()=>{S.fSlide=i;route()}});
+  const reorder=async(from,to)=>{if(to<0||to>=nSl||from===to)return;const arr=isDesign?it.design.slides:it.slides;const[m]=arr.splice(from,1);arr.splice(to,0,m);logIt(it,`Diapositiva ${from+1} movida a la posición ${to+1}`);if(it.pubStatus==="aprobada"){it.pubStatus="pendiente";logIt(it,"Aprobación retirada por cambio de orden")}S.fSlide=to;await touch(it,true);route()};
+  $$("[data-mv]",main).forEach(b=>b.onclick=()=>{const[i,d]=b.dataset.mv.split(":").map(Number);reorder(i,i+d)});
+  $$("[data-sl]",main).forEach(el=>{el.ondragstart=e=>e.dataTransfer.setData("text/plain",el.dataset.sl);el.ondragover=e=>e.preventDefault();el.ondrop=e=>{e.preventDefault();reorder(+e.dataTransfer.getData("text/plain"),+el.dataset.sl)}});
+  const f=$("#f_form",main);const collect=()=>{const old=it.date;["date","productId","title","hook","script","caption","captionFb","cta"].forEach(k=>it[k]=f.elements[k].value);if(old!==it.date)logIt(it,`Fecha cambiada de ${old||"sin fecha"} a ${it.date||"sin fecha"}`)};
+  f.onsubmit=async e=>{e.preventDefault();collect();logIt(it,"Guardada");await touch(it,true);toast("Guardado");route()};
+  $("#f_ok",main).onclick=async()=>{collect();it.pubStatus="aprobada";it.status="terminado";it.ownerReview=false;it.approvedAt=nowISO();logIt(it,"Aprobada por la dueña");await touch(it,true);if(idea){idea.status="produccion";await saveDoc("ideabank",idea)}toast("Aprobada. No se publicó nada.");route()};
+  $("#f_chg",main).onclick=()=>dlgOpen("Solicitar cambios",`<label>¿Qué hay que cambiar?<textarea name="note" rows="4" required></textarea></label>`,async g=>{collect();it.pubStatus="cambios";it.status="revision";it.changeRequest=fv(g,"note");logIt(it,"Cambios solicitados: "+it.changeRequest);await touch(it,true);route()},{saveLabel:"Enviar solicitud"});
+  $("#f_pub",main).onclick=()=>dlgOpen("Marcar como publicada",`<p class="src">Solo registra que ya salió (por ejemplo, desde Metricool). La app no publica.</p><label>Enlace de la publicación<input name="url" type="url" value="${esc(it.publishedUrl||"")}" required></label>`,async g=>{it.publishedUrl=fv(g,"url");logIt(it,"Registrada como publicada");await touch(it,true);route()});
+  const fd=$("#f_design",main);if(fd)fd.onclick=async()=>{collect();if(!isDesign){it.design=(it.slides||[]).length?designFromSlides(it):await starterDesign(it,catById(it.productId));logIt(it,"Diseño editable creado");await touch(it,true)}S.designId=it.id;S.edSlide=S.fSlide||0;location.hash="#disenar"};
+  const fr=$("#f_reel",main);if(fr)fr.onclick=()=>{S.cur.reel=it.id};
+  const fi=$("#f_final",main);if(fi)fi.onclick=()=>finalPreview(it);
+  const dl=$("#f_dl",main);if(dl)dl.onclick=()=>exportDesign(it)};
+async function finalPreview(it){dlgOpen("Vista final · tal como se descargará",`<div class="finalgrid" id="fp_g"><p><span class="spin"></span>Generando…</p></div><p class="src">Estas imágenes salen del mismo motor que la descarga (1080 × ${it.design.h} px).</p>`,null,{wide:true});
+  const blobs=await designBlobs(it);$("#fp_g").innerHTML=blobs.map((b,i)=>`<img src="${URL.createObjectURL(b)}" alt="Diapositiva ${i+1}">`).join("")}
+async function exportDesign(it){toast("Preparando imágenes…");const blobs=await designBlobs(it);const base=slug(it.title);
+  if(blobs.length===1)await saveFile(`${base}_${it.design.w}x${it.design.h}.jpg`,blobs[0]);else await saveFile(`${base}.zip`,await makeZip(blobs.map((b,i)=>({name:`${pad2(i+1)}_${it.design.w}x${it.design.h}.jpg`,data:b}))));
+  logIt(it,"Diseño exportado en JPG");it.exportedAt=nowISO();touch(it,true)}
+
+/* ---------- Editor visual de diseño (capas editables con persistencia) ---------- */
+VIEWS.disenar=main=>{const it=item(S.designId);if(!it||!it.design){main.innerHTML=head("Editor de diseño","")+`<div class="empty">Abre una publicación desde el <a href="#calendario">calendario</a> y pulsa “Editar diseño”.</div>`;return}
+  const D=it.design;S.edSlide=Math.min(S.edSlide||0,D.slides.length-1);S.edUndo=S.edUndo&&S.edUndo.id===it.id?S.edUndo:{id:it.id,stack:[]};
+  const sl=()=>D.slides[S.edSlide];const selL=()=>sl().layers.find(l=>l.id===S.edSel)||null;
+  const snapshot=()=>{S.edUndo.stack.push(JSON.stringify(D));if(S.edUndo.stack.length>40)S.edUndo.stack.shift()};
+  let saveT;const changed=(msg)=>{if(it.pubStatus==="aprobada"){it.pubStatus="pendiente";it.status="revision";logIt(it,"Aprobación retirada: el diseño cambió")}clearTimeout(saveT);saveT=setTimeout(()=>{logIt(it,msg||"Diseño editado");touch(it,true)},600)};
+  const mediaOpts=sel=>`<option value="">— Elegir foto —</option><optgroup label="Biblioteca">${S.media.filter(m=>/^image\//.test(m.mime||"image/")).map(m=>`<option value="${m.id}" ${m.id===sel?"selected":""}>${esc(m.name||m.id)}</option>`).join("")}</optgroup><optgroup label="Catálogo (foto oficial)">${S.catalog.filter(p=>catImageRef(p)).map(p=>`<option value="cat:${p.id}">${esc(p.title)}</option>`).join("")}</optgroup>`;
+  main.innerHTML=head("Editor de diseño",`${esc(it.title)} · ${D.w} × ${D.h} px · lo que ves es exactamente lo que se descarga`,`<button id="e_undo">Deshacer</button><button id="e_final">Vista final</button><button id="e_dl">Descargar JPG</button><button id="e_back" class="primary">Volver a la ficha</button>`)+
+  `<div class="strip" id="e_strip" style="margin-bottom:10px">${D.slides.map((_,i)=>`<div class="sl ${i===S.edSlide?"on":""}"><img data-es="${i}" alt="Diapositiva ${i+1}"><span class="src">${i+1}</span></div>`).join("")}<div class="sl" style="width:auto;align-content:center;gap:4px"><button id="e_add">+ Diapositiva</button><button id="e_dup">Duplicar</button><button id="e_del">Eliminar</button><div class="row"><button id="e_ml" aria-label="Mover antes">←</button><button id="e_mr" aria-label="Mover después">→</button></div></div></div>
+  <div class="ed"><div class="stage-wrap"><div class="stage" id="e_stage"><canvas id="e_cv"></canvas></div></div>
+   <aside class="props panel" id="e_props"></aside></div>`;
+  const stage=$("#e_stage",main),cv=$("#e_cv",main);
+  const fitW=()=>Math.min(560,Math.max(260,(stage.parentElement.clientWidth||560)-32),D.h>D.w*1.5?420:560);
+  let sw=fitW(),k=sw/D.w;stage.style.width=sw+"px";stage.style.height=Math.round(D.h*k)+"px";
+  let rendering=false,again=false,bounds=[];
+  let keepNext=false;
+  async function paint(keep){if(keep)keepNext=true;if(rendering){again=true;return}rendering=true;const kp=keepNext;keepNext=false;const dpr=Math.min(2,window.devicePixelRatio||1);bounds=await renderDesign(cv,D,S.edSlide,{scale:k*dpr});cv.style.width=sw+"px";cv.style.height=Math.round(D.h*k)+"px";
+    if(kp)$$(".lbox",stage).forEach(el=>{const i=sl().layers.findIndex(l=>l.id===el.dataset.lid);const b=bounds[i];if(b)Object.assign(el.style,{left:b.x*k+"px",top:b.y*k+"px",width:b.w*k+"px",height:b.h*k+"px"})});else boxes();
+    rendering=false;if(again){again=false;paint(keepNext)}}
+  function boxes(){$$(".lbox",stage).forEach(b=>b.remove());sl().layers.forEach((L,i)=>{const b=bounds[i];if(!b)return;const el=document.createElement("div");el.className="lbox"+(L.id===S.edSel?" sel":"");el.dataset.lid=L.id;
+    Object.assign(el.style,{left:b.x*k+"px",top:b.y*k+"px",width:b.w*k+"px",height:b.h*k+"px"});el.innerHTML=`<span class="hd" data-rs></span>`;stage.appendChild(el);
+    el.onpointerdown=e=>{e.preventDefault();S.edSel=L.id;const rs=e.target.hasAttribute("data-rs");const sx=e.clientX,sy=e.clientY,o={x:L.x,y:L.y,w:L.w,h:L.h,size:L.size};snapshot();el.setPointerCapture(e.pointerId);let moved=false;
+      el.onpointermove=ev=>{const dx=(ev.clientX-sx)/k,dy=(ev.clientY-sy)/k;if(Math.abs(dx)+Math.abs(dy)>2)moved=true;
+        if(rs){L.w=Math.max(60,Math.round(o.w+dx));if(L.type!=="text")L.h=Math.max(40,Math.round(o.h+dy))}else{L.x=Math.round(o.x+dx);L.y=Math.round(o.y+dy)}paint(true)};
+      el.onpointerup=()=>{el.onpointermove=null;el.onpointerup=null;if(moved)changed(rs?"Elemento redimensionado":"Elemento movido");else S.edUndo.stack.pop();props();paint()}}})}
+  function props(){const L=selL();const p=$("#e_props",main);const s=sl();
+    p.innerHTML=`<div class="eyebrow">Diapositiva ${S.edSlide+1}</div>
+     <div class="two"><label>Fondo<input type="color" id="p_bg" value="${esc(s.bg||"#F7F2E9")}"></label><label>Foto de fondo<select id="p_bgm">${mediaOpts(s.bgMedia)}</select></label></div>
+     <div class="row"><button id="p_at">+ Texto</button><button id="p_ai">+ Foto</button><button id="p_ar">+ Forma</button></div>
+     <div class="layers">${s.layers.map((l,i)=>`<button data-ly="${l.id}" class="${l.id===S.edSel?"on":""}">${i+1}. ${l.type==="text"?"Texto: "+esc(String(l.text).slice(0,24)):l.type==="image"?"Foto":"Forma"}</button>`).join("")}</div>
+     ${L?`<hr style="border:0;border-top:1px solid var(--line);width:100%">
+      ${L.type==="text"?`<label>Texto<textarea id="p_text" rows="4">${esc(L.text)}</textarea></label>
+       <label>Tipografía<select id="p_font">${optList(DFONTS,L.font)}</select></label>
+       <div class="two"><label>Tamaño<input type="number" id="p_size" min="12" max="300" value="${L.size}"></label><label>Grosor<select id="p_weight">${optList([["400","Normal"],["500","Medio"],["600","Seminegrita"],["700","Negrita"],["800","Extra"]],String(L.weight))}</select></label>
+        <label>Color<input type="color" id="p_color" value="${esc(L.color)}"></label><label>Alineación<select id="p_align">${optList([["left","Izquierda"],["center","Centro"],["right","Derecha"]],L.align)}</select></label>
+        <label>Interlineado<input type="number" step="0.05" min="0.8" max="2" id="p_lh" value="${L.lh||1.15}"></label><label>Fondo del texto<select id="p_tbg"><option value="">Sin fondo</option>${DSW.map(c=>`<option value="${c}" ${c===L.bgColor?"selected":""}>${c}</option>`).join("")}</select></label></div>
+       <label class="row" style="font-weight:600"><input type="checkbox" id="p_up" ${L.upper?"checked":""} style="width:auto"> Mayúsculas</label>`:""}
+      ${L.type==="image"?`<label>Foto real<select id="p_media">${mediaOpts(L.mediaId)}</select></label><div class="two"><label>Ajuste<select id="p_fit">${optList([["cover","Llenar (recorta)"],["contain","Completa (sin recorte)"]],L.fit)}</select></label><label>Esquinas<input type="number" id="p_rad" min="0" max="400" value="${L.radius||0}"></label></div>`:""}
+      ${L.type==="rect"?`<div class="two"><label>Color<input type="color" id="p_color" value="${esc(L.color)}"></label><label>Esquinas<input type="number" id="p_rad" min="0" max="600" value="${L.radius||0}"></label></div>`:""}
+      <div class="two"><label>X<input type="number" id="p_x" value="${L.x}"></label><label>Y<input type="number" id="p_y" value="${L.y}"></label><label>Ancho<input type="number" id="p_w" value="${L.w}"></label>${L.type!=="text"?`<label>Alto<input type="number" id="p_h" value="${L.h}"></label>`:`<label>Opacidad<input type="number" id="p_op" min="0" max="1" step="0.1" value="${L.opacity==null?1:L.opacity}"></label>`}</div>
+      <div class="row"><button id="p_up1">Adelante</button><button id="p_dn1">Atrás</button><button id="p_cp">Duplicar</button><button id="p_rm">Eliminar</button></div>`:`<p class="src">Toca un elemento en la diapositiva para editarlo. Arrástralo para moverlo; usa el punto azul para cambiar su tamaño.</p>`}`;
+    const on=(id,ev,fn)=>{const el=$("#"+id,p);if(el)el["on"+ev]=fn};
+    on("p_bg","input",e=>{s.bg=e.target.value;paint();changed("Fondo cambiado")});
+    on("p_bgm","change",async e=>{s.bgMedia=await pickMedia(e.target.value);changed("Foto de fondo");props();paint()});
+    on("p_at","click",()=>{snapshot();const n=T("Nuevo texto",90,200,900,{font:"Fraunces",size:64,weight:700});s.layers.push(n);S.edSel=n.id;changed("Texto agregado");props();paint()});
+    on("p_ai","click",()=>{snapshot();const n={id:uid(),type:"image",mediaId:"",x:140,y:200,w:800,h:700,fit:"contain",radius:24,bgColor:"#FFFFFF"};s.layers.push(n);S.edSel=n.id;changed("Foto agregada");props();paint()});
+    on("p_ar","click",()=>{snapshot();const n={id:uid(),type:"rect",x:90,y:90,w:400,h:120,color:"#FFD400",radius:20};s.layers.splice(0,0,n);S.edSel=n.id;changed("Forma agregada");props();paint()});
+    $$("[data-ly]",p).forEach(b=>b.onclick=()=>{S.edSel=b.dataset.ly;props();paint()});
+    if(!L)return;
+    const num=(id,key)=>on(id,"change",e=>{snapshot();L[key]=+e.target.value;changed();paint()});
+    on("p_text","input",e=>{L.text=e.target.value;paint();changed("Texto editado")});on("p_text","focus",snapshot);
+    on("p_font","change",e=>{snapshot();L.font=e.target.value;changed("Tipografía cambiada");paint()});
+    num("p_size","size");num("p_lh","lh");num("p_x","x");num("p_y","y");num("p_w","w");num("p_h","h");num("p_rad","radius");num("p_op","opacity");
+    on("p_weight","change",e=>{snapshot();L.weight=+e.target.value;changed();paint()});
+    on("p_color","input",e=>{L.color=e.target.value;paint();changed("Color cambiado")});
+    on("p_align","change",e=>{snapshot();L.align=e.target.value;changed();paint()});
+    on("p_tbg","change",e=>{snapshot();L.bgColor=e.target.value;changed();paint()});
+    on("p_up","change",e=>{snapshot();L.upper=e.target.checked;changed();paint()});
+    on("p_media","change",async e=>{snapshot();L.mediaId=await pickMedia(e.target.value);changed("Foto cambiada");props();paint()});
+    on("p_fit","change",e=>{snapshot();L.fit=e.target.value;changed();paint()});
+    const idx=()=>s.layers.indexOf(L);
+    on("p_up1","click",()=>{const i=idx();if(i<s.layers.length-1){snapshot();s.layers.splice(i,1);s.layers.splice(i+1,0,L);changed();props();paint()}});
+    on("p_dn1","click",()=>{const i=idx();if(i>0){snapshot();s.layers.splice(i,1);s.layers.splice(i-1,0,L);changed();props();paint()}});
+    on("p_cp","click",()=>{snapshot();const n={...JSON.parse(JSON.stringify(L)),id:uid(),x:L.x+30,y:L.y+30};s.layers.push(n);S.edSel=n.id;changed("Elemento duplicado");props();paint()});
+    on("p_rm","click",()=>{snapshot();s.layers=s.layers.filter(l=>l!==L);S.edSel=null;changed("Elemento eliminado");props();paint()})}
+  async function pickMedia(v){if(!v)return"";if(v.startsWith("cat:")){const p=catById(v.slice(4));const m=p?await ensureCatalogMedia(p):null;return m?m.id:""}return v}
+  const strip=()=>$$("[data-es]",main).forEach(im=>{const i=+im.dataset.es;const c=document.createElement("canvas");renderDesign(c,D,i,{scale:.12}).then(()=>{im.src=c.toDataURL("image/jpeg",.7)});im.onclick=()=>{S.edSlide=i;S.edSel=null;route()}});
+  const go=()=>{touch(it,true);route()};
+  $("#e_add",main).onclick=()=>{snapshot();D.slides.splice(S.edSlide+1,0,{bg:"#F7F2E9",layers:[T("Nueva diapositiva",90,160,900,{font:"Fraunces",size:70,weight:700})]});S.edSlide++;logIt(it,"Diapositiva agregada");go()};
+  $("#e_dup",main).onclick=()=>{snapshot();const c=JSON.parse(JSON.stringify(sl()));c.layers.forEach(l=>l.id=uid());D.slides.splice(S.edSlide+1,0,c);S.edSlide++;logIt(it,"Diapositiva duplicada");go()};
+  $("#e_del",main).onclick=()=>{if(D.slides.length<2){toast("Debe quedar al menos una diapositiva");return}snapshot();D.slides.splice(S.edSlide,1);S.edSlide=Math.max(0,S.edSlide-1);logIt(it,"Diapositiva eliminada");go()};
+  $("#e_ml",main).onclick=()=>{if(S.edSlide<1)return;snapshot();const[m]=D.slides.splice(S.edSlide,1);D.slides.splice(--S.edSlide,0,m);go()};
+  $("#e_mr",main).onclick=()=>{if(S.edSlide>=D.slides.length-1)return;snapshot();const[m]=D.slides.splice(S.edSlide,1);D.slides.splice(++S.edSlide,0,m);go()};
+  $("#e_undo",main).onclick=()=>{const st=S.edUndo.stack.pop();if(!st){toast("Nada que deshacer");return}it.design=JSON.parse(st);touch(it,true);route()};
+  $("#e_final",main).onclick=()=>finalPreview(it);$("#e_dl",main).onclick=()=>exportDesign(it);
+  $("#e_back",main).onclick=()=>{clearTimeout(saveT);touch(it,true);S.fichaId=it.id;S.fSlide=S.edSlide;location.hash="#ficha"};
+  props();paint();strip()};
+
 /* ================= Boot ================= */
 (async()=>{
-  try{await Store.init();const d=await Store.load();S.items=d.items.map(x=>newItem(x));S.media=d.media;S.campaigns=d.campaigns||[];S.series=d.series||[];S.catalog=d.catalog||[];S.weeks=d.weeks||[];S.requests=d.requests||[];
+  try{await Store.init();const d=await Store.load();S.items=d.items.map(x=>newItem(x));S.media=d.media;S.campaigns=d.campaigns||[];S.series=d.series||[];S.catalog=d.catalog||[];S.weeks=d.weeks||[];S.requests=d.requests||[];S.competitors=d.competitors||[];S.inspo=d.inspo||[];S.ideabank=d.ideabank||[];S.metrics=d.metrics||[];S.learnings=d.learnings||[];S.plans=d.plans||[];
     $("#storageInfo").innerHTML=Store.mode==="cloud"?'<span class="lg">Guardado en </span>la nube de Claude':'<span class="lg">Guardado en </span>este navegador';}
   catch(e){$("#view").innerHTML=`<div class="err">${esc(e.message||e)}</div>`;return}
   route();

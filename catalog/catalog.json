@@ -1,0 +1,1155 @@
+{
+ "source": "Shopify Admin API (conector de solo lectura), consulta GraphQL de productos activos y publicados",
+ "fetchedAt": "2026-11-18",
+ "builtAt": "2026-11-18T00:46:55+00:00",
+ "count": 33,
+ "products": [
+  {
+   "id": "shopify-7809150976057",
+   "shopifyId": "7809150976057",
+   "title": "34\" Globo Metálico Número Rosa Gold 86 cm",
+   "handle": "numeros-34-rosa-gold",
+   "url": "https://balloonstoreco.com/products/numeros-34-rosa-gold",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "34 pulgadas",
+    "86 cm",
+    "Cumpleaños",
+    "Números",
+    "Rosa Gold"
+   ],
+   "skus": [
+    {
+     "sku": "36190/01",
+     "variant": "0"
+    },
+    {
+     "sku": "36210/01",
+     "variant": "1"
+    },
+    {
+     "sku": "36212/01",
+     "variant": "2"
+    }
+   ],
+   "description": "Número de 86 cm en foil rosa gold: la pieza que ancla toda la decoración y se lee desde la entrada del salón. El 34\" es el formato de número que más se pide, porque una sola pieza comunica la edad sin necesidad de letreros.",
+   "images": [
+    {
+     "file": "numeros-34-rosa-gold.jpg",
+     "alt": "Globo Metálico Número Rosa Gold de 34\" (86 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "3cd74a9951363b79ac2b0d2d2cf4551b420fafafe63d4920dc79900981efbdef"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809151074361",
+   "shopifyId": "7809151074361",
+   "title": "34\" Globo Metálico Número Oro Blanco 86 cm",
+   "handle": "numeros-34-oro-blanco",
+   "url": "https://balloonstoreco.com/products/numeros-34-oro-blanco",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "34 pulgadas",
+    "86 cm",
+    "Blanco",
+    "Cumpleaños",
+    "Dorado",
+    "Números"
+   ],
+   "skus": [
+    {
+     "sku": "44654/01",
+     "variant": "0"
+    },
+    {
+     "sku": "44624/01",
+     "variant": "1"
+    },
+    {
+     "sku": "44604/01",
+     "variant": "2"
+    }
+   ],
+   "description": "Número de 86 cm en foil oro blanco: la pieza que ancla toda la decoración y se lee desde la entrada del salón. El 34\" es el formato de número que más se pide.",
+   "images": [
+    {
+     "file": "numeros-34-oro-blanco.jpg",
+     "alt": "Globo Metálico Número Oro Blanco de 34\" (86 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "ac82d2d29425520802435a0a4b473dc98efd02534f2f06334436502d349ba5dd"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809150910521",
+   "shopifyId": "7809150910521",
+   "title": "34\" Globo Metálico Número Plata 86 cm",
+   "handle": "numeros-34-plata",
+   "url": "https://balloonstoreco.com/products/numeros-34-plata",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "34 pulgadas",
+    "86 cm",
+    "Cumpleaños",
+    "Números",
+    "Plata"
+   ],
+   "skus": [
+    {
+     "sku": "27980/01",
+     "variant": "0"
+    },
+    {
+     "sku": "27981/01",
+     "variant": "1"
+    },
+    {
+     "sku": "27982/01",
+     "variant": "2"
+    }
+   ],
+   "description": "Número de 86 cm en foil plata: la pieza que ancla toda la decoración y se lee desde la entrada del salón.",
+   "images": [
+    {
+     "file": "numeros-34-plata.jpg",
+     "alt": "Globo Metálico Número Plata de 34\" (86 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "65961527562f71a4128713316a2cc796b3d9aaf908fe2e9fdfe0db04c02dc79e"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809150517305",
+   "shopifyId": "7809150517305",
+   "title": "34\" Globo Metálico Número Negro 86 cm",
+   "handle": "numeros-34-negro",
+   "url": "https://balloonstoreco.com/products/numeros-34-negro",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "34 pulgadas",
+    "86 cm",
+    "Cumpleaños",
+    "Negro",
+    "Números"
+   ],
+   "skus": [
+    {
+     "sku": "V19682/34S",
+     "variant": "0"
+    },
+    {
+     "sku": "V19683/34S",
+     "variant": "1"
+    },
+    {
+     "sku": "V19684/34S",
+     "variant": "2"
+    }
+   ],
+   "description": "Número de 86 cm en foil negro: la pieza que ancla toda la decoración y se lee desde la entrada del salón.",
+   "images": [
+    {
+     "file": "numeros-34-negro.jpg",
+     "alt": "Globo Metálico Número Negro de 34\" (86 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "ae48c8d60ef00e22671dab252c696da92d8a2e3c17c8c149a6b796a42eb48be2"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809150615609",
+   "shopifyId": "7809150615609",
+   "title": "34\" Globo Metálico Número Magenta 86 cm",
+   "handle": "numeros-34-magenta",
+   "url": "https://balloonstoreco.com/products/numeros-34-magenta",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "34 pulgadas",
+    "86 cm",
+    "Cumpleaños",
+    "Fucsia",
+    "Números",
+    "Rosa"
+   ],
+   "skus": [],
+   "description": "Número de 86 cm en foil magenta: la pieza que ancla toda la decoración y se lee desde la entrada del salón.",
+   "images": [
+    {
+     "file": "numeros-34-magenta.jpg",
+     "alt": "Globo Metálico Número Magenta de 34\" (86 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "6a513573572732eb737e011a5e2eb18e577fdfae7334ea6937f1cd6e7abb520c"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809138196537",
+   "shopifyId": "7809138196537",
+   "title": "34\" Globo Metálico Número Rojo 86 cm",
+   "handle": "numeros-34-rojo",
+   "url": "https://balloonstoreco.com/products/numeros-34-rojo",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "34 pulgadas",
+    "86 cm",
+    "Cumpleaños",
+    "Números",
+    "Rojo"
+   ],
+   "skus": [],
+   "description": "Número de 86 cm en foil rojo: la pieza que ancla toda la decoración y se lee desde la entrada del salón.",
+   "images": [
+    {
+     "file": "numeros-34-rojo.jpg",
+     "alt": "Globo Metálico Número Rojo de 34\" (86 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "2c8b9a0afcbce4d6853f0d30ca679b84a4acc48a8851b10096fa7c9d5b47a79a"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809150713913",
+   "shopifyId": "7809150713913",
+   "title": "34\" Globo Metálico Número Azul 86 cm",
+   "handle": "numeros-34-azul",
+   "url": "https://balloonstoreco.com/products/numeros-34-azul",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "34 pulgadas",
+    "86 cm",
+    "Azul",
+    "Cumpleaños",
+    "Números"
+   ],
+   "skus": [],
+   "description": "Número de 86 cm en foil azul: la pieza que ancla toda la decoración y se lee desde la entrada del salón.",
+   "images": [
+    {
+     "file": "numeros-34-azul.jpg",
+     "alt": "Globo Metálico Número Azul de 34\" (86 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "128fab33aae540f83bfffb7b71c1964811ed78f859747d36bed84b187ec6185b"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809133641785",
+   "shopifyId": "7809133641785",
+   "title": "16\" Orbz Solid Colors (Globo Orbz Colores Sólidos Esfera 3D) 40 cm",
+   "handle": "16-orbz-todos-los-colores-solidos",
+   "url": "https://balloonstoreco.com/products/16-orbz-todos-los-colores-solidos",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "16 pulgadas",
+    "40 cm",
+    "Arco de globos",
+    "Baby shower",
+    "Boda",
+    "Centro de mesa",
+    "Orbz",
+    "XV años"
+   ],
+   "skus": [
+    {
+     "sku": "28343/01",
+     "variant": "Negro"
+    },
+    {
+     "sku": "28201/01",
+     "variant": "Plateado"
+    },
+    {
+     "sku": "40307/01",
+     "variant": "Blanco"
+    }
+   ],
+   "description": "La esfera 3D de 40 cm en 27 colores sólidos. Los Orbz no son globos planos: se inflan en cuatro paneles de foil que forman una esfera.",
+   "images": [
+    {
+     "file": "16-orbz-todos-los-colores-solidos.jpg",
+     "alt": "Globo Orbz Colores Sólidos Esfera 3D de 16\" (40 cm)",
+     "width": 531,
+     "height": 531,
+     "sha256": "e0b128bed5d818a1203acaace11989acf2d1a007bbc87242f69f26102f943a45"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-10386863390777",
+   "shopifyId": "10386863390777",
+   "title": "18\" Iridescent Pastel Rainbow Star (Globo Estrella Arcoíris Pastel Iridiscente) 45 cm",
+   "handle": "18-iridescent-pastel-rainbow-star-globo-estrella-arcoiris-pastel-iridiscente-45-cm",
+   "url": "https://balloonstoreco.com/products/18-iridescent-pastel-rainbow-star-globo-estrella-arcoiris-pastel-iridiscente-45-cm",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Arcoíris",
+    "Baby shower",
+    "Estrella",
+    "Iridiscente",
+    "Pastel",
+    "Unicornio"
+   ],
+   "skus": [
+    {
+     "sku": "39407/02",
+     "variant": ""
+    }
+   ],
+   "description": "Globo estrella de 45 cm (18\") con acabado iridiscente y degradado de tonos arcoíris pastel. El iridiscente cambia de tono según cómo le pegue la luz.",
+   "images": [
+    {
+     "file": "18-iridescent-pastel-rainbow-star-globo-estrella-arcoiris-pastel-iridiscente-45-cm.jpg",
+     "alt": "Globo Estrella Arcoíris Pastel Iridiscente 18\"",
+     "width": 700,
+     "height": 700,
+     "sha256": "6f66932b178722b284831a4dff2c8f44592d7c15f38fa6aedc5a22202cb17ebb"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-10386838782009",
+   "shopifyId": "10386838782009",
+   "title": "17\" Tie Dye Birthday (Globo Redondo Cumpleaños Tie Dye) 43 cm",
+   "handle": "17-tie-dye-birthday-globo-redondo-cumpleanos-tie-dye-43-cm",
+   "url": "https://balloonstoreco.com/products/17-tie-dye-birthday-globo-redondo-cumpleanos-tie-dye-43-cm",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "17 pulgadas",
+    "43 cm",
+    "Adolescente",
+    "Cumpleaños",
+    "Juvenil",
+    "Redondo",
+    "Tie Dye"
+   ],
+   "skus": [
+    {
+     "sku": "41793/02",
+     "variant": ""
+    }
+   ],
+   "description": "Globo metálico redondo de 43 cm (17\") con diseño tie dye de cumpleaños, ese teñido multicolor en espiral. Es el globo para la fiesta que no quiere un personaje.",
+   "images": [
+    {
+     "file": "17-tie-dye-birthday-globo-redondo-cumpleanos-tie-dye-43-cm.jpg",
+     "alt": "Globo Redondo Cumpleaños Tie Dye 17\"",
+     "width": 880,
+     "height": 900,
+     "sha256": "4dd5bc6a719c52365e3e923298e468764448ae3397756b28e00b5eb5aba9b8ea"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8221164273721",
+   "shopifyId": "8221164273721",
+   "title": "19\" Globo Metálico Estrella Rosa Flamingo Satinada 48 cm",
+   "handle": "19-estrella-flamingo-satin",
+   "url": "https://balloonstoreco.com/products/19-estrella-flamingo-satin",
+   "vendor": "Kaleidoscope",
+   "type": "Globo Metálico",
+   "tags": [
+    "19 pulgadas",
+    "48 cm",
+    "Estrella",
+    "Rosa",
+    "Satinado"
+   ],
+   "skus": [
+    {
+     "sku": "36823/02",
+     "variant": ""
+    }
+   ],
+   "description": "Estrella de 48 cm en rosa flamingo satinado: el rosa que no grita, el que usan los montajes que quieren verse finos. El satin no hace espejo: tiene brillo suave.",
+   "images": [
+    {
+     "file": "19-estrella-flamingo-satin.jpg",
+     "alt": "Globo Metálico Estrella Rosa Flamingo Satinada de 19\" (48 cm)",
+     "width": 900,
+     "height": 887,
+     "sha256": "81fffe93192bf29254562fb5a3a4d02b55d8af6ca68e50cf06e1df4cea451bf8"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8220999352377",
+   "shopifyId": "8220999352377",
+   "title": "19\" Globo Metálico Estrella Azul Acero 48 cm",
+   "handle": "19-estrella-steel-blue",
+   "url": "https://balloonstoreco.com/products/19-estrella-steel-blue",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "19 pulgadas",
+    "48 cm",
+    "Azul",
+    "Estrella"
+   ],
+   "skus": [
+    {
+     "sku": "36815/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "19-estrella-steel-blue.jpg",
+     "alt": "Globo Metálico Estrella Azul Acero de 19\" (48 cm)",
+     "width": 900,
+     "height": 878,
+     "sha256": "20cead6df296177a934800571fba5a0d0472e7a5cbb05b0e15bb52f184286ed5"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7921580310585",
+   "shopifyId": "7921580310585",
+   "title": "18\" Solid White Gold Star (Globo Metálico Estrella Blanco y Dorado) 45 cm",
+   "handle": "18-solid-white-gold-estrella",
+   "url": "https://balloonstoreco.com/products/18-solid-white-gold-estrella",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Blanco",
+    "Dorado",
+    "Estrella"
+   ],
+   "skus": [
+    {
+     "sku": "43198/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "18-solid-white-gold-estrella.jpg",
+     "alt": "Globo Metálico Estrella Blanco y Dorado de 18\" (45 cm)",
+     "width": 900,
+     "height": 864,
+     "sha256": "bd1f6dc768b9bd4b52553bf066a8e14c87c34868ab00e2df88ed4ec5ed9d1304"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7940901601337",
+   "shopifyId": "7940901601337",
+   "title": "22\" Globo Metálico Estrella Verde Esmeralda 55 cm",
+   "handle": "22-esmerald-green-star",
+   "url": "https://balloonstoreco.com/products/22-esmerald-green-star",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "22 pulgadas",
+    "55 cm",
+    "Estrella",
+    "Verde"
+   ],
+   "skus": [
+    {
+     "sku": "24337/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "22-esmerald-green-star.jpg",
+     "alt": "Globo Metálico Estrella Verde Esmeralda de 22\" (55 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "d608993e3c152ea52defab34ef3ae3cc0fb751966851118c35ba1fd70bbe5577"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7940907597881",
+   "shopifyId": "7940907597881",
+   "title": "22\" Globo Metálico Estrella Rosa 55 cm",
+   "handle": "22-pink-estrella-anagram",
+   "url": "https://balloonstoreco.com/products/22-pink-estrella-anagram",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "22 pulgadas",
+    "55 cm",
+    "Estrella",
+    "Rosa"
+   ],
+   "skus": [
+    {
+     "sku": "18131/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "22-pink-estrella-anagram.jpg",
+     "alt": "Globo Metálico Estrella Rosa de 22\" (55 cm)",
+     "width": 600,
+     "height": 600,
+     "sha256": "c8a28b9cad5a660cd4a6ea528e2ea759246af80a8080226ea3205a7e134cc225"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7940906844217",
+   "shopifyId": "7940906844217",
+   "title": "22\" Globo Metálico Estrella Magenta 55 cm",
+   "handle": "22-magenta-estrella-anagram",
+   "url": "https://balloonstoreco.com/products/22-magenta-estrella-anagram",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "22 pulgadas",
+    "55 cm",
+    "Estrella",
+    "Fucsia",
+    "Rosa"
+   ],
+   "skus": [
+    {
+     "sku": "18128/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "22-magenta-estrella-anagram.jpg",
+     "alt": "Globo Metálico Estrella Magenta de 22\" (55 cm)",
+     "width": 600,
+     "height": 600,
+     "sha256": "3a8d0f38118f25d4a6032be3e920efbd26c24dc0d367ab7f9894fa645aaad918"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8080252567609",
+   "shopifyId": "8080252567609",
+   "title": "22\" Globo Metálico Estrella Rose Gold 55 cm",
+   "handle": "22-rose-gold-estrella",
+   "url": "https://balloonstoreco.com/products/22-rose-gold-estrella",
+   "vendor": "Kaleidoscope",
+   "type": "Globo Metálico",
+   "tags": [
+    "22 pulgadas",
+    "55 cm",
+    "Estrella",
+    "Rosa Gold"
+   ],
+   "skus": [
+    {
+     "sku": "41092/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "22-rose-gold-estrella.jpg",
+     "alt": "Globo Metálico Estrella Rose Gold de 22\" (55 cm)",
+     "width": 500,
+     "height": 500,
+     "sha256": "a014935b71c2e8238073cdf22a6a390dfecc7e4148d76824be5da5b1db8a15b8"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8134681329721",
+   "shopifyId": "8134681329721",
+   "title": "22\" Globo Metálico Estrella Azul Cielo 55 cm",
+   "handle": "22-solido-estrella-azul-cielo",
+   "url": "https://balloonstoreco.com/products/22-solido-estrella-azul-cielo",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "22 pulgadas",
+    "55 cm",
+    "Azul",
+    "Estrella"
+   ],
+   "skus": [
+    {
+     "sku": "V34974/22",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "22-solido-estrella-azul-cielo.jpg",
+     "alt": "Globo Metálico Estrella Azul Cielo de 22\" (55 cm)",
+     "width": 900,
+     "height": 852,
+     "sha256": "d8326cc7910deb0a396b6aa0dc69af817113b3a76140363527f2b1d202b0bd2a"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7809137541177",
+   "shopifyId": "7809137541177",
+   "title": "18\" Globo Metálico Estrella Roja 45 cm",
+   "handle": "18-estrella-roja",
+   "url": "https://balloonstoreco.com/products/18-estrella-roja",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Centro de mesa",
+    "Estrella",
+    "Navidad",
+    "Rojo"
+   ],
+   "skus": [
+    {
+     "sku": "18129/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "18-estrella-roja.jpg",
+     "alt": "Globo Metálico Estrella Roja de 18\" (45 cm)",
+     "width": 525,
+     "height": 527,
+     "sha256": "5e7d5fbadbfc60e63150bed47e40b52e109bc565db08e6fc62bc24a1e1dfa455"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8355089940537",
+   "shopifyId": "8355089940537",
+   "title": "18\" Globo Metálico Estrella Negra Sólida 45 cm",
+   "handle": "18-negro-estrella",
+   "url": "https://balloonstoreco.com/products/18-negro-estrella",
+   "vendor": "Kaleidoscope",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Centro de mesa",
+    "Estrella",
+    "Negro"
+   ],
+   "skus": [
+    {
+     "sku": "V17821/18",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "18-negro-estrella.jpg",
+     "alt": "Globo Metálico Estrella Negra Sólida de 18\" (45 cm)",
+     "width": 900,
+     "height": 869,
+     "sha256": "586726040e74c7816e732f48b6afc3e0985616c5954f44bccd442adf61e67560"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7940909465657",
+   "shopifyId": "7940909465657",
+   "title": "18\" Globo Metálico Estrella Azul Pastel 45 cm",
+   "handle": "18-pastel-blue-star-anagram",
+   "url": "https://balloonstoreco.com/products/18-pastel-blue-star-anagram",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Azul",
+    "Baby shower",
+    "Centro de mesa",
+    "Estrella",
+    "Pastel"
+   ],
+   "skus": [
+    {
+     "sku": "23005/02",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "18-pastel-blue-star-anagram.jpg",
+     "alt": "Globo Metálico Estrella Azul Pastel de 18\" (45 cm)",
+     "width": 872,
+     "height": 900,
+     "sha256": "628d90e03ea30dfcdb0e561b196b2d059c07d4a29be48a41cb0144f3fd2e1c76"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8080251650105",
+   "shopifyId": "8080251650105",
+   "title": "18\" Globo Metálico Corazón Azul Pastel 45 cm",
+   "handle": "18-azul-pastel-corazon-1",
+   "url": "https://balloonstoreco.com/products/18-azul-pastel-corazon-1",
+   "vendor": "Kaleidoscope",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Azul",
+    "Baby shower",
+    "Boda",
+    "Corazón",
+    "Pastel"
+   ],
+   "skus": [
+    {
+     "sku": "V34100/18",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "18-azul-pastel-corazon-1.jpg",
+     "alt": "Globo Metálico Corazón Azul Pastel de 18\" (45 cm)",
+     "width": 471,
+     "height": 460,
+     "sha256": "17165b965ed6c8ea75fc582fa31bcb8e113fef1545a8acb786c0a88808fe9295"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8002767814713",
+   "shopifyId": "8002767814713",
+   "title": "31\" Baby Girl Elephant (Globo Metálico Elefante Baby Shower Niña) 79 cm",
+   "handle": "31-baby-girl-elephant",
+   "url": "https://balloonstoreco.com/products/31-baby-girl-elephant",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "31 pulgadas",
+    "79 cm",
+    "Animales",
+    "Baby Shower",
+    "Niña",
+    "Rosa"
+   ],
+   "skus": [
+    {
+     "sku": "43124/01",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "31-baby-girl-elephant.jpg",
+     "alt": "Globo Metálico Elefante Baby Shower Niña de 31\" (79 cm)",
+     "width": 500,
+     "height": 500,
+     "sha256": "953831d26092823492a3effe84dc75c424a1de1656bf89d27081898854ab5ee0"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8007703822393",
+   "shopifyId": "8007703822393",
+   "title": "31\" Baby Boy Elephant (Globo Metálico Elefante Baby Shower Niño) 79 cm",
+   "handle": "31-baby-boy-elephant",
+   "url": "https://balloonstoreco.com/products/31-baby-boy-elephant",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "31 pulgadas",
+    "79 cm",
+    "Animales",
+    "Azul",
+    "Baby Shower",
+    "Niño"
+   ],
+   "skus": [
+    {
+     "sku": "43123/01",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "31-baby-boy-elephant.jpg",
+     "alt": "Globo Metálico Elefante Baby Shower Niño de 31\" (79 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "77bcfd9d9a6ee2bc8573c908df93138661c23d57e542f95a2d4e3f1369ea9776"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-7921581391929",
+   "shopifyId": "7921581391929",
+   "title": "18\" Globo Metálico Graduado Birretes 45 cm",
+   "handle": "18-graduado-birretes",
+   "url": "https://balloonstoreco.com/products/18-graduado-birretes",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Birrete",
+    "Español",
+    "Felicidades",
+    "Graduación"
+   ],
+   "skus": [
+    {
+     "sku": "K37247/18",
+     "variant": ""
+    }
+   ],
+   "description": "",
+   "images": [
+    {
+     "file": "18-graduado-birretes.jpg",
+     "alt": "Globo Metálico Graduado Birretes de 18\" (45 cm)",
+     "width": 871,
+     "height": 900,
+     "sha256": "a9f2d06d410e51dd4de0b4e4345b5951fe27f97ef7bd66af3b2f9dc99249e1d5"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8249810387001",
+   "shopifyId": "8249810387001",
+   "title": "18\" Globo Metálico Lo Lograste Graduación K-Pop 45 cm",
+   "handle": "18-lo-lograste-grad-kpop",
+   "url": "https://balloonstoreco.com/products/18-lo-lograste-grad-kpop",
+   "vendor": "Anagram",
+   "type": "Globo Metálico",
+   "tags": [
+    "18 pulgadas",
+    "45 cm",
+    "Adolescente",
+    "Español",
+    "Felicidades",
+    "Graduación",
+    "K-Pop"
+   ],
+   "skus": [
+    {
+     "sku": "V36357/18",
+     "variant": ""
+    }
+   ],
+   "description": "Globo redondo de 45 cm con \"Lo Lograste\" y estética kpop. Formato Standard de 18\" en foil metalizado.",
+   "images": [
+    {
+     "file": "18-lo-lograste-grad-kpop.jpg",
+     "alt": "Globo Metálico Lo Lograste Graduación K-Pop de 18\" (45 cm)",
+     "width": 871,
+     "height": 900,
+     "sha256": "b134854618a7ce06454dc55b1744cc5e1bcad4c67074fdec25e9b3d496a2bdfb"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8086474883129",
+   "shopifyId": "8086474883129",
+   "title": "9\" Globo Látex Surtido Perla Sensacional Qualatex 23 cm (Bolsa 50 pzas)",
+   "handle": "9-surtido-perla-sensacional-50pzas",
+   "url": "https://balloonstoreco.com/products/9-surtido-perla-sensacional-50pzas",
+   "vendor": "Sensacional (Qualatex)",
+   "type": "Globo Látex",
+   "tags": [
+    "23 cm",
+    "50 piezas",
+    "9 pulgadas",
+    "Multicolor",
+    "Perla",
+    "Qualatex",
+    "Sensacional"
+   ],
+   "skus": [
+    {
+     "sku": "74495",
+     "variant": ""
+    }
+   ],
+   "description": "Globos de látex Sensacional, de los fabricantes de Qualatex. Bolsa de 50 piezas de 9\" (23 cm).",
+   "images": [
+    {
+     "file": "9-surtido-perla-sensacional-50pzas.jpg",
+     "alt": "Globo de Látex Surtido Perla Sensacional Qualatex de 9\" (23 cm)",
+     "width": 620,
+     "height": 260,
+     "sha256": "30926faa7e5d6cabe9f2d2e8ffb01916eb515c5f5b1ea91673a97fb101c23642"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8074474487865",
+   "shopifyId": "8074474487865",
+   "title": "9\" Globo Látex Azul Bebé Sensacional Qualatex 23 cm (Bolsa 50 pzas)",
+   "handle": "9-azul-bebe-sensacional-50pzas",
+   "url": "https://balloonstoreco.com/products/9-azul-bebe-sensacional-50pzas",
+   "vendor": "Sensacional (Qualatex)",
+   "type": "Globo Látex",
+   "tags": [
+    "23 cm",
+    "50 piezas",
+    "9 pulgadas",
+    "Azul",
+    "Baby Shower",
+    "Pastel",
+    "Qualatex",
+    "Sensacional"
+   ],
+   "skus": [
+    {
+     "sku": "73878",
+     "variant": ""
+    }
+   ],
+   "description": "Globos de látex Sensacional, de los fabricantes de Qualatex. Bolsa de 50 piezas de 9\" (23 cm).",
+   "images": [
+    {
+     "file": "9-azul-bebe-sensacional-50pzas.jpg",
+     "alt": "Globo de Látex Azul Bebé Sensacional Qualatex de 9\" (23 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "a01216ef823dd3277c8a118761c507c78b7060d67cb6d94d7ac3e9f34d94d629"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8074467672121",
+   "shopifyId": "8074467672121",
+   "title": "9\" Globo Látex Rosa Bebé Sensacional Qualatex 23 cm (Bolsa 50 pzas)",
+   "handle": "9-rosa-bebe-sensacional-50pzas",
+   "url": "https://balloonstoreco.com/products/9-rosa-bebe-sensacional-50pzas",
+   "vendor": "Sensacional (Qualatex)",
+   "type": "Globo Látex",
+   "tags": [
+    "23 cm",
+    "50 piezas",
+    "9 pulgadas",
+    "Baby Shower",
+    "Pastel",
+    "Qualatex",
+    "Rosa",
+    "Sensacional"
+   ],
+   "skus": [
+    {
+     "sku": "73850",
+     "variant": ""
+    }
+   ],
+   "description": "Globos de látex Sensacional, de los fabricantes de Qualatex. Bolsa de 50 piezas de 9\" (23 cm).",
+   "images": [
+    {
+     "file": "9-rosa-bebe-sensacional-50pzas.jpg",
+     "alt": "Globo de Látex Rosa Bebé Sensacional Qualatex de 9\" (23 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "76b39c5f29094445b5f6babfd7f75060628f90afea1dd092296322c9dec5dba3"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8084684865593",
+   "shopifyId": "8084684865593",
+   "title": "9\" Globo Látex Rosa Perla Sensacional Qualatex 23 cm (Bolsa 50 pzas)",
+   "handle": "9-rosa-perla-sensacional-50pzas",
+   "url": "https://balloonstoreco.com/products/9-rosa-perla-sensacional-50pzas",
+   "vendor": "Sensacional (Qualatex)",
+   "type": "Globo Látex",
+   "tags": [
+    "23 cm",
+    "50 piezas",
+    "9 pulgadas",
+    "Perla",
+    "Qualatex",
+    "Rosa",
+    "Sensacional"
+   ],
+   "skus": [
+    {
+     "sku": "74271",
+     "variant": ""
+    }
+   ],
+   "description": "Globos de látex Sensacional, de los fabricantes de Qualatex. Bolsa de 50 piezas de 9\" (23 cm).",
+   "images": [
+    {
+     "file": "9-rosa-perla-sensacional-50pzas.jpg",
+     "alt": "Globo de Látex Rosa Perla Sensacional Qualatex de 9\" (23 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "20aa8692c1ffc7461efbe1a9363e92ebb9ad2d0c06d6837add41bac1b9b69139"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8084675133497",
+   "shopifyId": "8084675133497",
+   "title": "9\" Globo Látex Blanco Perla Sensacional Qualatex 23 cm (Bolsa 50 pzas)",
+   "handle": "9-blanco-perla-sensacional-50pzas",
+   "url": "https://balloonstoreco.com/products/9-blanco-perla-sensacional-50pzas",
+   "vendor": "Sensacional (Qualatex)",
+   "type": "Globo Látex",
+   "tags": [
+    "23 cm",
+    "50 piezas",
+    "9 pulgadas",
+    "Blanco",
+    "Boda",
+    "Perla",
+    "Qualatex",
+    "Sensacional"
+   ],
+   "skus": [
+    {
+     "sku": "74247",
+     "variant": ""
+    }
+   ],
+   "description": "Globos de látex Sensacional, de los fabricantes de Qualatex. Bolsa de 50 piezas de 9\" (23 cm).",
+   "images": [
+    {
+     "file": "9-blanco-perla-sensacional-50pzas.jpg",
+     "alt": "Globo de Látex Blanco Perla Sensacional Qualatex de 9\" (23 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "0827883bfd77bdb8464b1816d8012425bcd4724451c33dd8bb0085ebae42302c"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8086469804089",
+   "shopifyId": "8086469804089",
+   "title": "9\" Globo Látex Oro Metálico Sensacional Qualatex 23 cm (Bolsa 50 pzas)",
+   "handle": "9-oro-metalico-sensacional-50pzas",
+   "url": "https://balloonstoreco.com/products/9-oro-metalico-sensacional-50pzas",
+   "vendor": "Sensacional (Qualatex)",
+   "type": "Globo Látex",
+   "tags": [
+    "23 cm",
+    "50 piezas",
+    "9 pulgadas",
+    "Dorado",
+    "Metalizado",
+    "Qualatex",
+    "Sensacional"
+   ],
+   "skus": [
+    {
+     "sku": "74502",
+     "variant": ""
+    }
+   ],
+   "description": "Globos de látex Sensacional, de los fabricantes de Qualatex. Bolsa de 50 piezas de 9\" (23 cm).",
+   "images": [
+    {
+     "file": "9-oro-metalico-sensacional-50pzas.jpg",
+     "alt": "Globo de Látex Oro Metálico Sensacional Qualatex de 9\" (23 cm)",
+     "width": 900,
+     "height": 900,
+     "sha256": "c111c967b5a292f2d1e4d0a632eef39c4e970cc7931fc69094d3f70763cb0d13"
+    }
+   ],
+   "source": "shopify"
+  },
+  {
+   "id": "shopify-8086477242425",
+   "shopifyId": "8086477242425",
+   "title": "9\" Globo Látex Surtido Navideño Perla Sensacional Qualatex 23 cm (Bolsa 50 pzas)",
+   "handle": "9-surtido-navideno-sensacional-50pzas",
+   "url": "https://balloonstoreco.com/products/9-surtido-navideno-sensacional-50pzas",
+   "vendor": "Sensacional (Qualatex)",
+   "type": "Globo Látex",
+   "tags": [
+    "23 cm",
+    "50 piezas",
+    "9 pulgadas",
+    "Multicolor",
+    "Navidad",
+    "Perla",
+    "Qualatex",
+    "Sensacional"
+   ],
+   "skus": [
+    {
+     "sku": "52358",
+     "variant": ""
+    }
+   ],
+   "description": "Globos de látex Sensacional, de los fabricantes de Qualatex. Bolsa de 50 piezas de 9\" (23 cm).",
+   "images": [
+    {
+     "file": "9-surtido-navideno-sensacional-50pzas.jpg",
+     "alt": "Globo de Látex Surtido Navideño Perla Sensacional Qualatex de 9\" (23 cm)",
+     "width": 620,
+     "height": 260,
+     "sha256": "7b0df40eab69a77ce591da56e9194d0bbcf02c6ebb40d0553bc73abfded9f2ae"
+    }
+   ],
+   "source": "shopify"
+  }
+ ]
+}

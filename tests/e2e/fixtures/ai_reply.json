@@ -1,0 +1,11 @@
+{"proposals":[
+ {"type":"carrusel","title":"Estrella QA: 4 montajes que sí se venden","pillar":"Inspiración","hook":"Una estrella, cuatro decoraciones distintas","alt_hooks":["Así se ve la estrella QA en cuatro temas"],"caption":"La estrella QA cambia de tono con la luz.\nGuárdalo para tu próximo montaje.","cta":"Consulta el catálogo disponible en balloonstoreco.com","hashtags":["#globos","decoradoras"],
+  "slides":[{"template":"portada","headline":"Una estrella, cuatro decoraciones","body":"Ideas para tu próximo montaje"},{"template":"producto","headline":"Estrella QA 45 cm","body":"Medida confirmada: 45 cm"},{"template":"lista","headline":"Dónde usarla","body":"Baby shower\nTema unicornio\nCentro de mesa"},{"template":"cta","headline":"¿La sumas a tu inventario?","body":"Consulta el catálogo disponible"}],
+  "needs":["Foto real de un montaje terminado con la estrella"],"verify":["Confirmar flotación con helio"]},
+ {"type":"reel","title":"La estrella que cambia de color","pillar":"Producto real","hook":"Mira cómo cambia con la luz","alt_hooks":[],"caption":"Iridiscente de verdad.","cta":"Guarda este post para tu próxima decoración","hashtags":["#globosmetalicos"],
+  "shots":[{"duration":3,"text":"Cambia con la luz","voice":"Mira lo que pasa cuando la giras","note":"zoom suave","footage":"Toma vertical girando la estrella frente a una ventana"},{"duration":4,"text":"Para baby shower","voice":"Ideal para paletas pastel","note":"corte en el beat","footage":"Estrella junto a látex pastel"}],
+  "needs":["Video vertical girando la estrella con luz natural"],"verify":[]},
+ {"type":"story","title":"Encuesta: ¿estrella o corazón?","pillar":"Comunidad","hook":"¿Cuál pides más?","alt_hooks":[],"caption":"Hoy a solo $99 la pieza","cta":"Escríbenos por mensaje directo","hashtags":[],
+  "frames":[{"text":"¿Estrella o corazón?","sticker":"encuesta","note":"foto real del producto"},{"text":"Resultados mañana","sticker":"cuenta regresiva","note":""}],
+  "needs":[],"verify":[]}
+]}

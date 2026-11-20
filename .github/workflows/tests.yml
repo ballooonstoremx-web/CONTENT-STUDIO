@@ -1,0 +1,22 @@
+name: tests
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Unit tests (browser tests skip without Playwright)
+        run: python -m unittest discover -s tests -v
+      - name: Third-party skills unchanged
+        run: python -I scripts/audit_skill.py skills/third_party/marketingskills skills/third_party/instagram-agent

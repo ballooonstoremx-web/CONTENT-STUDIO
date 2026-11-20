@@ -13,9 +13,23 @@ AI Content Creation Studio for Balloon Store.
 Balloon Store
 Website: https://balloonstoreco.com
 
-## Brand Colors
-Blue: #54C1FA
-Pink: #EA4566
+## Content HQ web app
+
+`web/content-hq.html` is the browser app for daily production: dashboard by
+status, photo/video library with tags, idea generator, hooks/scripts/copy,
+brand templates, carousel builder (PNG + ZIP), Reel builder from real footage
+(CapCut package: numbered clips, instructions, SRT, cover, copy), editorial
+calendar, downloads and backups. See [docs/WEB-APP.md](docs/WEB-APP.md).
+
+```bash
+.venv/bin/python scripts/studio.py web   # http://127.0.0.1:8780/
+```
+
+## Brand
+Facts: [brand/profile.json](brand/profile.json) (palette: blue #54C1FA, pink
+#EA4566, orange #FF8A00, yellow #FFD400, green #7ED957, navy #122D50).
+Rules: [brand/BRAND-BRAIN.md](brand/BRAND-BRAIN.md). Agents and skills:
+[docs/AGENTS-AND-SKILLS.md](docs/AGENTS-AND-SKILLS.md).
 
 ## Tools
 - Codex Cloud
@@ -23,3 +37,56 @@ Pink: #EA4566
 - Higgsfield (integration pending)
 - Canva
 - CapCut
+
+## Development workflow
+
+This repository prepares reviewable Balloon Store content. It does not publish,
+deploy, purchase services, or schedule posts. The owner reviews the implementation
+PR and approves content separately. Name, website, palette, audience and product lines
+(brand/profile.json) are confirmed brand facts; handle, CTA and product claims require input.
+
+```bash
+bash scripts/setup.sh
+.venv/bin/python scripts/studio.py doctor
+.venv/bin/python scripts/studio.py init event-checklist --kind carousel --topic "Checklist para tu celebración"
+.venv/bin/python scripts/studio.py export event-checklist --stage draft
+```
+
+Supported campaign plans: `carousel`, `image`, `reel`, `marketing`. Initialization
+writes editable drafts, not AI-generated images or video. Paid generation requires
+a connected provider, approved references, model selection and cost approval.
+
+| Folder | Contents |
+|---|---|
+| inputs/ | Private briefs, reference material, future publication log |
+| brand/ | Confirmed profile, licensed logos, fonts and product photos |
+| skills/ | Original uploaded skill, checksum and scope analysis |
+| templates/ | Brief and format-specific production plans |
+| generated/ | Ignored campaign drafts, raws, finals and review records |
+| exports/ | Ignored downloadable ZIPs with checksummed manifests |
+| scripts/ | Repeatable setup, campaign CLI, original skill finalizer |
+| tests/ | Image, video, export and authenticated-download checks |
+| docs/ | Workflow, cloud setup, integration evidence and limitations |
+
+Read [the workflow](docs/WORKFLOW.md), [skill analysis](skills/README.md),
+[integration status](docs/INTEGRATIONS.md), and [cloud setup](docs/CLOUD-SETUP.md).
+
+Higgsfield, Blotato, Canva and CapCut are not connected in the inspected session.
+An OpenAI image tool is available in Codex but is not silently used instead of the
+carousel skill's Higgsfield model. Offline planning, local media validation and
+ZIP export work independently of those integrations.
+
+Run `.venv/bin/python scripts/studio.py serve --port 8765` for a local authenticated
+download service. It is not a deployment or externally reachable hosting service.
+Workspace file download or a platform-authenticated tunnel is required for delivery
+to a user's device; this session provides neither an artifact upload nor a tunnel
+tool. See the workflow for authentication and retention details.
+
+Validation: `.venv/bin/python -m unittest discover -s tests -v`. FFmpeg checks are
+optional when binaries are unavailable; image, archive and download checks are
+required. Tests generate temporary fixtures, not approved marketing content.
+
+Before human approval, run `studio.py prepare-review NAME`. It snapshots content
+and resets all review checks. Fill the review record only after inspecting that
+version; later content changes block final exports until reviewed again.
+See [the PR review report](docs/PR-1-REVIEW.md) for findings, fixes and limitations.

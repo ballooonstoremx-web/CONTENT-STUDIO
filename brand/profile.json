@@ -1,0 +1,32 @@
+{
+  "name": "Balloon Store",
+  "website": "https://balloonstoreco.com",
+  "colors": {
+    "blue": "#54C1FA",
+    "pink": "#EA4566",
+    "orange": "#FF8A00",
+    "yellow": "#FFD400",
+    "green": "#7ED957",
+    "navy": "#122D50"
+  },
+  "audience": ["decoradoras", "tiendas de fiestas", "revendedores"],
+  "market": "México",
+  "product_lines": [
+    "Globos metálicos Anagram",
+    "Globos metálicos Kaleidoscope",
+    "Látex Sensacional"
+  ],
+  "source": "Brand owner brief, 2026-11-17 (colors, audience, product lines); README.md (name, website)",
+  "handle": null,
+  "locale": "es-MX",
+  "voice": {"adjectives": ["cercana", "clara", "festiva", "práctica"], "status": "proposed; confirm with brand owner"},
+  "cta": null,
+  "approval": "review",
+  "publishing_enabled": false,
+  "generation_spend_approved": false,
+  "hard_rules": [
+    "Never invent products, packaging, prices or stock.",
+    "Represent specific products only with real photographs.",
+    "If an asset is missing, request the file instead of generating a fake representation."
+  ]
+}

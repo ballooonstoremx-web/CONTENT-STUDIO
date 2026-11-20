@@ -14,6 +14,15 @@ they show). If footage is missing, stop and request specific shots
 
 ## Process
 1. 5–10 hook options (≤ 9 words, first 3 s, specific to the audience).
+   - Name the formula of each hook from `third_party/ig-reel/hooks.json`: 26 hook
+     formulas, MIT, Jake Schincariol. Use only the structure; write the hook in
+     Mexican Spanish and never translate the English examples.
+   - Write the spoken hook and the on-screen hook separately. On screen it is
+     the shorter one.
+   - Optional check: `python3 -I skills/reel-scriptwriter/third_party/ig-reel/hookscore.py --hook "…"`.
+     It is tuned for English: use it only to catch weak hooks (greetings,
+     preambles, nothing concrete), never to choose a winner. Owner data in
+     Metricool (retention at 3 s) wins.
 2. Beat sheet for 15–30 s: hook → contexto → 3–5 tomas de proceso → resultado
    → CTA. Each beat maps to one real file with in/out times.
 3. Per beat: on-screen text (≤ 7 words, inside safe zones), voiceover line,

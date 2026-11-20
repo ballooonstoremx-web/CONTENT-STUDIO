@@ -31,6 +31,17 @@ any content task; do not duplicate them. Role skills live in `skills/<name>/SKIL
 (linked into `.claude/skills` and `.agents/skills`); Claude Code subagents live in
 `.claude/agents`. See docs/AGENTS-AND-SKILLS.md.
 
+Third-party skills:
+- Vendored skills live unmodified in `skills/third_party/<source>/<skill>/`. Their
+  license, commit and SHA-256 are in `skills/third_party/manifest.json`; see
+  docs/SKILLS-TERCEROS.md.
+- When any of them asks for `voice.md`, a voice profile, `product-marketing.md` or brand
+  context, use `brand/BRAND-BRAIN.md`, `brand/profile.json` and `catalog/catalog.json`.
+  Never create a second copy of those facts.
+- Before adding any new external skill, plugin or connector, follow
+  `skills/skill-auditor/SKILL.md`. Approved decisions and standing rules are in
+  docs/DECISIONES.md: read it before planning work.
+
 Catalog: product data comes only from the read-only Shopify connector (`catalog/source.json`,
 never prices, inventory or costs). Rebuild with `python scripts/catalog_build.py`; see docs/FABRICA.md.
 Never write to Shopify, Meta Ads or Omnisend.

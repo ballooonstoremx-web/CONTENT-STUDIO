@@ -47,3 +47,16 @@ skill. Its tests exercise actual image padding and output sizes.
 `brand/BRAND-BRAIN.md` and are listed in [docs/AGENTS-AND-SKILLS.md](../docs/AGENTS-AND-SKILLS.md).
 They are not checksummed in `catalog.json`, which stays reserved for the
 original attachment.
+
+## Third-party skills (added 2026-11-20)
+
+Selected skills copied unmodified after review with `skill-auditor`. See
+[docs/SKILLS-TERCEROS.md](../docs/SKILLS-TERCEROS.md) and `third_party/manifest.json`
+(license, commit, SHA-256 per file):
+
+- Marketing (Corey Haines, MIT): product-marketing, content-strategy, copywriting, copy-editing,
+  cro, ab-testing, seo-audit (Codex only), emails (Codex only).
+- Instagram Agent (Jake Schincariol, MIT), Codex only: ig-human, ig-caption, ig-viral, ig-profile, ig-reply.
+  Claude Code already has the full pack as an org plugin. Hook formulas live in
+  `reel-scriptwriter/third_party/ig-reel`.
+- Project-authored: `skill-auditor`.

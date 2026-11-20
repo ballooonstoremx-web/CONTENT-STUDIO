@@ -55,7 +55,7 @@
 
 - **Skills:** las 8 de marketing (MIT) y 5 de Instagram Agent para Codex (MIT), más `skill-auditor`. Ver `docs/SKILLS-TERCEROS.md`.
 - **Remotion 4.0.540:** evaluado en la nube (MP4 1080×1920, sin costo, licencia de evaluación). No se adopta como motor principal mientras no se confirme el tamaño del equipo. Se eligió **FFmpeg** porque es libre y no tiene esa condición.
-- **Tarea programada de Claude Code:** creada como **prueba única** para comprobar si el investigador corre sin la app abierta. El resultado está abajo.
+- **Tarea programada de Claude Code (prueba única, 20 nov 02:35 UTC):** se ejecutó en la nube sin la app abierta y **guardó el informe en la base de la app** (`reports/rep-prueba-programada-20261120`). Lo que **falló** fue Metricool: la sesión programada no tenía el conector y respondió «No matching deferred tools found». La causa es que una tarea creada desde esta sesión no hereda conectores. Tu rutina de correo, creada desde claude.ai, sí trae Metricool entre sus conectores. Conclusión: la ejecución sin la app abierta funciona. Para que lea Metricool, la rutina semanal debe crearse desde claude.ai › Rutinas con el conector de Metricool activado.
 
 ## Pendiente
 

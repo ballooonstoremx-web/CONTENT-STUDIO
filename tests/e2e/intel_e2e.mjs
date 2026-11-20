@@ -22,6 +22,8 @@ await ctx.addInitScript(() => {
     window.__prompts.push({ prompt, images: !!(opts && opts.images && opts.images.length) });
     if (prompt.startsWith("Analiza una inspiración")) return { hook: "Mira cómo queda", estructura: "Resultado, proceso, cierre", tecnica: "Time-lapse", utilidad: "Enseña montaje", observaciones: ["Se ve una mesa decorada"], suposiciones: ["Probablemente usa música en tendencia"], confianza: "media", falta: "Métricas" };
     if (prompt.startsWith("Crea UNA idea")) return { hook: "Tu mesa en 3 pasos", objetivo: "educar", publico: "decoradoras", formato: "reel", producto_id: "no-existe", fotos_ids: [], tema: "Montaje", guion: "1. Resultado 2. Pasos", tomas: "Mesa vacía; mesa terminada", cta: "Guárdalo", por_que: "Tutorial útil", diferencia: "Usa nuestro producto", faltan: "Foto de mesa real" };
+    if (prompt.startsWith("Edita la línea de tiempo")) { const m = prompt.match(/TOMAS: (\[.*\])/s); const t = JSON.parse(m[1]); return { shots: t.reverse().map(s => ({ mediaId: s.mediaId, in: s.in, dur: 1, text: "Corregido " + s.n })), hook: "Hook corregido", resumen: "Invertí el orden" }; }
+    if (prompt.startsWith("Convierte UNA idea")) return { reel: { hook: "Reel de la idea", beats: [{ desc: "Resultado", texto_pantalla: "Mira", dur: 3 }, { desc: "Proceso", texto_pantalla: "Así", dur: 4 }] }, carrusel: { slides: [{ titulo: "Portada", texto: "" }, { titulo: "Paso 1", texto: "Uno" }, { titulo: "Paso 2", texto: "Dos" }, { titulo: "Guárdalo", texto: "balloonstoreco.com" }] }, story: { frames: [{ texto: "Hola", sticker: "" }, { texto: "¿Te gusta?", sticker: "Encuesta: Sí / No" }, { texto: "Ver más", sticker: "Enlace" }] }, copy: { instagram: "Copy IG", facebook: "Copy FB" }, email: { asunto: "Asunto de prueba", preheader: "Pre", cuerpo: "Cuerpo", cta: "Compra" } };
     if (prompt.includes("prepara la semana")) return { ideas: Array.from({ length: 5 }, (_, i) => ({ hook: "Idea semanal " + (i + 1), objetivo: "atraer", publico: "decoradoras", formato: "reel", producto_id: "", tema: "Tema", guion: "Guion", tomas: "Tomas", cta: "CTA", por_que: "Por qué", ref_urls: [] })), hooks: Array.from({ length: 10 }, (_, i) => ({ texto: "Hook " + (i + 1), tipo: "Pregunta", basado_en: "Referencia" })), plan_miercoles: { fecha: "", duracion_min: 90, bloques: [{ nombre: "Mesa", minutos: 30, tomas: [{ desc: "Toma 1", para: "Idea 1" }] }], materiales: ["Tripié"], notas: "Prueba" } };
     return {};
   };
@@ -144,6 +146,44 @@ await page.click("#rs_go"); await page.waitForTimeout(2500); await page.reload()
 await page.goto(BASE + "#semanal"); await page.waitForTimeout(800);
 ok(await page.locator("[data-rep]").count() === 2, "Historial: dos informes guardados tras recargar");
 ok(await page.evaluate(() => S.settings.find(s => s.id === "researcher").hour) === "08:30", "Preferencia de horario guardada");
+// Editor de Reel: material real, recortes, versiones, corrección por instrucción, exportación y proyecto de render
+await page.goto(BASE + "#biblioteca"); await page.waitForTimeout(400);
+await page.setInputFiles("#filePick", [path.join(FIX, "clip.mp4"), path.join(FIX, "photo.png")]); await page.waitForTimeout(3500);
+const rid = await page.evaluate(async () => { const v = S.media.find(m => /clip\.mp4/.test(m.name)), p = S.media.find(m => /photo\.png/.test(m.name)); const it = newItem({ type: "reel", title: "Reel prueba", status: "borrador", hook: "Así se ve terminada", shots: [{ mediaId: v.id, in: 0.5, dur: 1.5, text: "Uno", voice: "", note: "" }, { mediaId: p.id, in: 0, dur: 1, text: "Dos", voice: "", note: "" }] }); await addItem(it); S.cur.reel = it.id; return it.id });
+await page.goto(BASE + "#video"); await page.waitForTimeout(1500);
+await page.fill("[data-vdur='0']", "1.2"); await page.locator("[data-vdur='0']").dispatchEvent("change"); await page.waitForTimeout(600);
+ok(await page.evaluate(id => item(id).shots[0].dur, rid) === 1.2, "Editor de Reel: recorte guardado");
+await page.fill("#v_note", "Primera versión"); await page.click("#v_save"); await page.waitForTimeout(600);
+await page.fill("#v_ins", "invierte el orden y cambia los subtítulos"); await page.click("#v_ai"); await page.waitForTimeout(1200);
+const afterAI = await page.evaluate(id => { const it = item(id); return { first: it.shots[0].text, hook: it.hook, versions: it.video.versions.map(v => v.note) } }, rid);
+ok(afterAI.first === "Corregido 2" && afterAI.hook === "Hook corregido" && afterAI.versions.length === 3, "Corrección por instrucción aplicada y versión anterior conservada");
+await page.locator("[data-vres='1']").click(); await page.waitForTimeout(800);
+const restored = await page.evaluate(id => { const it = item(id); return { first: it.shots[0].text, n: it.video.versions.length } }, rid);
+ok(restored.first === "Uno" && restored.n === 4, "Restaurar v1 sin perder las demás versiones");
+const [dlv] = await Promise.all([page.waitForEvent("download", { timeout: 60000 }), page.click("#v_exp")]);
+const vname = dlv.suggestedFilename(); await dlv.saveAs(path.join(OUT, vname));
+ok(/\.(mp4|webm)$/.test(vname) && fs.statSync(path.join(OUT, vname)).size > 5000, "Exportación de video real desde el navegador: " + vname);
+const [dlj] = await Promise.all([page.waitForEvent("download"), page.click("#v_json")]); await dlj.saveAs(path.join(OUT, "proyecto.json"));
+const proj = JSON.parse(fs.readFileSync(path.join(OUT, "proyecto.json"), "utf8"));
+ok(proj.format === "balloon-store-reel/1" && proj.shots.length === 2 && proj.shots[0].kind === "video", "Proyecto para render en la nube exportado");
+// Una idea → todos los formatos, solo con idea aprobada
+await page.evaluate(async () => { await saveDoc("ideabank", { id: "idea-pack", hook: "Idea para todo", objective: "educar", audience: "decoradoras", format: "reel", productId: "", topic: "Prueba", script: "Uno\nDos", shots: "", cta: "Guárdalo", why: "", evidence: "", missing: "", refs: [], status: "aprobada", priority: "media", createdAt: nowISO() }) });
+await page.goto(BASE + "#banco"); await page.waitForTimeout(500);
+await page.locator("[data-bpack='idea-pack']").click(); await page.waitForTimeout(300);
+await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(2500);
+const pack = await page.evaluate(() => { const x = S.ideabank.find(i => i.id === "idea-pack"); const its = (x.pack && x.pack.items || []).map(item); return { st: x.status, types: its.map(i => i && i.type).sort().join(","), email: x.pack && x.pack.email.asunto, slides: its.find(i => i.type === "carrusel").design.slides.length, frames: its.find(i => i.type === "story").frames.length } });
+ok(pack.types === "carrusel,reel,story" && pack.email === "Asunto de prueba" && pack.slides === 4 && pack.frames === 3 && pack.st === "produccion", "Una idea → Reel, carrusel editable, Stories, copy y email (borrador)");
+ok(await page.evaluate(async () => { try { await ideaToEverything({ status: "nueva" }, today()); return false } catch (e) { return /aprueba/.test(e.message) } }), "No genera formatos de ideas sin aprobar");
+// Estudio: Marca → Hooks → Semana → Todo
+ok(page.url().endsWith("#flujo") && /Ideas aprobadas/.test(await page.locator("main").innerText()), "Tras crear los formatos se abre el paso 4 del Estudio");
+await page.evaluate(() => { S.flowStep = 1; route() }); await page.waitForTimeout(600);
+ok(/Tu marca/.test(await page.locator("main").innerText()), "Estudio paso 1: marca");
+await page.click("#fl_next"); await page.waitForTimeout(1500);
+ok(await page.locator("#fl_var figure").count() === 4, "Estudio paso 2: un hook en 4 estilos");
+await page.click("#fl_next"); await page.waitForTimeout(800);
+ok(await page.locator(".vday").count() === 7, "Estudio paso 3: tablero de la semana");
+await page.click("#fl_next"); await page.waitForTimeout(600);
+ok(/Email \(borrador, no se envía\)/.test(await page.locator("main").innerText()), "Estudio paso 4: formatos de la idea");
 // iPhone: agenda y cambio de fecha
 const ph = await b.newContext({ ...devices["iPhone 13"] }); const pp = await ph.newPage(); pp.on("pageerror", e => errs.push("iphone: " + e.message));
 await pp.goto(BASE + "#respaldo"); await pp.waitForSelector("#bk_in", { state: "attached" }); await pp.setInputFiles("#bk_in", path.join(FIX, "seed.json")); await pp.waitForTimeout(800);

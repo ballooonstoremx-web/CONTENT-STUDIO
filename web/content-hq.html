@@ -418,6 +418,7 @@ label.chk{display:flex!important;align-items:center;gap:8px;text-transform:none;
         <a href="#estudio" data-r="estudio" title="Estudio semanal">Semana</a>
         <a href="#ideas" data-r="ideas">Ideas</a>
         <a href="#campanas" data-r="campanas">Campañas</a>
+        <a href="#flujo" data-r="flujo" title="Marca → Hooks → Semana → Todo">Estudio</a>
         <a href="#calendario" data-r="calendario">Calendario</a></span>
         <span class="grp"><span class="sec">Crear</span>
         <a href="#fabrica" data-r="fabrica" title="Fábrica semanal con IA">Fábrica</a>
@@ -425,6 +426,7 @@ label.chk{display:flex!important;align-items:center;gap:8px;text-transform:none;
         <a href="#copy" data-r="copy" title="Hooks, guiones y copies">Copies</a>
         <a href="#carrusel" data-r="carrusel">Carrusel</a>
         <a href="#reel" data-r="reel">Reel</a>
+        <a href="#video" data-r="video" title="Vista previa, recortes, subtítulos, portada, versiones y exportación">Editor de Reel</a>
         <a href="#plantillas" data-r="plantillas">Plantillas</a>
         <a href="#biblioteca" data-r="biblioteca">Biblioteca</a>
         <a href="#catalogo" data-r="catalogo">Catálogo</a></span>
@@ -992,7 +994,7 @@ VIEWS.reel=main=>{
     $("#mk",main).onclick=async()=>{const it=await addItem(newItem({type:"reel",status:"borrador",title:"Nuevo Reel"}));S.cur.reel=it.id;route()};return}
   if(!item(S.cur.reel)||item(S.cur.reel).type!=="reel")S.cur.reel=list[0].id;const it=item(S.cur.reel);
   const av=S.media.filter(m=>!(m.tags||[]).includes("logo"));
-  main.innerHTML=head("Preparar Reel con material real","Elige tus clips y fotos reales en orden, define el recorte, el texto en pantalla y la voz de cada toma. Exporta un paquete para editar en CapCut.",`<button id="newR">Nuevo Reel</button>`)+
+  main.innerHTML=head("Preparar Reel con material real","Elige tus clips y fotos reales en orden, define el recorte, el texto en pantalla y la voz de cada toma. Exporta un paquete para editar en CapCut.",`<a class="btn primary" href="#video">Vista previa y video</a><button id="newR">Nuevo Reel</button>`)+
   `<div class="panel" style="margin-bottom:14px"><div class="f2"><label>Reel<select id="r_sel">${itemOptions("reel",it.id)}</select></label><label>Título<input id="r_title" value="${esc(it.title)}"></label><label>Estado<select id="r_status">${STATUSES.map(([k,l])=>`<option value="${k}" ${k===it.status?"selected":""}>${l}</option>`).join("")}</select></label></div>
   <label style="margin-top:10px">Hook (primeros 3 s)<input id="r_hook" value="${esc(it.hook)}"></label>
   <label style="margin-top:10px">Guion<textarea id="r_script" style="min-height:120px">${esc(it.script)}</textarea></label><div class="row" style="margin-top:8px"><button id="r_gs">Generar guion base</button><a class="btn" href="#copy" id="r_copy">Más hooks y copy</a></div></div>
@@ -2202,7 +2204,7 @@ VIEWS.banco=main=>{const fl=S.bankFilter||{st:"",obj:""};S.bankFilter=fl;S.bankS
    <dl class="kv"><dt>Objetivo</dt><dd>${esc(label(IDEA_OBJ,x.objective))}</dd><dt>Público</dt><dd>${esc(x.audience)}</dd><dt>Formato</dt><dd>${esc(label(TYPES,x.format))}</dd><dt>Producto</dt><dd>${p?esc(p.title):"—"}</dd><dt>Prioridad</dt><dd class="pri-${x.priority}">${esc(label(PRI,x.priority))}</dd></dl>
    ${x.why?`<p style="margin:0;font-size:.8rem"><b>Por qué:</b> ${esc(x.why.slice(0,220))}</p>`:""}${x.evidence?`<p class="src" style="margin:0"><b>Datos:</b> ${esc(x.evidence.slice(0,220))}</p>`:""}${x.missing?`<p class="src" style="margin:0"><b>Falta confirmar:</b> ${esc(x.missing)}</p>`:""}
    ${(x.refs||[]).length?`<ul class="ev">${x.refs.slice(0,3).map(refHTML).join("")}</ul>`:""}<div class="src">${esc(x.source||"")} · ${fmtDT(x.createdAt)}</div>
-   <div class="row"><button data-bed="${x.id}">Editar</button>${x.status!=="aprobada"&&x.status!=="produccion"?`<button data-bap="${x.id}">Aprobar</button>`:""}${x.status==="aprobada"?`<button class="primary" data-bpost="${x.id}">Al calendario</button>`:""}${x.itemId&&item(x.itemId)?`<button data-bopen="${x.itemId}">Ver publicación</button>`:""}${x.status!=="descartada"?`<button data-bdis="${x.id}">Descartar</button>`:`<button data-brest="${x.id}">Recuperar</button>`}</div></article>`}).join("")||`<div class="empty">Sin ideas todavía. Crea una a mano, conviértela desde Inspiración o Competencia, o genera con evidencia.</div>`}</div>`;
+   <div class="row"><button data-bed="${x.id}">Editar</button>${x.status!=="aprobada"&&x.status!=="produccion"?`<button data-bap="${x.id}">Aprobar</button>`:""}${x.status==="aprobada"?`<button class="primary" data-bpost="${x.id}">Al calendario</button>`:""}${["aprobada","produccion"].includes(x.status)&&!x.pack?`<button data-bpack="${x.id}">Todos los formatos</button>`:""}${x.itemId&&item(x.itemId)?`<button data-bopen="${x.itemId}">Ver publicación</button>`:""}${x.status!=="descartada"?`<button data-bdis="${x.id}">Descartar</button>`:`<button data-brest="${x.id}">Recuperar</button>`}</div></article>`}).join("")||`<div class="empty">Sin ideas todavía. Crea una a mano, conviértela desde Inspiración o Competencia, o genera con evidencia.</div>`}</div>`;
   $("#bk_st",main).onchange=e=>{fl.st=e.target.value;route()};$("#bk_obj",main).onchange=e=>{fl.obj=e.target.value;route()};
   $("#bk_add",main).onclick=()=>ideaForm(null);$("#bk_ai",main).onclick=genIdeasDlg;
   const X=id=>S.ideabank.find(x=>x.id===id);
@@ -2212,6 +2214,7 @@ VIEWS.banco=main=>{const fl=S.bankFilter||{st:"",obj:""};S.bankFilter=fl;S.bankS
   $$("[data-bdis]",main).forEach(b=>b.onclick=async()=>{const x=X(b.dataset.bdis);x.status="descartada";await saveDoc("ideabank",x);route()});
   $$("[data-brest]",main).forEach(b=>b.onclick=async()=>{const x=X(b.dataset.brest);x.status="guardada";await saveDoc("ideabank",x);route()});
   $$("[data-bpost]",main).forEach(b=>b.onclick=()=>ideaToPost(X(b.dataset.bpost)));
+  $$("[data-bpack]",main).forEach(b=>b.onclick=()=>packDlg(X(b.dataset.bpack)));
   $$("[data-bopen]",main).forEach(b=>b.onclick=()=>{S.fichaId=b.dataset.bopen;location.hash="#ficha"});
   $("#bk_comb",main).onclick=async()=>{const xs=[...S.bankSel].map(X).filter(Boolean);if(xs.length<2)return;
     const m={id:uid(),hook:xs.map(x=>x.hook).filter(Boolean).join(" / "),objective:xs[0].objective,audience:xs[0].audience,format:xs[0].format,productId:xs.find(x=>x.productId)?.productId||"",topic:[...new Set(xs.map(x=>x.topic).filter(Boolean))].join(" + "),
@@ -2674,6 +2677,157 @@ VIEWS.semanal=main=>{const cfg=rsCfg();const reps=[...S.reports].sort((a,b)=>Str
   $$("[data-rapp]",main).forEach(b=>b.onclick=async()=>{const i=+b.dataset.rapp;const g=cur.ai.ideas[i];
     await saveDoc("ideabank",{id:uid(),hook:g.hook,objective:g.objective,audience:g.audience,format:g.format,productId:g.productId,topic:g.topic,script:g.script,shots:g.shots,cta:g.cta,why:g.why,evidence:`Informe semanal del ${fmtDT(cur.createdAt)}`,missing:"",refs:g.refUrls.map(u=>({kind:"referencia",label:"Referencia del informe semanal",url:u})),status:"aprobada",priority:"media",approvedAt:nowISO(),source:"Investigador semanal",reportId:cur.id,createdAt:nowISO()});
     cur.approved=[...(cur.approved||[]),i];await saveDoc("reports",cur);toast("Idea aprobada y enviada al banco");route()})};
+
+/* ================= Editor de Reel: vista previa real, exportación de video, versiones y correcciones ================= */
+const RV_W=1080,RV_H=1920;
+const rvCfg=it=>{it.video=it.video||{fps:30,captions:{size:64,color:"#FFFFFF",bg:"#122D50",pos:"abajo"},hookOnScreen:true,cover:{shot:0,t:0,text:""},versions:[]};it.video.versions=it.video.versions||[];return it.video};
+const rvShots=it=>(it.shots||[]).filter(s=>mediaById(s.mediaId));
+const rvDur=it=>rvShots(it).reduce((a,s)=>a+Math.max(.3,+s.dur||2.5),0);
+const rvIsVideo=m=>(m.mime||"").startsWith("video");
+const RV_EL=new Map();
+async function rvEl(m){if(RV_EL.has(m.id))return RV_EL.get(m.id);const url=await Store.url(m.ref);let el;
+  if(rvIsVideo(m)){el=document.createElement("video");el.src=url;el.muted=false;el.playsInline=true;el.preload="auto";el.crossOrigin="anonymous";await new Promise(r=>{el.onloadeddata=r;el.onerror=r;setTimeout(r,8000)})}
+  else{el=await loadMediaImage(m)}RV_EL.set(m.id,el);return el}
+function rvCaption(ctx,text,cfg){if(!text)return;const c=cfg.captions;ctx.save();ctx.font=`800 ${c.size}px Inter, sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";
+  const lines=String(text).split("\n").flatMap(p=>wrap(ctx,p,RV_W-200));const lh=c.size*1.2;const h=lines.length*lh+40;const y0=c.pos==="arriba"?260:c.pos==="centro"?RV_H/2-h/2:RV_H-420-h;
+  const wMax=Math.max(...lines.map(l=>ctx.measureText(l).width))+70;if(c.bg){ctx.fillStyle=c.bg;rr(ctx,RV_W/2-wMax/2,y0,wMax,h,28);ctx.fill()}
+  ctx.fillStyle=c.color;lines.forEach((l,i)=>ctx.fillText(l,RV_W/2,y0+20+lh/2+i*lh));ctx.restore()}
+function rvDrawFrame(ctx,el,s,local,it,globalT){const cfg=rvCfg(it);ctx.fillStyle="#000";ctx.fillRect(0,0,RV_W,RV_H);
+  if(el){if(el.tagName==="VIDEO"){if(el.videoWidth)cover(ctx,el,0,0,RV_W,RV_H)}else{const z=1+.06*(local/Math.max(.3,+s.dur||2.5));ctx.save();ctx.translate(RV_W/2,RV_H/2);ctx.scale(z,z);ctx.translate(-RV_W/2,-RV_H/2);cover(ctx,el,0,0,RV_W,RV_H);ctx.restore()}}
+  if(cfg.hookOnScreen&&it.hook&&globalT<2.5){ctx.save();ctx.font="700 78px Fraunces, serif";ctx.textAlign="center";ctx.fillStyle="#FFFFFF";ctx.shadowColor="rgba(0,0,0,.55)";ctx.shadowBlur=24;wrap(ctx,it.hook,RV_W-160).slice(0,3).forEach((l,i)=>ctx.fillText(l,RV_W/2,300+i*92));ctx.restore()}
+  rvCaption(ctx,s.text,cfg)}
+/* Reproduce la línea de tiempo en un canvas. onFrame opcional; devuelve una función para detener. */
+function rvPlay(canvas,it,{onEnd,audioDest,from=0}={}){const ctx=canvas.getContext("2d");const shots=rvShots(it);let stopped=false;let raf;
+  (async()=>{let g=0;for(let i=0;i<shots.length&&!stopped;i++){const s=shots[i];const d=Math.max(.3,+s.dur||2.5);if(g+d<=from){g+=d;continue}const m=mediaById(s.mediaId);const el=await rvEl(m);const inn=(+s.in||0)+Math.max(0,from-g);
+      if(el&&el.tagName==="VIDEO"){if(audioDest&&!el._rvSrc){try{el._rvSrc=audioDest.ctx.createMediaElementSource(el);el._rvSrc.connect(audioDest.node)}catch(e){}}el.muted=!audioDest;el.currentTime=inn;await new Promise(r=>{el.onseeked=r;setTimeout(r,1500)});try{await el.play()}catch(e){}}
+      const t0=performance.now()-Math.max(0,from-g)*1000;await new Promise(res=>{const tick=()=>{if(stopped)return res();const local=(performance.now()-t0)/1000;if(local>=d){return res()}rvDrawFrame(ctx,el,s,local,it,g+local);raf=requestAnimationFrame(tick)};tick()});
+      if(el&&el.tagName==="VIDEO")el.pause();g+=d}
+    if(!stopped&&onEnd)onEnd()})();
+  return()=>{stopped=true;cancelAnimationFrame(raf);RV_EL.forEach(el=>{if(el.tagName==="VIDEO")el.pause()})}}
+function rvMime(){const c=["video/mp4;codecs=avc1.42E01E,mp4a.40.2","video/mp4;codecs=avc1","video/mp4","video/webm;codecs=vp9,opus","video/webm"];return c.find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||""}
+async function rvExport(it,status){const mime=rvMime();if(!mime)throw new Error("Este navegador no puede grabar video. Usa el render en la nube (FFmpeg).");
+  const c=document.createElement("canvas");c.width=RV_W;c.height=RV_H;const stream=c.captureStream(rvCfg(it).fps);
+  let audioDest=null;try{const ac=new AudioContext();const node=ac.createMediaStreamDestination();audioDest={ctx:ac,node};node.stream.getAudioTracks().forEach(t=>stream.addTrack(t))}catch(e){}
+  const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:8e6});const chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  const total=rvDur(it);rec.start(500);const t0=performance.now();const iv=setInterval(()=>{status&&(status.textContent=`Grabando ${Math.min(100,Math.round((performance.now()-t0)/10/total))} %… (tiempo real: ${nf(total)} s)`)},400);
+  await new Promise(res=>rvPlay(c,it,{audioDest,onEnd:res}));await new Promise(r=>setTimeout(r,250));rec.stop();await new Promise(r=>rec.onstop=r);clearInterval(iv);
+  RV_EL.forEach((el,k)=>{if(el._rvSrc)RV_EL.delete(k)});if(audioDest)audioDest.ctx.close();
+  const blob=new Blob(chunks,{type:mime.split(";")[0]});return{blob,ext:mime.startsWith("video/mp4")?"mp4":"webm",mime}}
+function rvSnapshot(it){return JSON.parse(JSON.stringify({shots:it.shots,hook:it.hook,video:{...rvCfg(it),versions:undefined}}))}
+function rvSaveVersion(it,note){const cfg=rvCfg(it);const v=(cfg.versions.length?cfg.versions[cfg.versions.length-1].v:0)+1;cfg.versions.push({v,at:nowISO(),note,state:rvSnapshot(it)});logIt(it,`Versión v${v} guardada: ${note}`);return v}
+function rvProject(it){const cfg=rvCfg(it);return{format:"balloon-store-reel/1",id:it.id,title:it.title,width:RV_W,height:RV_H,fps:cfg.fps,hook:cfg.hookOnScreen?it.hook:"",captions:cfg.captions,
+  shots:rvShots(it).map((s,i)=>{const m=mediaById(s.mediaId);return{n:i+1,file:`${pad2(i+1)}_${slug(m.name||m.id)}.${(m.name||"").split(".").pop()||"mp4"}`,media:m.name||m.id,kind:rvIsVideo(m)?"video":"imagen",in:+s.in||0,dur:Math.max(.3,+s.dur||2.5),text:s.text||""}}),
+  cover:cfg.cover,version:(cfg.versions[cfg.versions.length-1]||{}).v||0}}
+VIEWS.video=main=>{const list=S.items.filter(i=>i.type==="reel");if(!item(S.cur.reel)||item(S.cur.reel).type!=="reel")S.cur.reel=list[0]&&list[0].id;const it=item(S.cur.reel);
+  if(!it){main.innerHTML=head("Editor de Reel","")+`<div class="empty">Crea un Reel en <a href="#reel">Reel</a> primero.</div>`;return}
+  const cfg=rvCfg(it);const shots=rvShots(it);const tot=rvDur(it);
+  main.innerHTML=head("Editor de Reel",`Vista previa real con tus clips. Lo que ves es lo que se graba. ${nf(tot)} s · ${shots.length} tomas`,`<select id="v_sel" aria-label="Reel">${itemOptions("reel",it.id)}</select><a class="btn" href="#reel">Elegir material</a>`)+
+  (shots.length?"":`<div class="err">Este Reel no tiene tomas con material real. Agrégalas en <a href="#reel">Reel</a> (clips o fotos de tu Biblioteca).</div>`)+
+  `<div class="ed"><div><div class="stage-wrap"><canvas id="v_cv" width="${RV_W}" height="${RV_H}" style="width:min(320px,80vw);height:auto;border-radius:14px;background:#000"></canvas></div>
+    <div class="row" style="justify-content:center;margin-top:10px"><button id="v_play" class="primary" ${shots.length?"":"disabled"}>▶ Reproducir</button><button id="v_stop">■ Detener</button><button id="v_exp" ${shots.length?"":"disabled"}>Exportar video</button><button id="v_json">Proyecto para render en la nube</button></div>
+    <p class="src" id="v_st" style="text-align:center">${rvMime()?`Exportación en este navegador: ${rvMime().startsWith("video/mp4")?"MP4":"WebM (tu navegador no graba MP4)"}. Se graba en tiempo real.`:"Este navegador no puede grabar video: usa el render en la nube."}</p></div>
+   <aside class="props panel"><div class="eyebrow">Tomas (recorte y subtítulo)</div>
+    ${shots.map((s,i)=>{const m=mediaById(s.mediaId);return`<div class="station" style="padding:8px"><div class="row" style="justify-content:space-between"><b style="font-size:.8rem">${i+1}. ${esc((m.name||"").slice(0,24))}</b><span class="row" style="gap:2px"><button data-vmv="${i}:-1" aria-label="Subir">↑</button><button data-vmv="${i}:1" aria-label="Bajar">↓</button></span></div>
+      <div class="two"><label>Inicio (s)<input type="number" step="0.1" min="0" data-vin="${i}" value="${+s.in||0}"></label><label>Duración (s)<input type="number" step="0.1" min="0.3" data-vdur="${i}" value="${+s.dur||2.5}"></label></div><label>Subtítulo<input data-vtx="${i}" value="${esc(s.text||"")}"></label></div>`}).join("")}
+    <div class="two"><label>Tamaño subtítulo<input type="number" id="v_cs" value="${cfg.captions.size}"></label><label>Posición<select id="v_cp">${optList([["abajo","Abajo"],["centro","Centro"],["arriba","Arriba"]],cfg.captions.pos)}</select></label>
+     <label>Color<input type="color" id="v_cc" value="${esc(cfg.captions.color)}"></label><label>Fondo<select id="v_cb">${optList([["#122D50","Azul marino"],["#EA4566","Rosa"],["","Sin fondo"]],cfg.captions.bg)}</select></label></div>
+    <label class="chk"><input type="checkbox" id="v_hk" ${cfg.hookOnScreen?"checked":""}> Mostrar el hook en pantalla los primeros 2.5 s</label>
+    <hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="eyebrow">Portada</div>
+    <div class="two"><label>Toma<select id="v_ct">${shots.map((_,i)=>`<option value="${i}" ${+cfg.cover.shot===i?"selected":""}>${i+1}</option>`).join("")}</select></label><label>Segundo<input type="number" step="0.1" min="0" id="v_cts" value="${cfg.cover.t||0}"></label></div><label>Texto de portada<input id="v_ctx" value="${esc(cfg.cover.text||it.hook||"")}"></label><button id="v_cov">Descargar portada JPG</button>
+    <hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="eyebrow">Corregir con una instrucción</div><textarea id="v_ins" rows="3" placeholder="Ej.: acorta la toma 2 a 1.5 s y cambia el subtítulo 3 por «Así queda»"></textarea><button id="v_ai">Aplicar corrección (guarda versión antes)</button><p class="src" id="v_ai_st"></p>
+    <hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="eyebrow">Versiones</div><div class="row"><input id="v_note" placeholder="Nota de la versión" style="flex:1"><button id="v_save">Guardar versión</button></div>
+    <ul class="log">${[...cfg.versions].reverse().map(v=>`<li>v${v.v} · ${fmtDT(v.at)} · ${esc(v.note)} <button data-vres="${v.v}" style="padding:2px 8px;font-size:.7rem">Restaurar</button></li>`).join("")||"<li>Sin versiones todavía.</li>"}</ul></aside></div>`;
+  const cv=$("#v_cv",main);let stop=null;const still=async()=>{const s=shots[0];if(!s){const x=cv.getContext("2d");x.fillStyle="#111";x.fillRect(0,0,RV_W,RV_H);return}const el=await rvEl(mediaById(s.mediaId));if(el&&el.tagName==="VIDEO"){el.currentTime=+s.in||0;await new Promise(r=>{el.onseeked=r;setTimeout(r,1200)})}rvDrawFrame(cv.getContext("2d"),el,s,0,it,0)};still();
+  const save=(msg)=>{logIt(it,msg||"Reel editado");touch(it)};
+  $("#v_sel",main).onchange=e=>{stop&&stop();S.cur.reel=e.target.value;route()};
+  $("#v_play",main).onclick=()=>{stop&&stop();stop=rvPlay(cv,it,{onEnd:()=>{stop=null}})};$("#v_stop",main).onclick=()=>{stop&&stop();stop=null};
+  const sh=i=>rvShots(it)[+i];
+  $$("[data-vin]",main).forEach(inp=>inp.onchange=()=>{sh(inp.dataset.vin).in=Math.max(0,+inp.value||0);save("Recorte cambiado");still()});
+  $$("[data-vdur]",main).forEach(inp=>inp.onchange=()=>{sh(inp.dataset.vdur).dur=Math.max(.3,+inp.value||2.5);save("Duración cambiada");route()});
+  $$("[data-vtx]",main).forEach(inp=>inp.onchange=()=>{sh(inp.dataset.vtx).text=inp.value;save("Subtítulo cambiado");still()});
+  $$("[data-vmv]",main).forEach(b=>b.onclick=()=>{const[i,d]=b.dataset.vmv.split(":").map(Number);const arr=it.shots;const a=arr.indexOf(sh(i)),bb=arr.indexOf(sh(i+d));if(bb<0)return;[arr[a],arr[bb]]=[arr[bb],arr[a]];save("Orden de tomas cambiado");route()});
+  const cset=()=>{cfg.captions.size=+$("#v_cs",main).value||64;cfg.captions.pos=$("#v_cp",main).value;cfg.captions.color=$("#v_cc",main).value;cfg.captions.bg=$("#v_cb",main).value;cfg.hookOnScreen=$("#v_hk",main).checked;save("Estilo de subtítulos");still()};
+  ["v_cs","v_cp","v_cc","v_cb","v_hk"].forEach(id=>$("#"+id,main).onchange=cset);
+  $("#v_cov",main).onclick=async()=>{cfg.cover={shot:+$("#v_ct",main).value,t:+$("#v_cts",main).value||0,text:$("#v_ctx",main).value};save("Portada definida");const s=shots[cfg.cover.shot];if(!s)return;
+    const c=document.createElement("canvas");c.width=RV_W;c.height=RV_H;const x=c.getContext("2d");const el=await rvEl(mediaById(s.mediaId));if(el&&el.tagName==="VIDEO"){el.currentTime=(+s.in||0)+cfg.cover.t;await new Promise(r=>{el.onseeked=r;setTimeout(r,1500)})}
+    x.fillStyle="#000";x.fillRect(0,0,RV_W,RV_H);if(el)cover(x,el,0,0,RV_W,RV_H);if(cfg.cover.text){x.fillStyle="rgba(18,45,80,.55)";x.fillRect(0,RV_H*.62,RV_W,RV_H*.38);x.font="700 96px Fraunces, serif";x.fillStyle="#fff";x.textAlign="center";wrap(x,cfg.cover.text,RV_W-160).slice(0,3).forEach((l,i)=>x.fillText(l,RV_W/2,RV_H*.72+i*110))}
+    await saveFile(`${slug(it.title)}_portada_1080x1920.jpg`,await pngToJpeg(await canvasBlob(c)))};
+  $("#v_exp",main).onclick=async e=>{stop&&stop();e.target.disabled=true;const st=$("#v_st",main);try{const r=await rvExport(it,st);const v=rvSaveVersion(it,"Exportada en "+r.ext.toUpperCase());await touch(it,true);await saveFile(`${slug(it.title)}_v${v}.${r.ext}`,r.blob);st.textContent=`Listo: ${r.ext.toUpperCase()} de ${(r.blob.size/1048576).toFixed(1)} MB (v${v}).`;S.lastExport={ext:r.ext,size:r.blob.size,mime:r.mime}}catch(err){st.textContent=err.message||String(err)}finally{e.target.disabled=false}};
+  $("#v_json",main).onclick=()=>saveFile(`${slug(it.title)}_proyecto-render.json`,new Blob([JSON.stringify(rvProject(it),null,1)],{type:"application/json"}));
+  $("#v_save",main).onclick=async()=>{const v=rvSaveVersion(it,$("#v_note",main).value.trim()||"Versión guardada");await touch(it,true);toast("Guardada v"+v);route()};
+  $$("[data-vres]",main).forEach(b=>b.onclick=async()=>{const ver=cfg.versions.find(v=>v.v===+b.dataset.vres);rvSaveVersion(it,`Antes de restaurar v${ver.v}`);const st=JSON.parse(JSON.stringify(ver.state));it.shots=st.shots;it.hook=st.hook;Object.assign(cfg,{...st.video,versions:cfg.versions});logIt(it,`Restaurada v${ver.v}`);await touch(it,true);toast("Restaurada v"+ver.v+" (la versión actual quedó guardada)");route()});
+  getSample().then(smp=>{const b=$("#v_ai",main);if(!b)return;if(!smp){b.disabled=true;$("#v_ai_st",main).textContent="Disponible al abrir la app como Artifact en claude.ai.";return}
+    b.onclick=async()=>{const ins=$("#v_ins",main).value.trim();if(!ins){toast("Escribe la corrección");return}const st=$("#v_ai_st",main);st.innerHTML=`<span class="spin"></span>Aplicando…`;
+      const cur=rvShots(it).map((s,i)=>{const m=mediaById(s.mediaId);return{n:i+1,mediaId:s.mediaId,archivo:m.name,tipo:rvIsVideo(m)?"video":"imagen",duracion_archivo:m.duration||null,in:+s.in||0,dur:+s.dur||2.5,text:s.text||""}});
+      try{const r=await smp.json(`Edita la línea de tiempo de un Reel de Balloon Store según la INSTRUCCIÓN. Solo puedes reordenar, recortar (in, dur), quitar tomas o cambiar subtítulos y el hook. No inventes archivos: usa solo los mediaId existentes. in + dur no puede pasar la duracion_archivo si existe.
+Responde SOLO JSON: {"shots":[{"mediaId":"","in":0,"dur":0,"text":""}],"hook":"","resumen":"qué cambiaste"}
+INSTRUCCIÓN: ${ins}
+HOOK ACTUAL: ${JSON.stringify(it.hook||"")}
+TOMAS: ${JSON.stringify(cur)}`,{modelTier:"default",cache:false});
+        const ok=(r.shots||[]).filter(s=>mediaById(s.mediaId)).map(s=>{const m=mediaById(s.mediaId);let inn=Math.max(0,+s.in||0),d=Math.max(.3,+s.dur||2.5);if(m.duration){inn=Math.min(inn,Math.max(0,m.duration-.3));d=Math.min(d,m.duration-inn)}return{mediaId:s.mediaId,in:+inn.toFixed(2),dur:+d.toFixed(2),text:String(s.text||""),voice:"",note:""}});
+        if(!ok.length)throw new Error("La corrección no dejó tomas válidas; no se aplicó.");
+        rvSaveVersion(it,"Antes de la corrección: "+ins.slice(0,60));it.shots=ok;if(typeof r.hook==="string")it.hook=r.hook;rvSaveVersion(it,"Corrección: "+ins.slice(0,80)+(r.resumen?" · "+String(r.resumen).slice(0,80):""));await touch(it,true);toast("Corrección aplicada; la versión anterior quedó guardada");route()}
+      catch(e){st.textContent=e.message||((AI_ERR&&AI_ERR[e&&e.code])||"Claude no respondió")}}})};
+
+/* ================= Una idea → todos los formatos, y flujo Marca → Hooks → Semana → Todo ================= */
+function packFallback(x){const lines=String(x.script||"").split("\n").map(s=>s.replace(/^[-•\d.)\s]+/,"").trim()).filter(Boolean);const hook=x.hook||x.topic||"Idea";const cta=x.cta||"Encuéntralo en balloonstoreco.com";
+  return{source:"Plantilla sin IA a partir de la idea aprobada",reel:{hook,beats:(lines.length?lines:["Resultado terminado","Proceso","Detalle del producto"]).slice(0,5).map((l,i)=>({desc:l,texto_pantalla:i===0?hook:l.slice(0,40),dur:3}))},
+    carrusel:{slides:[{titulo:hook,texto:""},...(lines.length?lines:["Qué es","Cómo se usa","Con qué combina"]).slice(0,6).map((l,i)=>({titulo:`${i+1}. ${l.split(/[.:]/)[0].slice(0,48)}`,texto:l})),{titulo:cta,texto:"balloonstoreco.com"}]},
+    story:{frames:[{texto:hook,sticker:""},{texto:"¿Lo usarías en tu próximo evento?",sticker:"Encuesta: Sí / Todavía no"},{texto:cta,sticker:"Enlace: balloonstoreco.com"}]},
+    copy:{instagram:[hook,lines.slice(0,3).join("\n"),cta].filter(Boolean).join("\n\n"),facebook:[hook,cta].join(" ")},
+    email:{asunto:hook.slice(0,60),preheader:(lines[0]||"").slice(0,90),cuerpo:[hook,...lines.slice(0,4)].join("\n\n"),cta}}}
+function packPrompt(x){const p=catById(x.productId);return`Convierte UNA idea aprobada de Balloon Store (distribuidor de globos en México; público: decoradoras, tiendas de fiestas y revendedores) en todos los formatos. El Reel va primero y lo demás sale de él.
+Reglas: español de México; no inventes precios, existencias, medidas ni promociones; producto real: ${p?p.title+" ("+p.id+")":"sin producto asignado"}; sin hashtags de más de 6; el email es un borrador que la dueña revisará (no se envía).
+Responde SOLO JSON: {"reel":{"hook":"","beats":[{"desc":"","texto_pantalla":"","dur":3}]},"carrusel":{"slides":[{"titulo":"","texto":""}]},"story":{"frames":[{"texto":"","sticker":""}]},"copy":{"instagram":"","facebook":""},"email":{"asunto":"","preheader":"","cuerpo":"","cta":""}}
+Carrusel de 6 a 8 diapositivas (portada y cierre con CTA). Story de 3 cuadros (uno con sticker de encuesta o pregunta). Reel de 15 a 30 s en 4 a 6 beats.
+IDEA: ${JSON.stringify({hook:x.hook,objetivo:x.objective,publico:x.audience,tema:x.topic,guion:x.script,tomas:x.shots,cta:x.cta,por_que:x.why})}`}
+async function ideaToEverything(x,date){if(!["aprobada","produccion"].includes(x.status))throw new Error("Primero aprueba la idea: el contenido se genera solo después de tu revisión.");
+  let data=null,src="";const smp=await getSample();if(smp){try{data=await smp.json(packPrompt(x),{modelTier:"default",cache:false});src="Claude con la idea aprobada"}catch(e){data=null}}
+  if(!data||!data.reel){data=packFallback(x);src=data.source}const prod=catById(x.productId);const packId=uid();const base={ideaId:x.id,packId,productId:x.productId||"",objective:x.objective,audience:x.audience,refs:x.refs||[],why:x.why,evidence:x.evidence,missingData:x.missing,pubStatus:"pendiente",status:"borrador"};
+  const beats=(data.reel.beats||[]).slice(0,8);
+  const reel=newItem({...base,type:"reel",title:(data.reel.hook||x.hook).slice(0,80),hook:data.reel.hook||x.hook,date,script:beats.map((b,i)=>`${i+1}. ${b.desc}${b.texto_pantalla?` · En pantalla: «${b.texto_pantalla}»`:""} (${b.dur||3} s)`).join("\n"),cta:data.email&&data.email.cta||x.cta,caption:data.copy.instagram||"",captionFb:data.copy.facebook||"",
+    pending:["Grabar las tomas del guion con material real"],log:[{at:nowISO(),what:"Creado con «Una idea → todos los formatos» ("+src+")"}]});
+  const sl=(data.carrusel.slides||[]).slice(0,10);const mid=prod?((await ensureCatalogMedia(prod).catch(()=>null))||{}).id||"":"";
+  const car=newItem({...base,type:"carrusel",title:"Carrusel · "+(sl[0]&&sl[0].titulo||x.hook).slice(0,70),hook:x.hook,date:addD(date,2),caption:data.copy.instagram||"",captionFb:data.copy.facebook||"",cta:x.cta,
+    slides:sl.map((s,i)=>({template:i===0?"portada":i===sl.length-1?"cta":"tip",headline:s.titulo,body:s.texto,mediaId:i===0?mid:""})),log:[{at:nowISO(),what:"Creado con «Una idea → todos los formatos» ("+src+")"}]});
+  car.design=designFromSlides(car);
+  const st=newItem({...base,type:"story",title:"Stories · "+(x.hook||"").slice(0,70),date:addD(date,1),frames:(data.story.frames||[]).slice(0,5).map(f=>({text:f.texto||"",sticker:f.sticker||""})),storyMedia:mid,log:[{at:nowISO(),what:"Creado con «Una idea → todos los formatos» ("+src+")"}]});
+  for(const it of [reel,car,st])await addItem(it);
+  x.pack={id:packId,at:nowISO(),source:src,items:[reel.id,car.id,st.id],email:data.email};x.status="produccion";await saveDoc("ideabank",x);return x.pack}
+function packDlg(x){dlgOpen("Una idea → todos los formatos",`<p>Se crearán en <b>borrador</b>: un Reel (guion y tomas), un carrusel editable, Stories, el copy de Instagram y Facebook y un email (solo borrador: no se envía ni se conecta a Omnisend).</p><label>Fecha del Reel<input type="date" name="date" value="${esc(addD(today(),1))}"></label><p class="src" id="pk_st"></p>`,async f=>{
+  const st=$("#pk_st",f);st.innerHTML=`<span class="spin"></span>Creando…`;try{await ideaToEverything(x,fv(f,"date"));toast("Formatos creados en el calendario como borradores");S.flowStep=4;location.hash="#flujo";route()}catch(e){st.textContent=e.message;return false}},{saveLabel:"Crear formatos"})}
+const FLOW=[["1","Marca"],["2","Hooks"],["3","Semana"],["4","Todo"]];
+VIEWS.flujo=main=>{S.flowStep=S.flowStep||1;const step=S.flowStep;const imgs=S.media.filter(m=>/^image\//.test(m.mime||""));
+  const nav=`<div class="tabs" style="justify-content:center">${FLOW.map(([k,l])=>`<button data-fs="${k}" class="${+k===step?"on":""}">${k} · ${l}</button>`).join("")}</div>`;
+  let body="";
+  if(step===1)body=`<section class="panel"><div class="eyebrow">Se define una vez y se usa en todo</div><h2>Tu marca</h2>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:10px">
+     <div><h3>Colores</h3><div class="row">${Object.entries(BRAND.colors).map(([k,v])=>`<span style="display:grid;justify-items:center;gap:4px;font-size:.7rem"><i style="width:44px;height:44px;border-radius:50%;background:${v};border:1px solid var(--line2)"></i>${esc(k)}</span>`).join("")}</div>
+      <h3 style="margin-top:12px">Tipografías</h3><p style="font-family:Fraunces,serif;font-size:1.4rem;margin:0">Fraunces · títulos</p><p style="font-family:Inter;margin:0">Inter · textos</p><p class="src">En el editor también: ${DFONTS.slice(2).map(f=>f[0]).join(", ")}.</p></div>
+     <div><h3>Banco de imágenes (${imgs.length})</h3><div class="row" id="fl_imgs" style="gap:6px"></div><a href="#biblioteca">Subir fotos reales →</a></div>
+     <div><h3>Tus palabras</h3><ul class="src" style="font-size:.84rem"><li>Público: ${esc(BRAND.audiences.join(", "))}</li><li>Líneas: ${esc(BRAND.lines.join(", "))}</li><li>Tono: colega experta, español de México, de tú (regla de <code>brand/BRAND-BRAIN.md</code>)</li><li>Nunca inventar precios, existencias ni productos</li></ul></div></div></section>`;
+  if(step===2){const hooks=[...new Set([...S.ideabank.filter(i=>i.status!=="descartada").map(i=>i.hook),...((S.reports.slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)))[0]||{}).ai||{hooks:[]}).hooks.map(h=>h.text)].filter(Boolean))].slice(0,12);S.flHook=S.flHook&&hooks.includes(S.flHook)?S.flHook:hooks[0]||"";
+    body=`<section class="panel"><div class="eyebrow">Una toma, muchos hooks</div><h2>Hooks sobre la misma imagen</h2><div class="row flt" style="margin:10px 0"><select id="fl_hook">${optList(hooks,S.flHook)}</select><select id="fl_img"><option value="">Sin foto (fondo de marca)</option>${imgs.map(m=>`<option value="${m.id}" ${m.id===S.flImg?"selected":""}>${esc(m.name)}</option>`).join("")}</select></div>
+     ${hooks.length?`<div class="finalgrid" id="fl_var"></div><p class="src">Cuatro estilos del mismo hook: serif con itálica, mayúsculas gruesas, manuscrita y cinta. Elige uno y llévalo al editor desde la ficha.</p>`:`<p class="src">Aún no hay hooks: aprueba ideas en el <a href="#banco">banco</a> o corre el <a href="#semanal">investigador semanal</a>.</p>`}</section>`}
+  if(step===3){const mon=S.flWeek||mondayOf(addD(today(),(8-new Date().getDay())%7||7));S.flWeek=mon;const days=Array.from({length:7},(_,i)=>addD(mon,i));
+    body=`<section class="panel"><div class="row" style="justify-content:space-between"><div><div class="eyebrow">Toda la semana en un tablero</div><h2>Semana del ${fmtDT(mon)}</h2></div><div class="row"><button id="fl_pw">←</button><button id="fl_nw">→</button><a class="btn" href="#calendario">Calendario del mes</a></div></div>
+     <div class="vcal" style="grid-template-columns:repeat(7,minmax(0,1fr));margin-top:10px;overflow-x:auto">${days.map(d=>`<div class="vday" data-day="${d}" style="min-height:240px"><span class="n">${esc(DIAS[parseD(d).getDay()].slice(0,3))} ${parseD(d).getDate()}</span>${S.items.filter(i=>i.date===d).map(i=>`<button class="vpost" data-fi="${i.id}" draggable="true" title="${esc(i.title)}"><img data-th="${i.id}" alt=""><span class="lbl">${esc(label(TYPES,i.type))}</span><span class="dot ${pubSt(i)}"></span></button><div class="src" style="font-size:.66rem">${esc(i.title.slice(0,40))}</div>`).join("")}</div>`).join("")}</div></section>`}
+  if(step===4){const ap=S.ideabank.filter(i=>["aprobada","produccion"].includes(i.status));
+    body=`<section class="panel"><div class="eyebrow">Una idea, todos los canales · el Reel primero, lo demás sale de él</div><h2>Ideas aprobadas</h2><div class="bank" style="margin-top:10px">${ap.map(x=>`<article class="icard"><div class="hook">${esc(x.hook||x.topic)}</div><div class="src">${esc(label(IDEA_ST,x.status))}${x.pack?` · formatos creados el ${fmtDT(x.pack.at)} (${esc(x.pack.source)})`:""}</div>
+      ${x.pack?`<ul class="ev">${x.pack.items.map(id=>item(id)).filter(Boolean).map(i=>`<li><a href="#ficha" data-fopen="${i.id}">${esc(label(TYPES,i.type))}: ${esc(i.title.slice(0,50))}</a> · ${fmtDT(i.date)}</li>`).join("")}<li>Email (borrador, no se envía): <b>${esc(x.pack.email&&x.pack.email.asunto||"")}</b> <button data-mail="${x.id}" style="padding:2px 8px;font-size:.7rem">Ver</button></li></ul>`:`<button class="primary" data-pack="${x.id}">Una idea → todos los formatos</button>`}</article>`).join("")||`<p class="src">Aprueba una idea en el <a href="#banco">banco de ideas</a>: el contenido se genera solo después de tu aprobación.</p>`}</div></section>`}
+  main.innerHTML=head("Estudio de contenido","Marca → Hooks → Semana → Todo. Cada paso usa lo que ya está en la app.")+nav+body+`<div class="row" style="justify-content:space-between;margin-top:14px"><button id="fl_back" ${step===1?"disabled":""}>Atrás</button><span class="src">Paso ${step} de 4</span><button id="fl_next" class="primary" ${step===4?"disabled":""}>Siguiente</button></div>`;
+  $$("[data-fs]",main).forEach(b=>b.onclick=()=>{S.flowStep=+b.dataset.fs;route()});$("#fl_back",main).onclick=()=>{S.flowStep=Math.max(1,step-1);route()};$("#fl_next",main).onclick=()=>{S.flowStep=Math.min(4,step+1);route()};
+  if(step===1){const box=$("#fl_imgs",main);imgs.slice(0,12).forEach(m=>Store.url(m.ref).then(u=>{if(u)box.insertAdjacentHTML("beforeend",`<img src="${esc(u)}" alt="${esc(m.name)}" style="width:56px;height:56px;object-fit:cover;border-radius:8px">`)}))}
+  if(step===2&&S.flHook){$("#fl_hook",main).onchange=e=>{S.flHook=e.target.value;route()};$("#fl_img",main).onchange=e=>{S.flImg=e.target.value;route()};
+    const styles=[{font:"Fraunces",italic:true,weight:600,size:96,upper:false,bg:""},{font:"Bebas Neue",weight:400,size:150,upper:true,bg:""},{font:"Pacifico",weight:400,size:90,upper:false,bg:""},{font:"Inter",weight:800,size:70,upper:false,bg:"#FFFFFF",color:"#122D50"}];
+    const g=$("#fl_var",main);styles.forEach(async st=>{const d={w:1080,h:1920,slides:[{bg:"#122D50",bgMedia:S.flImg||"",layers:[T(S.flHook,90,700,900,{font:st.font,italic:st.italic,weight:st.weight,size:st.size,upper:st.upper,color:st.color||"#FFFFFF",align:"center",bgColor:st.bg,lh:1.05})]}]};const c=document.createElement("canvas");await renderDesign(c,d,0,{scale:.25});g.insertAdjacentHTML("beforeend",`<figure style="margin:0"><img src="${c.toDataURL("image/jpeg",.85)}" alt="${esc(st.font)}"><figcaption class="src">${esc(st.font)}</figcaption></figure>`)})}
+  if(step===3){$("#fl_pw",main).onclick=()=>{S.flWeek=addD(S.flWeek,-7);route()};$("#fl_nw",main).onclick=()=>{S.flWeek=addD(S.flWeek,7);route()};
+    $$("img[data-th]",main).forEach(im=>{const it=item(im.dataset.th);if(it)thumbOf(it).then(u=>{im.src=u})});
+    $$("[data-fi]",main).forEach(b=>{b.onclick=()=>{S.fichaId=b.dataset.fi;location.hash="#ficha"};b.ondragstart=e=>e.dataTransfer.setData("text/plain",b.dataset.fi)});
+    $$("[data-day]",main).forEach(c=>{c.ondragover=e=>{e.preventDefault();c.classList.add("over")};c.ondragleave=()=>c.classList.remove("over");c.ondrop=async e=>{e.preventDefault();const it=item(e.dataTransfer.getData("text/plain"));if(!it||it.date===c.dataset.day)return;logIt(it,`Fecha cambiada de ${it.date||"sin fecha"} a ${c.dataset.day}`);it.date=c.dataset.day;await touch(it,true);route()}})}
+  if(step===4){$$("[data-pack]",main).forEach(b=>b.onclick=()=>packDlg(S.ideabank.find(x=>x.id===b.dataset.pack)));
+    $$("[data-fopen]",main).forEach(a=>a.onclick=e=>{e.preventDefault();S.fichaId=a.dataset.fopen;location.hash="#ficha"});
+    $$("[data-mail]",main).forEach(b=>b.onclick=()=>{const x=S.ideabank.find(i=>i.id===b.dataset.mail);const m=x.pack.email||{};dlgOpen("Email (borrador)",`<p class="src">Borrador para que lo revises. La app no envía correos ni se conecta a Omnisend.</p><dl class="kv"><dt>Asunto</dt><dd>${esc(m.asunto)}</dd><dt>Preencabezado</dt><dd>${esc(m.preheader)}</dd><dt>CTA</dt><dd>${esc(m.cta)}</dd></dl><p style="white-space:pre-wrap">${esc(m.cuerpo)}</p>`,null)})}};
 
 /* ================= Boot ================= */
 (async()=>{

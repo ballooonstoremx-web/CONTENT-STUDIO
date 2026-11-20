@@ -78,9 +78,17 @@ class IntelBrowserTests(unittest.TestCase):
                 (fix / "seed.json").write_text(json.dumps(synthetic_seed(), ensure_ascii=False), encoding="utf-8")
                 (fix / "catalog.json").write_bytes((ROOT / "catalog" / "import" / "catalogo-balloon-store.json").read_bytes())
                 subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=1080x1350:rate=1", "-frames:v", "1", str(fix / "photo.png")], check=True)
+                subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=720x1280:rate=30", "-f", "lavfi", "-i", "sine=frequency=440",
+                                "-t", "3", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(fix / "clip.mp4")], check=True)
                 url = f"http://127.0.0.1:{server.server_port}/"
                 r = subprocess.run(["node", str(ROOT / "tests/e2e/intel_e2e.mjs"), url, str(fix), str(out)], capture_output=True, text=True, timeout=420, cwd=ROOT)
                 self.assertEqual(r.returncode, 0, r.stdout[-4000:] + r.stderr[-2000:])
+                vid = next(p for p in out.iterdir() if p.suffix in (".mp4", ".webm"))
+                probe = json.loads(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration:stream=codec_type,width,height", "-of", "json", str(vid)],
+                                                  capture_output=True, text=True, check=True).stdout)
+                v = next(s for s in probe["streams"] if s["codec_type"] == "video")
+                self.assertEqual((v["width"], v["height"]), (1080, 1920), vid.name)
+                print("exportado en navegador:", vid.name, probe.get("format", {}).get("duration"), [s["codec_type"] for s in probe["streams"]])
                 import zipfile
                 with zipfile.ZipFile(out / "diseno.zip") as z:
                     names = z.namelist()

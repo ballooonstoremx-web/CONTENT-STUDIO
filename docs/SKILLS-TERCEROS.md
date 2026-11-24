@@ -89,3 +89,19 @@ No hay datos de ventas ni de mensajes ligados a esta pieza.
 - No se conectaron cuentas ni se pidieron claves.
 - No se activaron servicios de pago ni tareas programadas.
 - No se modificó Shopify, no se publicó contenido y no se tocó el repositorio Balloon Store Designer.
+
+## Verificación de duplicados (24 nov 2026)
+
+- **Nombres:** ninguno se repite. Claude Code ve 14 skills del repositorio y Codex 21. Las 14 compartidas son las mismas carpetas, enlazadas para ambos agentes. Las 7 que solo ve Codex (`ig-*`, `seo-audit`, `emails`) no están enlazadas para Claude, porque Claude ya las tiene en plugins de la organización (`instagram-agent:*`, `marketing:seo-audit`, `marketing:email-sequence`).
+- **Funciones** (dónde podría haber cruce y cuál manda):
+
+| Posible cruce | Decisión |
+|---|---|
+| `content-strategy` (Corey) frente a `content-researcher` (propia) | `content-strategy` es para sitio, blog y SEO, y su propia descripción remite «social» a otra skill. Las ideas para Instagram y Facebook de Balloon Store las hace `content-researcher`. |
+| `ig-viral` (Codex) frente al Investigador semanal | El Investigador usa Metricool; `ig-viral` solo ordena un swipe file que capturas tú a mano. No calcula lo mismo ni reemplaza al Investigador. |
+| `ig-caption` / `ig-human` frente a `reel-scriptwriter` y `carousel-designer` | Complementarias: las propias escriben el copy y las de Instagram lo revisan (corte antes del «más», hashtags, frases de IA). |
+| `ab-testing` frente a `results-analyst` | `ab-testing` diseña experimentos y `results-analyst` lee resultados publicados. |
+| `product-marketing` frente a `brand-brain` | Una sola fuente de marca. `.agents/product-marketing.md` solo apunta a `brand/` y una prueba falla si se convierte en copia. |
+| Plugins `social-media-skills:*` (hook-writer, caption-writer, reels-script) en Claude | No los instaló este proyecto: son de la organización. Para Balloon Store usa las skills del repositorio, porque leen `brand/BRAND-BRAIN.md`. |
+
+- **Funciones de la app:** las skills son instrucciones para los agentes; ninguna reemplaza ni duplica código de Content HQ.

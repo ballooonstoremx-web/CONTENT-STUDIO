@@ -84,3 +84,14 @@
   5. «Exportar video» graba el resultado en tiempo real.
   6. Para una corrección, escribe la instrucción y pulsa «Aplicar corrección».
 - **MP4 garantizado en la nube:** descarga «Proyecto para render en la nube» y pide a Claude Code: «renderiza este proyecto con scripts/render_reel.py». Comparte también tus archivos.
+
+## Verificación del 24 nov 2026
+- **Prueba programada.** Evidencia: transcripción de la sesión `session_01PpyLmiVuhGGG7FgJzLb3qZ` (origen `scheduled_trigger`, 02:35:03–02:35:26 UTC) y documento `reports/rep-prueba-programada-20261120` (versión 1, escrito 02:35:21 UTC).
+  - Se ejecutó sin la app abierta.
+  - **No tuvo Metricool:** `ToolSearch` respondió «No matching deferred tools found» dos veces y la tarea no lleva conectores (`mcp_connections: []`).
+  - Sí guardó el informe, con ese error registrado.
+  - La tarea ya no se repetirá (`ended_reason: run_once_fired`, desactivada).
+  - **No se crearán más tareas programadas** hasta que la rutina se cree desde claude.ai › Rutinas con el conector de Metricool.
+- **Error encontrado y corregido en el Editor de Reel.** Con proyectos de solo fotos, la exportación del navegador grababa menos de 1 segundo: Chrome deja de emitir cuadros de un canvas fuera del documento. Ahora el canvas se coloca en el documento, se envía cada cuadro y se agrega una pista de audio silenciosa. Resultado: 7.76 s, 450 cuadros, con audio. Una prueba automática cubre este caso.
+- **Las fotos en el navegador ahora coinciden con el render en la nube:** producto completo sobre beige, sin márgenes, y hook con contorno legible.
+- **Proyecto de ejemplo en Content HQ:** `items/reel-ejemplo-fotos-reales`, con 3 fotos reales de tu Biblioteca (Número 34" Rosa Gold, Estrella iridiscente pastel, Tie Dye Happy Birthday) y la versión v1 guardada.

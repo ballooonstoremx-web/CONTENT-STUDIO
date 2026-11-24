@@ -88,6 +88,9 @@ class IntelBrowserTests(unittest.TestCase):
                                                   capture_output=True, text=True, check=True).stdout)
                 v = next(s for s in probe["streams"] if s["codec_type"] == "video")
                 self.assertEqual((v["width"], v["height"]), (1080, 1920), vid.name)
+                # Regresión: con fotos, Chrome dejaba de emitir cuadros y el MP4 duraba <1 s. La línea de tiempo restaurada dura 2.2 s.
+                self.assertGreater(float(probe["format"]["duration"]), 2.0, vid.name)
+                self.assertIn("audio", [s["codec_type"] for s in probe["streams"]])
                 print("exportado en navegador:", vid.name, probe.get("format", {}).get("duration"), [s["codec_type"] for s in probe["streams"]])
                 import zipfile
                 with zipfile.ZipFile(out / "diseno.zip") as z:

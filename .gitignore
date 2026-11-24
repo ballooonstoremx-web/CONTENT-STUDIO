@@ -24,3 +24,6 @@ brand/product-photos/*
 !brand/product-photos/README.md
 catalog/images/
 catalog/import/
+
+# Capturas y videos de demostración generados localmente
+reeldemo/

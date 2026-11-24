@@ -95,3 +95,25 @@
 - **Error encontrado y corregido en el Editor de Reel.** Con proyectos de solo fotos, la exportación del navegador grababa menos de 1 segundo: Chrome deja de emitir cuadros de un canvas fuera del documento. Ahora el canvas se coloca en el documento, se envía cada cuadro y se agrega una pista de audio silenciosa. Resultado: 7.76 s, 450 cuadros, con audio. Una prueba automática cubre este caso.
 - **Las fotos en el navegador ahora coinciden con el render en la nube:** producto completo sobre beige, sin márgenes, y hook con contorno legible.
 - **Proyecto de ejemplo en Content HQ:** `items/reel-ejemplo-fotos-reales`, con 3 fotos reales de tu Biblioteca (Número 34" Rosa Gold, Estrella iridiscente pastel, Tie Dye Happy Birthday) y la versión v1 guardada.
+
+## Investigador semanal automático (24 nov 2026)
+- **Acceso a Metricool en esta sesión:** comprobado con consultas de solo lectura a la marca de Balloon Store (`getBrandSettings` y `getAnalyticsDataByMetrics`). Filas leídas del 25 ago al 23 nov:
+  - Reels de Instagram: 27.
+  - Publicaciones de Instagram: 13.
+  - Publicaciones de Facebook: 16.
+  - Reels de Facebook: 29.
+  - Competidores, del 25 oct al 23 nov: 0 filas en cuentas, publicaciones y Reels, porque no hay competidores configurados en Metricool.
+- **Conectores en rutinas:** una rutina conserva los conectores que tiene guardados. Por ejemplo, la de correo (`trig_015o6RtQ6SBFDRYDkLi3xRj6`) guarda Metricool y se ejecuta bien. Una tarea creada desde esta sesión no puede guardar conectores (`mcp_connections: []`).
+- **Solución:** la rutina semanal está **vinculada a esta sesión** (`session_01PpyLmgy71H6tk2nsqzbvJU`), que ya tiene Metricool y la base de Content HQ.
+  - Tarea: `trig_01P63oFN8UwryMN5fRbc85oh`, «Investigador semanal de Balloon Store (lunes)».
+  - Horario: lunes 7:43, hora de Ciudad de México. Próxima ejecución: 30 nov.
+  - Es la única tarea del investigador. La rutina de correo no se tocó.
+- **Prueba completa (disparo manual, 24 nov, 02:01 UTC):** leyó Metricool y Content HQ y guardó `reports/rep-semanal-20261124-prueba` (versión 1, `scheduled: true`).
+  - Contenido: 10 referencias, 5 ideas, 10 hooks, 3 metas y el plan del miércoles 25.
+  - Se volvió a leer y es idéntico a lo enviado.
+  - Se ve en la pantalla Semanal sin errores.
+  - `settings/researcher` quedó como «activa», lunes 7:43.
+- **Límites:**
+  - La rutina depende de que esta sesión siga existiendo. Si se archiva, hay que crear la rutina desde claude.ai › Rutinas con el conector de Metricool.
+  - Las métricas de competencia requieren dar de alta competidores en Metricool.
+- **Error encontrado (sin corregir todavía):** «Guardar inspiración» no detecta como duplicado un enlace con el parámetro `cnvx`, porque falta en `URL_JUNK`. Por eso el Reel `Df2dfn_JWSG` aparece dos veces (`insp-planner-reel` y `mwobihk72lwjk6`). No se borró nada.

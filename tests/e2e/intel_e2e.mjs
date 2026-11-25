@@ -66,6 +66,12 @@ await page.click("#qsave"); await page.fill("input[name=url]", "https://instagra
 ok(/Ya guardaste este enlace/.test(await page.locator("#qs_det").innerText()), "Avisa de enlace duplicado antes de guardar");
 await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(600);
 ok(await page.evaluate(() => S.inspo.length) === n0, "No crea duplicados");
+await page.click("#qsave"); await page.fill("input[name=url]", "https://www.instagram.com/p/INSP/?utm_source=ig_web_copy_link&cnvx=NTc4MTIwNjQ2YQ==");
+ok(/Ya guardaste este enlace/.test(await page.locator("#qs_det").innerText()), "Detecta el mismo post con cnvx y /p/ en vez de /reel/");
+await page.click("#editorForm button[type=submit]"); await page.waitForTimeout(600);
+ok(await page.evaluate(() => S.inspo.length) === n0, "Tampoco lo duplica con cnvx");
+ok(await page.evaluate(() => { const x = S.inspo.find(i => i.url === "https://www.instagram.com/decomesas/reel/INSP/"); return x && x.urlOriginal === "https://www.instagram.com/decomesas/reel/INSP/?igsh=abc123" && x.urlNorm === "instagram.com/p/INSP"; }), "Guarda enlace original, enlace limpio y clave normalizada");
+ok(/Enlace original: https:\/\/www\.instagram\.com\/decomesas\/reel\/INSP\/\?igsh=abc123/.test(await page.locator("main").innerText()), "La ficha muestra el enlace original");
 await page.click("#ix_an"); await page.waitForTimeout(1200);
 const ixt = await page.locator("main").innerText();
 ok(/Observaciones/.test(ixt) && /Se ve una mesa decorada/.test(ixt) && /Suposiciones/.test(ixt) && /música en tendencia/.test(ixt), "Analizar con Claude separa observaciones y suposiciones");

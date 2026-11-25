@@ -2440,7 +2440,28 @@ function normUrl(u){const raw=String(u||"").trim();if(!raw)return"";try{const x=
   const h=x.hostname.toLowerCase().replace(/^(www|m|mobile)\./,"");let p=x.pathname.replace(/\/+$/,"");
   if(h.endsWith("instagram.com"))p=p.replace(/^\/[^/]+\/(reel|reels|p|tv)\//,(m,a)=>"/"+a+"/").replace(/^\/reels\//,"/reel/");
   const q=x.searchParams.toString();return h+p+(q?"?"+q:"")}catch(e){return raw.toLowerCase()}}
-function cleanUrl(u){const raw=String(u||"").trim();if(!raw)return"";try{const x=new URL(/^https?:\/\//i.test(raw)?raw:"https://"+raw);URL_JUNK.forEach(k=>x.searchParams.delete(k));x.hash="";return x.toString().replace(/\?$/,"")}catch(e){return raw}}
+/* Parámetros de seguimiento conocidos (no identifican la publicación). utm_* se quita por prefijo. */
+const URL_TRACK=new Set([...URL_JUNK,"cnvx","gclid","dclid","gbraid","wbraid","msclkid","ttclid","twclid","li_fat_id","mc_cid","mc_eid","_ga","_gl","ig_rid","ig_mid","epik","sfnsn","ref_src","ref_url","share_app_id","share_item_id","share_link_id","tt_from","u_code","sec_user_id","social_sharing","is_copy_url","web_id","feature","pp"]);
+const isTrack=k=>URL_TRACK.has(k.toLowerCase())||/^utm_/i.test(k);
+const urlObj=u=>{const raw=String(u||"").trim();if(!raw)return null;try{return new URL(/^https?:\/\//i.test(raw)?raw:"https://"+raw)}catch(e){return null}};
+const bareHost=x=>x.hostname.toLowerCase().replace(/^(www|m|mobile|web|vm|vt)\./,"");
+/* Clave para detectar duplicados en Inspiración. Para publicaciones de plataformas conocidas usa solo su identificador
+   (respeta mayúsculas: Df2dfn_JWSG ≠ df2dfn_jwsg). Para otros sitios quita seguimiento y ordena los parámetros restantes. */
+function inspoKey(u){const x=urlObj(u);if(!x)return String(u||"").trim();const h=bareHost(x),p=x.pathname.replace(/\/+$/,"");let m;
+  if(/(^|\.)instagram\.com$/.test(h)||h==="instagr.am"){m=p.match(/^\/(?:[A-Za-z0-9._]+\/)?(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/);if(m)return"instagram.com/p/"+m[1];
+    m=p.match(/^\/stories\/([A-Za-z0-9._]+)\/(\d+)/);if(m)return"instagram.com/stories/"+m[1].toLowerCase()+"/"+m[2];
+    m=p.match(/^\/([A-Za-z0-9._]+)$/);if(m)return"instagram.com/"+m[1].toLowerCase()}
+  if(/(^|\.)tiktok\.com$/.test(h)){m=p.match(/\/(?:video|photo)\/(\d+)/);if(m)return"tiktok.com/video/"+m[1]}
+  if(/(^|\.)youtube\.com$/.test(h)||h==="youtu.be"){const v=h==="youtu.be"?p.slice(1):x.searchParams.get("v")||(p.match(/^\/(?:shorts|embed|live)\/([A-Za-z0-9_-]+)/)||[])[1];if(v)return"youtube.com/v/"+v}
+  if(/(^|\.)facebook\.com$/.test(h)||h==="fb.watch"){m=p.match(/\/(?:reel|videos)\/(\d+)/);const v=(m&&m[1])||(p==="/watch"&&x.searchParams.get("v"));if(v)return"facebook.com/video/"+v;
+    const sf=x.searchParams.get("story_fbid"),fid=x.searchParams.get("fbid");if(sf)return"facebook.com/story/"+sf+"/"+(x.searchParams.get("id")||"");if(fid)return"facebook.com/photo/"+fid}
+  if(/(^|\.)pinterest\.[a-z.]+$/.test(h)){m=p.match(/^\/pin\/(\d+)/);if(m)return"pinterest.com/pin/"+m[1]}
+  const q=[...x.searchParams].filter(([k])=>!isTrack(k)).sort((a,b)=>a[0].localeCompare(b[0])||a[1].localeCompare(b[1]));
+  return h+p+(q.length?"?"+new URLSearchParams(q).toString():"")}
+/* Enlace limpio para abrir: sin parámetros de seguimiento ni #fragmento; en publicaciones de Instagram y TikTok, sin ningún parámetro. */
+function cleanUrl(u){const raw=String(u||"").trim();const x=urlObj(raw);if(!x)return raw;const h=bareHost(x);
+  if((/(^|\.)instagram\.com$/.test(h)&&/\/(p|reel|reels|tv|stories)\//.test(x.pathname))||(/(^|\.)tiktok\.com$/.test(h)&&/\/(video|photo)\//.test(x.pathname)))x.search="";
+  else[...x.searchParams.keys()].filter(isTrack).forEach(k=>x.searchParams.delete(k));x.hash="";return x.toString().replace(/\?$/,"")}
 function platformOf(u){const h=normUrl(u).split("/")[0];return/instagram\.com$/.test(h)?"Instagram":/tiktok\.com$/.test(h)?"TikTok":/(^|\.)pinterest\.|pin\.it$/.test(h)?"Pinterest":/youtube\.com$|youtu\.be$/.test(h)?"YouTube":/facebook\.com$|fb\.watch$/.test(h)?"Facebook":h?"Web":""}
 function creatorOf(u){const s=String(u||"");let m=s.match(/instagram\.com\/([A-Za-z0-9._]+)\/(?:reel|reels|p|tv)\//i);if(m)return"@"+m[1];
   m=s.match(/tiktok\.com\/@([A-Za-z0-9._]+)/i);if(m)return"@"+m[1];m=s.match(/youtube\.com\/@([A-Za-z0-9._-]+)/i);if(m)return"@"+m[1];
@@ -2448,10 +2469,11 @@ function creatorOf(u){const s=String(u||"");let m=s.match(/instagram\.com\/([A-Z
 function typeFromUrl(u){const s=String(u||"");return/\/(reel|reels|tv)\//i.test(s)||/tiktok\.com\/.*\/video\//i.test(s)||/youtube\.com\/shorts\//i.test(s)?"reel":/instagram\.com\/(?:[^/]+\/)?p\//i.test(s)?"carrusel":/pinterest|pin\.it/i.test(s)?"foto":s?"enlace":"propia"}
 const inspoCols=()=>{const st=S.settings.find(s=>s.id==="inspo");const base=(st&&st.collections)||INSPO_COLS_DEFAULT;return[...new Set([...base,...S.inspo.map(x=>x.collection||x.category).filter(Boolean)])]};
 const inspoCol=x=>x.collection||x.category||"Por investigar";
-const findDupInspo=u=>{const n=normUrl(u);return n?S.inspo.find(x=>x.url&&(normUrl(x.url)===n||(x.urlHistory||[]).some(h=>normUrl(h)===n))):null};
+const inspoKeys=x=>[x.url,x.urlOriginal,...(x.urlHistory||[])].filter(Boolean).map(inspoKey);
+const findDupInspo=(u,exceptId)=>{const n=inspoKey(u);return n?S.inspo.find(x=>x.id!==exceptId&&inspoKeys(x).includes(n)):null};
 const histAdd=(x,what)=>{(x.history=x.history||[]).unshift({at:nowISO(),what})};
 async function inspoQuickSave(p){if(p.url){const d=findDupInspo(p.url);if(d)return{dup:d}}const now=nowISO();
-  const x={id:uid(),url:cleanUrl(p.url),urlOriginal:p.url&&cleanUrl(p.url)!==p.url?p.url:undefined,urlNorm:normUrl(p.url),platform:p.url?platformOf(p.url):"Propia",creator:p.creator||creatorOf(p.url),type:p.type||typeFromUrl(p.url),collection:p.collection||"Por investigar",
+  const x={id:uid(),url:cleanUrl(p.url),urlOriginal:p.url?String(p.url).trim():"",urlNorm:p.url?inspoKey(p.url):"",platform:p.url?platformOf(p.url):"Propia",creator:p.creator||creatorOf(p.url),type:p.type||typeFromUrl(p.url),collection:p.collection||"Por investigar",
     tags:p.tags||[],notes:p.notes||"",title:p.title||"",status:p.status||"guardada",source:p.source||"Guardado manual",savedAt:now,createdAt:now,history:[{at:now,what:"Guardada"+(p.source?" · "+p.source:"")}]};
   if(p.file){x.thumbRef=await Store.putBlob(p.file);x.history.unshift({at:now,what:"Captura agregada"})}
   await saveDoc("inspo",x);return{doc:x}}
@@ -2478,7 +2500,7 @@ VIEWS.insp=main=>{const x=S.inspo.find(i=>i.id===S.inspId);if(!x){main.innerHTML
   main.innerHTML=head(esc(x.title||x.creator||"Inspiración"),`${esc(x.platform||platformOf(x.url)||"")} · ${esc(label(INSPO_TYPES,x.type))} · guardada el ${fmtDT(x.savedAt||x.createdAt)}`,`<a class="btn" href="#inspiracion">← Biblioteca</a>`)+
   `<div class="ficha"><div><div class="panel" style="padding:10px"><div class="ph" id="ix_th" style="border-radius:12px;overflow:hidden;background:var(--surface2);min-height:160px;display:flex;align-items:center;justify-content:center"><span class="noimg">Sin captura</span></div>
      <label style="margin-top:8px">${x.thumbRef?"Reemplazar captura":"Agregar captura"}<input type="file" id="ix_file" accept="image/*"></label><p class="src">La captura es tuya: la app no descarga ni republica contenido ajeno.</p></div>
-    <section class="panel" style="margin-top:14px"><div class="eyebrow">Historial</div><ul class="log">${(x.history||[{at:x.createdAt,what:"Guardada"}]).map(h=>`<li>${fmtDT(h.at)} · ${esc(h.what)}</li>`).join("")}</ul>${(x.urlHistory||[]).length?`<p class="src">Enlaces anteriores: ${x.urlHistory.map(u=>linkA(u,u)).join(" · ")}</p>`:""}</section></div>
+    <section class="panel" style="margin-top:14px"><div class="eyebrow">Historial</div><ul class="log">${(x.history||[{at:x.createdAt,what:"Guardada"}]).map(h=>`<li>${fmtDT(h.at)} · ${esc(h.what)}</li>`).join("")}</ul>${(x.urlHistory||[]).length?`<p class="src">Enlaces anteriores: ${x.urlHistory.map(u=>linkA(u,u)).join(" · ")}</p>`:""}${x.url?`<p class="src">Enlace original: ${esc(x.urlOriginal||x.url)}<br>Clave para duplicados: ${esc(inspoKey(x.url))}</p>`:""}</section></div>
    <div style="display:grid;gap:14px;align-content:start">
     <section class="panel"><div class="stsel" style="margin-bottom:10px">${INSPO_ST.map(([k,l])=>`<button data-xst="${k}" class="${st===k?"on":""}">${l}</button>`).join("")}</div>
      <dl class="kv"><dt>Original</dt><dd>${x.url?linkA(x.url,x.url.length>60?x.url.slice(0,60)+"…":x.url):"(sin enlace)"}</dd><dt>Plataforma</dt><dd>${esc(x.platform||platformOf(x.url)||"—")}</dd><dt>Creador</dt><dd>${esc(x.creator||"—")}</dd><dt>Colección</dt><dd>${esc(inspoCol(x))}</dd><dt>Etiquetas</dt><dd>${esc((x.tags||[]).join(", ")||"—")}</dd><dt>Origen</dt><dd>${esc(x.source||"—")}</dd></dl>
@@ -2497,8 +2519,8 @@ VIEWS.insp=main=>{const x=S.inspo.find(i=>i.id===S.inspId);if(!x){main.innerHTML
   $$("[data-xst]",main).forEach(b=>b.onclick=()=>{if(b.dataset.xst===st)return;x.status=b.dataset.xst;save("Estado: "+label(INSPO_ST,x.status))});
   $("#ix_edit",main).onclick=()=>dlgOpen("Editar inspiración",`<label>Título<input name="title" value="${esc(x.title||"")}"></label><div class="grid" style="grid-template-columns:1fr 1fr"><label>Creador<input name="creator" value="${esc(x.creator||"")}"></label><label>Tipo<select name="type">${optList(INSPO_TYPES,x.type)}</select></label><label>Colección<select name="collection">${optList(inspoCols(),inspoCol(x))}</select></label><label>Etiquetas<input name="tags" value="${esc((x.tags||[]).join(", "))}"></label></div><label>Notas<textarea name="notes" rows="4">${esc(x.notes||"")}</textarea></label>`,async g=>{
     Object.assign(x,{title:fv(g,"title"),creator:fv(g,"creator"),type:fv(g,"type"),collection:fv(g,"collection"),tags:fv(g,"tags").split(",").map(s=>s.trim()).filter(Boolean),notes:fv(g,"notes")});await save("Datos editados")});
-  $("#ix_url",main).onclick=()=>dlgOpen("Cambiar enlace",`<p class="src">El enlace anterior queda en el historial y la ficha no se pierde.</p><label>Nuevo enlace<input name="url" type="url" value="${esc(x.url)}"></label>`,async g=>{const nu=fv(g,"url");if(nu===x.url)return;const d=findDupInspo(nu);if(d&&d.id!==x.id){toast("Ese enlace ya está en otra ficha");return false}
-    if(x.url)(x.urlHistory=x.urlHistory||[]).push(x.url);x.url=cleanUrl(nu);x.urlNorm=normUrl(nu);x.platform=platformOf(nu);await save("Enlace cambiado")});
+  $("#ix_url",main).onclick=()=>dlgOpen("Cambiar enlace",`<p class="src">El enlace anterior queda en el historial y la ficha no se pierde.</p><label>Nuevo enlace<input name="url" type="url" value="${esc(x.url)}"></label>`,async g=>{const nu=fv(g,"url");if(nu===x.url)return;const d=findDupInspo(nu,x.id);if(d){toast("Ese enlace ya está en otra ficha");return false}
+    if(x.url)(x.urlHistory=x.urlHistory||[]).push(x.urlOriginal||x.url);x.url=cleanUrl(nu);x.urlOriginal=String(nu).trim();x.urlNorm=inspoKey(nu);x.platform=platformOf(nu);await save("Enlace cambiado")});
   $("#ix_manual",main).onclick=()=>ideaForm(null,{topic:x.title||"",refs:[{kind:"inspiracion",id:x.id,label:(x.creator||x.title||"Inspiración")+" · "+inspoCol(x),url:x.url}],why:an?an.utilidad:x.notes,format:x.type==="reel"?"reel":"carrusel"});
   $$("[data-idopen]",main).forEach(a=>a.onclick=e=>{e.preventDefault();ideaForm(S.ideabank.find(i=>i.id===a.dataset.idopen))});
   getSample().then(smp=>{const ba=$("#ix_an",main),bd=$("#ix_ad",main);if(!ba)return;if(!smp){[ba,bd].forEach(b=>{b.disabled=true;b.title="Disponible al abrir la app como Artifact en claude.ai"});$("#ix_an_st",main).textContent="Claude no está disponible en esta vista (ábrela como Artifact en claude.ai).";return}

@@ -117,3 +117,34 @@
   - La rutina depende de que esta sesión siga existiendo. Si se archiva, hay que crear la rutina desde claude.ai › Rutinas con el conector de Metricool.
   - Las métricas de competencia requieren dar de alta competidores en Metricool.
 - **Error encontrado (sin corregir todavía):** «Guardar inspiración» no detecta como duplicado un enlace con el parámetro `cnvx`, porque falta en `URL_JUNK`. Por eso el Reel `Df2dfn_JWSG` aparece dos veces (`insp-planner-reel` y `mwobihk72lwjk6`). No se borró nada.
+
+## Duplicados en Inspiración (25 nov 2026)
+
+**Causa.** La detección comparaba los enlaces después de quitar una lista corta de parámetros. Esa lista no incluía `cnvx`, así que el Reel `Df2dfn_JWSG` de @clarmstrong se guardó dos veces: `insp-planner-reel` y `mwobihk72lwjk6`.
+
+**Corrección (solo en Guardar inspiración):**
+
+- `inspoKey()` es una clave nueva:
+  - En Instagram, TikTok, YouTube, Facebook y Pinterest usa solo el identificador de la publicación. En Instagram, `/p/`, `/reel/`, `/reels/` y `/tv/` cuentan como la misma publicación, y el código distingue mayúsculas.
+  - En otros sitios quita los parámetros de seguimiento y ordena los que quedan.
+- **Parámetros de seguimiento que se quitan:** `cnvx`, `igsh`, `igshid`, todos los `utm_*`, `fbclid`, `gclid`, `msclkid`, `ttclid`, `mibextid`, `si`, `_r`, `_t`, `ig_rid` y otros.
+- **Cada ficha nueva guarda tres enlaces:**
+  - `urlOriginal`: tal cual se pegó.
+  - `url`: limpio, para abrirlo.
+  - `urlNorm`: la clave para detectar duplicados.
+- La búsqueda de duplicados compara contra el enlace, el enlace original y el historial de enlaces de cada ficha.
+- La ficha ahora muestra el enlace original y la clave.
+- **Sin cambios:**
+  - `normUrl`, que usa el Investigador semanal.
+  - La rutina del Investigador.
+  - Los datos guardados: no se reescribió ninguna ficha.
+
+**Pruebas:**
+
+- `tests/test_inspo_urls.py` y `tests/e2e/url_norm.mjs`: 34 casos.
+  - Casos de mismo post: `cnvx`, `igsh`, `utm_*` y otros parámetros de seguimiento.
+  - Casos de publicaciones distintas: otro código, mayúsculas, carruseles, historias, TikTok, YouTube, Facebook y un `id` web.
+- El recorrido en navegador ahora incluye `cnvx` con `/p/`.
+- Total: 49 pruebas en verde.
+
+**Las dos fichas de @clarmstrong** siguen intactas. La fusión se propone y no se ha ejecutado.

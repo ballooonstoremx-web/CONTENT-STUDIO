@@ -1,0 +1,25 @@
+{
+  "skills": [
+    {
+      "name": "social-carousel",
+      "path": "skills/social-carousel/SKILL.md",
+      "source": "user attachment: social-carousel-SKILL.md",
+      "sha256": "d1c4d962e4a2cc8fe78a6bf0891703eaaac74278f67a10a35c51e3915404f24d",
+      "scope": [
+        "carousel copy",
+        "graphic slide prompts",
+        "Higgsfield rendering",
+        "image QA",
+        "captions",
+        "Blotato publishing"
+      ],
+      "not_for": [
+        "realistic single images",
+        "Reels",
+        "video"
+      ],
+      "required_render_provider": "Higgsfield gpt_image_2",
+      "publishing": "blocked unless separately approved"
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+ "note": "Copias sin modificar de skills de terceros revisadas con scripts/audit_skill.py. No editar: actualizar con una nueva revisión.",
+ "sources": [
+  {
+   "name": "marketingskills",
+   "repo": "https://github.com/coreyhaines31/marketingskills",
+   "commit": "154fc7d7072b0224130f6f240f71f49890ead974",
+   "license": "MIT",
+   "author": "Corey Haines",
+   "reviewed": "2026-11-20",
+   "skills": [
+    {
+     "name": "product-marketing",
+     "codex": true,
+     "claude_code": true,
+     "files": {
+      "SKILL.md": "8dbccc22998b3cac194c3509fa93d119163b82c9b0a1ce573e6737e5a5ccf555",
+      "evals/evals.json": "0c6599b88f50ec1be91096a36ba6c5a15cf8312151394e3469e5ddb991b19afb",
+      "references/brand-voice.md": "932f3453db2761f03050792e39800150495dab449750b40913a4314ea97e7672"
+     }
+    },
+    {
+     "name": "content-strategy",
+     "codex": true,
+     "claude_code": true,
+     "files": {
+      "SKILL.md": "6bc1c8df711a6c9466e312dca9c99a895bd76989b7a52d0f39dca340db3bc5f5",
+      "evals/evals.json": "10167e7125ee77cbabe4f03953750dd99ea147f7461027fdbb0cf8e089e5506d",
+      "references/content-distribution.md": "1861a1aab0627ab29c279000879a9889242da1ba85e677acdc759c66a6241778",
+      "references/headless-cms.md": "efc796ae9596d1efcb876683db2d9b7c10c83e76e1cb69e527097907d5b4fc3f"
+     }
+    },
+    {
+     "name": "copywriting",
+     "codex": true,
+     "claude_code": true,
+     "files": {
+      "SKILL.md": "86dc0466493e8ac59ab17a8f28fd1403e2a322921ed2a8f96b2d0c442ad99d01",
+      "evals/evals.json": "ccec86052a0edd8646d0e50e63c08e0e971f443d8f6e9178843a1629f79efdb0",
+      "references/ai-tells.md": "b98c3a19b3a75c714d69e80a0076e4c07244b0e833c2ce81ff2631224fb7f7b2",
+      "references/copy-frameworks.md": "4db06c481a904be3e4571ad8f671532c97ec186ddf0fb8aee3e3a56ef8e3d441",
+      "references/natural-transitions.md": "9bd61b0de5be2c4de4ce130c68236b4f290b12737823827a458bb2b4c8584683"
+     }
+    },
+    {
+     "name": "copy-editing",
+     "codex": true,
+     "claude_code": true,
+     "files": {
+      "SKILL.md": "ef6bf9e792edac9ff524576a7eea6980fd13e605e5561736b045136341cde63e",
+      "evals/evals.json": "cc18c9f51094058759267d465cfcc50da65f248f66b923326781aa642d622ca7",
+      "references/checklist.md": "4cf94c922286223681fc53721fcc65ae7299f1e36e797e7397d369d674580c60",
+      "references/content-refresh.md": "ba73cdf278fe6b552eee27eb1452494f11f9d17ef67d720657e0982f76fb961b",
+      "references/plain-english-alternatives.md": "df4f820d4c63ae8a517c64a243c101658352cd07d002355bf3c97de0a00f3775"
+     }
+    },
+    {
+     "name": "cro",
+     "codex": true,
+     "claude_code": true,
+     "files": {
+      "SKILL.md": "0f8588aba125de102498ca3bbaa0151c8ebffa0a7ad85c14d992ef16db02fb2d",
+      "evals/evals.json": "62f3003602836e2b49d797ca582e7703629a6b07b131eb77b51b2bb39fe65775",
+      "references/experiments.md": "bbcc356c0af36cfaa4556bf9e929deac30c65cafb37f909d7c51d4777fe254ca",
+      "references/form.md": "49b8f29b3da1ae6510572288cad3eb1f3d43a969373443be98b38639746587e6"
+     }
+    },
+    {
+     "name": "ab-testing",
+     "codex": true,
+     "claude_code": true,
+     "files": {
+      "SKILL.md": "938a9a9246c6b05657f509e7ab181f1c961dc14f9dcb5d452c574d3e44a39be2",
+      "evals/evals.json": "fb32e1f75fc70e339e71f88b1cf10bd9f3d1835178a62d1156ed7dddc278f061",
+      "references/sample-size-guide.md": "53525ddf0e904477262dc3dbc89d4bd4205f2e07d655616de91e22a310f768c4",
+      "references/test-templates.md": "761a40b9de8d16f18fa7f60b59e77aa749607ac8014af43e0b022f47fa87c812"
+     }
+    },
+    {
+     "name": "seo-audit",
+     "codex": true,
+     "claude_code": false,
+     "files": {
+      "SKILL.md": "daca3394f24c137e5dacf6e5943347d6ca95223d15bd07c0d7994b5e80b7e1aa",
+      "evals/evals.json": "1524e98916ab53abb894fb80827a8d0e1815041adca2ee2023b89916d68f22b2",
+      "references/ai-writing-detection.md": "f1e273f56ce7e2215ff218bf903680ddcec0fd026ab90c3ebfb3439ed0edfaa4",
+      "references/international-seo.md": "0603022cca968acf7889fc224221aa0e70955ba64355bc18b06f7e86b32f45e5",
+      "references/local-seo-pages-and-measurement.md": "20607ef91c4b8b37346f42130a6f51ed4ce64dc2731b6e1328b5b14f16917fe3",
+      "references/local-seo-profile-and-citations.md": "83b1b63eb6083e7aab1f56c4928335ea2a235e837861a9e9e8043b6af162a1f3",
+      "references/local-seo.md": "d2666d9c225bc36f9737ce612894abbe7e263b5974e2db7c1efc50f6010bb376",
+      "references/rankings-push.md": "c21d6d4f9faf7ce5b1dc0f8bd508e7513967492fcd8ed9510a175ce243daf8c8",
+      "references/title-tags.md": "c40b3c6af3600ca15670db8eb81000c7ca6fa25265a6550ccc630f53db3fcf51"
+     }
+    },
+    {
+     "name": "emails",
+     "codex": true,
+     "claude_code": false,
+     "files": {
+      "SKILL.md": "14333e67ec8fc01e362b798881f98bf13371604375beba4388dcdf39b761a55b",
+      "evals/evals.json": "b90182c8b6edbb866ef82ad022db3d2fe8598e7329469117fb39edd9ab069f67",
+      "references/copy-guidelines.md": "02f08897e4aa99ecc4ec1893d61d0c26d0c5e62e09af26f175087455e9b68e01",
+      "references/email-types.md": "a5dd4f0555a7b21d2ff426948d15657825b9d16265652563f5e272d2e1879bfd",
+      "references/sequence-templates.md": "f8f318f10e29abcd009cbee29e2bd178981d96c973099b508d30af6c10ab8d79"
+     }
+    }
+   ]
+  },
+  {
+   "name": "instagram-agent",
+   "repo": "https://github.com/Jakeschincariol/instagram-agent-skill",
+   "commit": "d03c56bb598be770c60b201f94237e5d1a4268a6",
+   "license": "MIT",
+   "author": "Jake Schincariol",
+   "reviewed": "2026-11-20",
+   "skills": [
+    {
+     "name": "ig-human",
+     "codex": true,
+     "claude_code": false,
+     "files": {
+      "SKILL.md": "bd66947ff98edc0ad73bb30f614b3a0060d89b864656bf1401bd472694483b93",
+      "detect.py": "d8cf740741968f25ce49ec6cc65538f53e97f28f6f2ce21b7f21864475fe2075",
+      "humanize.py": "d1c579613d9201f0f77e09978d870e3454092b94b4cfecfbb4465c4f0f198283",
+      "slop.json": "987dedae2008742c04ba8e2728f9149f67dc6a665beba891731d6e048abdab2d"
+     }
+    },
+    {
+     "name": "ig-caption",
+     "codex": true,
+     "claude_code": false,
+     "files": {
+      "SKILL.md": "44bd93bfbceabebd0eac6742aecd948be4c3aa97c57f830845e1b9b6450b55b6",
+      "caption.py": "7952b512abaac7521d6f5838ef7a2c6b04c06146372fd658466814a7e9893917"
+     }
+    },
+    {
+     "name": "ig-viral",
+     "codex": true,
+     "claude_code": false,
+     "files": {
+      "SKILL.md": "22c2e46a442b4f992d9876aaa72f8f56502dd54a08291f5572afb42ccb16f616",
+      "swipe.py": "8c7075910414fe5bb46a28b8433fbe1f7cdceece4ca9cb098f5ad809bdbbe84b"
+     }
+    },
+    {
+     "name": "ig-profile",
+     "codex": true,
+     "claude_code": false,
+     "files": {
+      "SKILL.md": "a2bda7e39066b71f89a6185a640f4cb5fec1c027e9ff3afe40787a965a3e1e15",
+      "rubric.json": "962085d9157b553386f1f62d90fa54ff1d4acae53a2e08b8372464beda49047a"
+     }
+    },
+    {
+     "name": "ig-reply",
+     "codex": true,
+     "claude_code": false,
+     "files": {
+      "SKILL.md": "926f324f71939e368da3011aaa2ca6aef4b9f1219d29315f732c3dc1c992972f"
+     }
+    }
+   ],
+   "resources": [
+    {
+     "path": "skills/reel-scriptwriter/third_party/ig-reel",
+     "files": {
+      "hooks.json": "147230762fd9e17cf58302913cb97069b3a3c7edae211b3b0196c180adf1412f",
+      "hookscore.py": "8e1d10edda81dcdf0f18cd24ae37716a7ca30873af777e0f65383089addfe69e",
+      "beats.py": "2f8a4ecb9e28be0a09a35c418d45665cf1d5aa16e7f852ed051e62f1c6983414",
+      "LICENSE": "857c8d5276809c8196b3cd7cb3300324768bfc562b2b6281b06d6865058e186c"
+     }
+    }
+   ]
+  }
+ ]
+}

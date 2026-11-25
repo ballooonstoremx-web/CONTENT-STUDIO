@@ -22,6 +22,12 @@ class InspoUrlTests(unittest.TestCase):
         self.assertIn('urlNorm:p.url?inspoKey(p.url):""', src)
         self.assertIn('"cnvx"', src.split("const URL_TRACK=")[1].split(";")[0])
 
+    def test_merged_cards_link_each_other(self):
+        src = APP.read_text(encoding="utf-8")
+        self.assertIn("Fusionada en:", src)
+        self.assertIn("Incluye la ficha fusionada:", src)
+        self.assertIn('$$("[data-go-insp]",main)', src)
+
 
 if __name__ == "__main__":
     unittest.main()

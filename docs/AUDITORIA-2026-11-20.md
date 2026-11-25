@@ -148,3 +148,26 @@
 - Total: 49 pruebas en verde.
 
 **Las dos fichas de @clarmstrong** siguen intactas. La fusión se propone y no se ha ejecutado.
+
+### Fusión de las dos fichas de @clarmstrong (25 nov 2026, autorizada por la dueña)
+
+- **Ficha principal:** `insp-planner-reel`, pasó de la versión 1 a la 2.
+  - Sin cambios: captura (`thumbRef`), notas con las métricas de la captura, título, creador, colección, estado «adaptar» y enlace.
+  - Se agregaron:
+    - La etiqueta «AI».
+    - Los dos enlaces originales de la segunda ficha, en «Enlaces anteriores».
+    - Su único análisis, marcado como **sin captura, confianza baja**.
+    - Sus dos entradas de historial, marcadas «[ficha fusionada …]».
+    - Una entrada «Fusión: …».
+- **Segunda ficha:** `mwobihk72lwjk6`, pasó de la versión 2 a la 3.
+  - Estado «descartada», con `mergedInto: insp-planner-reel` y una entrada de historial.
+  - Conserva todas sus etiquetas, enlaces, análisis e historial. No se borró ningún campo ni ningún documento.
+- **Enlace entre fichas:** la ficha muestra «Fusionada en» y «Incluye la ficha fusionada», con botones para abrir la otra ficha. Es el único cambio en la app.
+- **Cómo revertir:** cada ficha guarda en `mergeUndo.snapshot` una copia completa de cómo estaba antes. Para revertir, se escribe esa copia sobre cada ficha (ArtifactData `set` con `if_version`). La ficha descartada vuelve a «adaptar» y la principal a su versión 1.
+- **Verificado sobre los datos guardados:**
+  - Sin notas, métricas, análisis ni historial repetidos.
+  - La búsqueda encuentra la ficha principal con cada etiqueta, por el creador y por el título.
+  - El filtro «Descartada» muestra la segunda ficha.
+  - Los botones abren una ficha desde la otra.
+  - Las copias completas de ambas fichas son idénticas a las originales.
+- **Pruebas:** 50 en verde.

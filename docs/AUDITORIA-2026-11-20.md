@@ -206,3 +206,18 @@
 - Publicar o programar en Metricool.
 
 **Hallazgo:** desde una pieza no hay un botón que abra la ficha de inspiración dentro de la app. Se vuelve por Inspiración (o Banco de ideas). La pieza solo enlaza al Reel original en Instagram.
+
+### Ajustes después del flujo completo (25 nov 2026)
+
+- **Idea `mwwf6ui0hfpb8q`.** Pasó de «produccion» a «nueva»: pendiente de tu aprobación.
+  - La aprobación de Claude quedó en `testApproval` con su fecha, su autor y el estado anterior.
+  - El registro `mwwf6v3hkf7pd5` pasó a «prueba técnica»; el texto anterior se conserva.
+  - El botón «Al calendario» ya no aparece en ideas que ya tienen sus formatos, para no duplicar piezas.
+- **Fotos que faltan** (las 3 piezas siguen en borrador):
+  - Reel: foto o video real del montaje completo para el cierre.
+  - Carrusel: fotos de las diapositivas 2, 3 y 4. Están en la Biblioteca y falta colocarlas.
+  - Stories: foto real del montaje para el cuadro 1.
+- **Verificación con los datos guardados:**
+  - No se perdió nada: tomas, diapositivas, copy, versiones e historial siguen.
+  - Las 8 piezas anteriores, las inspiraciones y la Biblioteca no cambiaron.
+- **Pruebas:** 51 en verde, incluida `tests/test_ajustes.py` (15 comprobaciones en navegador).

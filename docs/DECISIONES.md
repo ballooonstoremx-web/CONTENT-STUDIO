@@ -23,3 +23,14 @@ Este archivo guarda las decisiones de trabajo.
 - Remotion es gratuito para personas y para empresas de hasta 3 personas. Con 4 o más se necesita licencia de empresa. Antes de usarlo en producción hay que confirmar el tamaño del equipo.
 - El render en la nube con servicios de pago (Shotstack, Creatomate, Remotion Lambda) requiere autorización de costo.
 - No descargar ni republicar videos ajenos sin autorización.
+
+## Aprobaciones y piezas incompletas (25 nov 2026, decisión de la dueña)
+
+- **Aprobar es solo de la dueña.** Claude no cambia ideas ni piezas reales a «Aprobada» sin su confirmación.
+- **Pruebas:** se hacen en una copia local o con el modo de prueba (`?prueba=1`).
+  - En modo de prueba, «Aprobar» guarda una aprobación técnica separada (`testApproval`). Nunca escribe `approvedAt`.
+  - El registro queda como «prueba técnica», no como «decisión».
+  - El Banco de ideas muestra «Aprobación técnica de prueba · no es tu aprobación».
+- **Piezas incompletas:** si una pieza tiene material pendiente (`pending`), se muestra como «Incompleta · falta material», con la lista exacta de fotos que faltan. No se puede aprobar ni marcar como publicada hasta completarla.
+  - Solo se usan productos y fotos reales de Balloon Store. No se inventan fotos ni montajes.
+- **Navegación:** cada pieza con referencia tiene el botón «Ver inspiración original», que abre la ficha dentro de Content HQ, y conserva el enlace a la publicación original.

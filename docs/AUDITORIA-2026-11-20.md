@@ -171,3 +171,38 @@
   - Los botones abren una ficha desde la otra.
   - Las copias completas de ambas fichas son idénticas a las originales.
 - **Pruebas:** 50 en verde.
+
+## Prueba del flujo completo con `insp-planner-reel` (25 nov 2026)
+
+**Cómo se hizo.** Se usó una copia de los datos reales de Content HQ en la app local, siguiendo los botones de la interfaz. El resultado se guardó en Content HQ con ArtifactData y se volvió a abrir desde los datos guardados.
+
+- No se modificó código.
+- Las respuestas de los botones de Claude (Analizar, Crear idea original, Todos los formatos) las redactó Claude en la sesión y pasaron por el código real de la app. En el Artifact, esos botones llaman a Claude directamente.
+
+**Pasos:**
+
+1. **Inspiración.** Se analizó con la captura y las notas (`basadoEn: captura + notas`, confianza media). El análisis anterior, sin captura, quedó en el historial. Las notas, la captura y la fusión no cambiaron.
+2. **Idea.** «Un cumpleaños, tres niveles: arma tus paquetes con los mismos globos».
+   - Toma de la referencia la mecánica de escalera, sin precios ni regalos.
+   - Producto: Número 34" Rosa Gold.
+   - Fotos reales: Tie Dye Happy Birthday, Estrella iridiscente y Número Rosa Gold.
+3. **Banco de ideas.** La idea `mwwf6ui0hfpb8q` está enlazada a la inspiración y la inspiración registra la idea. La aprobó Claude para poder seguir el flujo; queda indicado en la idea y en las decisiones.
+4. **Reel `mwwf6w6oc5maei` (2 dic).** Tiene 4 tomas de fotos reales con subtítulos y la versión v1 guardada. Se exportó en el navegador un MP4 de 1080×1920, 10.3 s, con audio.
+5. **Carrusel `mwwf6w6vid1x05` (4 dic) y Stories `mwwf6w6v0mha00` (3 dic).**
+   - Carrusel: 5 diapositivas editables por capas, con la foto oficial del producto en la portada.
+   - Stories: 3 cuadros con encuesta y enlace sugeridos.
+6. **Calendario.** Las 3 piezas aparecen como borrador y «Pendiente» de aprobación. Ninguna se aprobó, programó ni publicó.
+7. **Fichas.** Las 3 abren, se editan, guardan y muestran la referencia a @clarmstrong con el enlace al Reel original. La ficha de inspiración muestra la idea creada.
+8. **Persistencia.**
+   - Al cerrar y abrir la app, todo sigue igual.
+   - En Content HQ: 7 documentos escritos (3 piezas, 1 idea, 1 imagen de catálogo, 1 decisión y la inspiración). Las 8 piezas anteriores quedaron sin cambios.
+
+**Pendiente manual:**
+
+- Revisar y aprobar o pedir cambios en cada pieza.
+- Fotos reales para las diapositivas 2 a 4 del carrusel y para las Stories.
+- Una toma real del montaje con los 3 niveles.
+- Confirmar la edad del número.
+- Publicar o programar en Metricool.
+
+**Hallazgo:** desde una pieza no hay un botón que abra la ficha de inspiración dentro de la app. Se vuelve por Inspiración (o Banco de ideas). La pieza solo enlaza al Reel original en Instagram.
